@@ -29,11 +29,11 @@ public class Client {
 
     @Column(name = "gender")
     @JsonProperty("gender")
-    private String gender;
+    private Enum gender;
 
     @Column(name = "date_of_birth")
     @JsonProperty("date_of_birth")
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column(name = "zipcode")
     @JsonProperty("zipcode")
@@ -105,11 +105,11 @@ public class Client {
         this.gender = gender;
     }
 
-    public double getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(double dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
