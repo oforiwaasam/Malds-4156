@@ -16,9 +16,9 @@ public class Product {
     @JsonIgnore
     private Integer productID;
 
-    @Column(name = "company_id")
-    @JsonProperty("company_id")
-    private Integer companyID;
+    @Column(name = "vendor_id")
+    @JsonProperty("vendor_id")
+    private Integer vendorID;
 
     @Column(name = "price")
     @JsonProperty("price")
@@ -34,19 +34,19 @@ public class Product {
 
     public Product() {
         this.productID = null;
-        this.companyID = null;
+        this.vendorID = null;
         this.price = null;
         this.quantity = null;
         this.additionalFeatures = null;
     }
     
     public Product(Integer productID,
-                  Integer companyID,
+                  Integer vendorID,
                   double price,
                   Integer quantity,
                   Hashtable<String, String> additionalFeatures) {
         this.productID = productID;
-        this.companyID = companyID;
+        this.vendorID = vendorID;
         this.price = price;
         this.quantity = quantity;
         this.additionalFeatures = additionalFeatures;
@@ -60,12 +60,12 @@ public class Product {
         this.productID = productID;
     }
 
-    public Integer getCompanyID() {
-        return companyID;
+    public Integer getVendorID() {
+        return vendorID;
     }
 
-    public void setCompanyID(Integer companyID) {
-        this.companyID = companyID;
+    public void setVendorID(Integer vendorID) {
+        this.vendorID = vendorID;
     }
 
     public double getPrice() {
@@ -94,9 +94,9 @@ public class Product {
 
     @Override
     public String toString() {
-        return "\nUser { " +
+        return "\nProduct { " +
                 "\n\t productID=" + productID +
-                ",\n\t companyID=" + companyID +
+                ",\n\t vendorID=" + vendorID +
                 ",\n\t price='" + price + '\'' +
                 ",\n\t quantity='" + quantity + '\'' +
                 '\'' +

@@ -123,7 +123,7 @@ public class Client {
 
     @Override
     public String toString() {
-        return "\nUser { " +
+        return "\nClient { " +
                 "\n\t clientID=" + clientID +
                 ",\n\t email=" + email +
                 ",\n\t firstName='" + firstName + '\'' +

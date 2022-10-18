@@ -92,8 +92,8 @@ public class Vendor {
 
     @Override
     public String toString() {
-        return "\nUser { " +
-                "\n\t vectorID=" + vectorID +
+        return "\nVendor { " +
+                "\n\t vendorID=" + vendorID +
                 ",\n\t email=" + email +
                 ",\n\t companyName='" + companyName + '\'' +
                 ",\n\t industry='" + industry + '\'' +
