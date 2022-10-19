@@ -9,24 +9,49 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.malds</groupId>
-	<artifactId>groceriesProject</artifactId>
+	<artifactId>shoppingListProject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>groceriesProject</name>
-	<description>Grocery Shopping List Backend </description>
+	<name>shoppingListProject</name>
+	<description> Shopping List Backend </description>
 	<properties>
 		<java.version>11</java.version>
+        <surefire.version>3.0</surefire.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180130</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
 	</dependencies>
 
 	<build>
@@ -35,6 +60,11 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-sure-fire-plugin</artifactId>
+                <version>${surefire.version}</version>
+            </plugin>
 		</plugins>
 	</build>
 
