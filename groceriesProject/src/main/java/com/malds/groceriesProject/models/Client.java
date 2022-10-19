@@ -1,7 +1,8 @@
-package groceriesProject.models;
+package com.malds.groceriesProject.models;
 
 import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 
 @Entity

@@ -1,9 +1,10 @@
-package groceriesProject.models;
+package shoppingListProject.models;
 
 import java.util.Hashtable;
 
 import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "shoppingList")
@@ -23,22 +24,6 @@ public class ShoppingList {
     @Column(name = "product_id")
     @JsonProperty("product_id")
     private Integer productID;
-
-    """
-    @Column(name = "price")
-    @JsonProperty("price")
-    private double price;
-
-    @Column(name = "quantity")
-    @JsonProperty("quantity")
-    private Integer quantity;
-
-    @Column(name = "additional_features")
-    @JsonProperty("additional_features")
-    private Hashtable<String, String> additionalFeatures = new Hashtable<>();
-      
-
-    """
     
     public ShoppingList() {
         this.shoppingListID = null;
@@ -46,7 +31,7 @@ public class ShoppingList {
         this.productID = null;
     }
     
-    public Product(Integer shoppingListID,
+    public ShoppingList(Integer shoppingListID,
                   Integer clientID,
                   Integer productID) {
         this.shoppingListID = shoppingListID;

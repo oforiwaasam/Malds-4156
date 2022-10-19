@@ -1,7 +1,8 @@
-package groceriesProject.models;
+package com.malds.groceriesProject.models;
 
 import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "vendor")

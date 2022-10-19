@@ -1,9 +1,10 @@
-package groceriesProject.models;
+package com.malds.groceriesProject.models;
 
 import java.util.Hashtable;
 
 import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "product")
@@ -35,8 +36,8 @@ public class Product {
     public Product() {
         this.productID = null;
         this.vendorID = null;
-        this.price = null;
-        this.quantity = null;
+        this.price = 0.0;
+        this.quantity = 0;
         this.additionalFeatures = null;
     }
     
