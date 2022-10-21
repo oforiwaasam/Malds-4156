@@ -17,6 +17,17 @@
 		<java.version>11</java.version>
         <surefire.version>3.0</surefire.version>
 	</properties>
+	<dependencyManagement>
+		<dependencies>
+		  <dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-releasetrain</artifactId>
+			<version>Lovelace-SR1</version>
+			<type>pom</type>
+			<scope>import</scope>
+		  </dependency>
+		</dependencies>
+	  </dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -56,6 +67,16 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-dynamodb</artifactId>
+			<version>1.11.64</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.derjust</groupId>
+			<artifactId>spring-data-dynamodb</artifactId>
+			<version>5.1.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -73,6 +94,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.12.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.0</version>
 			</plugin>
 		</plugins>
 		
