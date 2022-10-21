@@ -1,4 +1,4 @@
-package shoppingListProject.models;
+package com.malds.groceriesProject.models;
 
 import java.util.Hashtable;
 
