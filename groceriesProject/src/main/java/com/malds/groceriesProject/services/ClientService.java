@@ -8,5 +8,5 @@ import com.malds.groceriesProject.repositories.clientRepository;
 @Service
 public class ClientService {
     @Autowired
-    clientRepository clientRepo;
+    private clientRepository clientRepo;
 }

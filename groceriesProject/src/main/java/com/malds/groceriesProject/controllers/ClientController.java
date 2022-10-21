@@ -9,5 +9,5 @@ import com.malds.groceriesProject.repositories.clientRepository;
 public class ClientController {
 
     @Autowired
-    clientRepository clientRepo;
+    private clientRepository clientRepo;
 }
