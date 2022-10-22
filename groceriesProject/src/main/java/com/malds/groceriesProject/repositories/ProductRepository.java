@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 
 @Repository
-public class ClientRepository{
+public class ProductRepository{
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 }
