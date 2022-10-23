@@ -18,4 +18,8 @@ public class ShoppingListService {
     public ShoppingList getShoppingListByID(String shoppingListID) {
         return shoppingListRepository.getShoppingListByID(shoppingListID);
     }
+
+    public ShoppingList createShoppingList(ShoppingList shoppingList){
+        return shoppingListRepository.createShoppingList(shoppingList);
+    }
 }

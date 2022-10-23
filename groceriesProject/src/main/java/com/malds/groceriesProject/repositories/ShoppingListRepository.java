@@ -13,5 +13,10 @@ public class ShoppingListRepository{
     public ShoppingList getShoppingListByID(String shoppingListID){
         return dynamoDBMapper.load(ShoppingList.class, shoppingListID);
     }
+    
+    public ShoppingList createShoppingList(ShoppingList shoppingList){
+        dynamoDBMapper.save(shoppingList);
+        return shoppingList;
+    }
 
 }

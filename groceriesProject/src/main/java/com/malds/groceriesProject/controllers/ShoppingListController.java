@@ -25,7 +25,9 @@ public class ShoppingListController {
     }
 
     @RequestMapping(value = "/create_shopping_list", method = RequestMethod.POST)
-    public void createShoppingList(@RequestBody ShoppingList shoppingList) {}
+    public ShoppingList createShoppingList(@RequestBody ShoppingList shoppingList) {
+        return shoppingListService.createShoppingList(shoppingList);
+    }
 
     @RequestMapping(value = "/delete_shopping_list", method = RequestMethod.DELETE)
     public void deleteShoppingList() {}
