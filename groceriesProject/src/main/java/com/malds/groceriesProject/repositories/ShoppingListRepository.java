@@ -19,4 +19,9 @@ public class ShoppingListRepository{
         return shoppingList;
     }
 
+    public void deleteShoppingListByID(String shoppingListID) {
+        ShoppingList shoppingList = dynamoDBMapper.load(ShoppingList.class, shoppingListID);
+        dynamoDBMapper.delete(shoppingList);
+    }
+
 }

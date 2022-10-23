@@ -29,7 +29,8 @@ public class ShoppingListController {
         return shoppingListService.createShoppingList(shoppingList);
     }
 
-    @RequestMapping(value = "/delete_shopping_list", method = RequestMethod.DELETE)
-    public void deleteShoppingList() {}
-
+    @RequestMapping(value = "/delete_shopping_list/{id}", method = RequestMethod.DELETE)
+    public void deleteShoppingListByID(@PathVariable("id") String shoppingListID) {
+        shoppingListService.deleteShoppingListByID(shoppingListID);
+    }
 }

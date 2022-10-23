@@ -22,4 +22,8 @@ public class ShoppingListService {
     public ShoppingList createShoppingList(ShoppingList shoppingList){
         return shoppingListRepository.createShoppingList(shoppingList);
     }
+
+    public void deleteShoppingListByID(String shoppingListID) {
+        shoppingListRepository.deleteShoppingListByID(shoppingListID);
+    }
 }
