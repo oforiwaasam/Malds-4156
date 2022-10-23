@@ -7,6 +7,10 @@ import com.malds.groceriesProject.repositories.ShoppingListRepository;
 
 @Service
 public class ShoppingListService {
-    @Autowired
+    
     private ShoppingListRepository shoppingListRepository;
+    @Autowired
+    public ShoppingListService(ShoppingListRepository shoppingListRepository){
+        this.shoppingListRepository = shoppingListRepository;
+    }
 }
