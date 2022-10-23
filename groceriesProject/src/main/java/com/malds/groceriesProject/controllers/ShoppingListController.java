@@ -6,18 +6,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 import com.malds.groceriesProject.services.ShoppingListService;
 import com.malds.groceriesProject.models.ShoppingList;
 
 @RestController
 public class ShoppingListController {
-
-    private final ShoppingListService shoppingListService;
     @Autowired
-    public ShoppingListController(ShoppingListService shoppingListService){
-        this.shoppingListService = shoppingListService;
-    }
+    ShoppingListService shoppingListService;
 
     @RequestMapping(value = "/get_shopping_list/{id}", method = RequestMethod.GET)
     public ShoppingList getShoppingList(@PathVariable("id") String shoppingListID) {
