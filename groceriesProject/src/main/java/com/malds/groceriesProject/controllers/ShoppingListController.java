@@ -14,7 +14,7 @@ import com.malds.groceriesProject.models.ShoppingList;
 @RestController
 public class ShoppingListController {
     @Autowired
-    ShoppingListService shoppingListService;
+    private ShoppingListService shoppingListService;
 
     @RequestMapping(value = "/get_shopping_list/{id}", method = RequestMethod.GET)
     public ShoppingList getShoppingList(@PathVariable("id") String shoppingListID) {
