@@ -4,9 +4,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.malds.groceriesProject.repositories.ShoppingListRepository;
+import com.malds.groceriesProject.models.ShoppingList;
 
 @Service
 public class ShoppingListService {
-    @Autowired
+
+    @Autowired    
     private ShoppingListRepository shoppingListRepository;
+
+    public ShoppingList getShoppingListByID(String shoppingListID) {
+        System.out.println("Got to shopping list service");
+        return shoppingListRepository.getShoppingListByID(shoppingListID);
+    }
+
+    public ShoppingList createShoppingList(ShoppingList shoppingList){
+        return shoppingListRepository.createShoppingList(shoppingList);
+    }
+
+    public void deleteShoppingListByID(String shoppingListID) {
+        shoppingListRepository.deleteShoppingListByID(shoppingListID);
+    }
 }
