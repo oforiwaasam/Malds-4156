@@ -31,12 +31,12 @@ public class ClientRepository{
         dynamoDBMapper.delete(dynamoDBMapper.load(Client.class, clientID));
     }
 
-    public Client updateClient(Integer clientID, Client client) {
+    public Client updateClient(Client client) {
         dynamoDBMapper.save(client,
                 new DynamoDBSaveExpression()
         .withExpectedEntry("clientID",
                 new ExpectedAttributeValue(
-                        new AttributeValue().withN(Integer.toString(clientID))
+                        new AttributeValue().withN(Integer.toString(client.getClientID()))
                 )));
         return client;
     }
