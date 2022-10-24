@@ -63,7 +63,7 @@ public class DynamoDBConfiguration {
     public AmazonDynamoDB amazonDynamoDB() {
         System.out.println("Connected");        
 
-
+        System.out.println("This is the endpoints + " + amazonDynamoDBEndpoint);
         AmazonDynamoDB createdClient=  AmazonDynamoDBClientBuilder.
             standard()
             .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, awsRegion))
@@ -106,7 +106,7 @@ public class DynamoDBConfiguration {
                 System.err.println(e.getErrorMessage());
                 System.exit(1);
             }
-        }   
+        }
         System.out.println("\nDone listing up tables");*/
         return createdClient;
 
