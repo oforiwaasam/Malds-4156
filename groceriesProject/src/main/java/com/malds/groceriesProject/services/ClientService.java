@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.validator.GenericValidator;
 import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,11 @@ public class ClientService {
         this.clientRepo = clientRepo;
     }
 
-    public Client saveClient(Client client) throws Exception {
+    public List<Client> saveClient(Client client) throws Exception {
         return clientRepo.saveClient(client);
     }
 
-    public Client getClientByID(Integer clientID) throws ResourceNotFoundException {
+    public List<Client> getClientByID(String clientID) throws ResourceNotFoundException {
         if(clientRepo.getClientByID(clientID) != null) {
             return clientRepo.getClientByID(clientID);
         } else {
@@ -33,7 +34,7 @@ public class ClientService {
         }   
     }
 
-    public void deleteClientByID(Integer clientID) throws ResourceNotFoundException{
+    public void deleteClientByID(String clientID) throws ResourceNotFoundException{
         if(clientRepo.getClientByID(clientID) != null) {
             clientRepo.deleteClientByID(clientID);
         } else {
@@ -41,7 +42,7 @@ public class ClientService {
         }
     }
 
-    public Client updateClient(Client client) throws ResourceNotFoundException{
+    public List<Client> updateClient(Client client) throws ResourceNotFoundException{
         if(clientRepo.getClientByID(client.getClientID()) != null) {
             return clientRepo.updateClient(client);
         } else {
@@ -76,6 +77,9 @@ public class ClientService {
                 Date dob = new SimpleDateFormat("MM/dd/yyyy").parse(client.getDateOfBirth());
                 if (dob.compareTo(today) >= 0) {
                     throw new Exception("Date of Birth cannot be greater than or equal to today's date");
+                }
+                if (!GenericValidator.isDate(client.getDateOfBirth(), "MM/dd/yyyy", false)) {
+                    throw new Exception("Invalid date of birth formate: 'MM/dd/yyyy");
                 }
             } catch (ParseException e){
                 throw new Exception("Invalid date of birth format: 'MM/dd/yyyy'");

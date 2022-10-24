@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.malds.groceriesProject.services.ClientService;
@@ -20,7 +23,7 @@ public class ClientController {
     private ClientService clientService;
 
     @PostMapping("/clients")
-    public Client saveClient(@RequestBody Client client)throws Exception{
+    public List<Client> saveClient(@RequestBody Client client)throws Exception{
         try {
             if (client.getClientID() != null) {
                 throw new Exception("Do not provide ClientID");
@@ -33,7 +36,7 @@ public class ClientController {
     }
 
     @GetMapping("/clients/{id}")
-    public Client getClientByID(@PathVariable("id") Integer clientID) throws ResourceNotFoundException{
+    public List<Client> getClientByID(@PathVariable("id") String clientID) throws ResourceNotFoundException{
         try {
             return clientService.getClientByID(clientID);
         } catch (ResourceNotFoundException e) {
@@ -42,17 +45,16 @@ public class ClientController {
     }
 
     @DeleteMapping("/clients/{id}")
-    public void deleteClientByID(@PathVariable("id") Integer clientID) throws ResourceNotFoundException{
+    public void deleteClientByID(@PathVariable("id") String clientID) throws ResourceNotFoundException{
         try {
             clientService.deleteClientByID(clientID);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("ERROR: check clientID value");
         }
-        
     }
 
     @PutMapping("/clients/{id}")
-    public Client updateClient(@RequestBody Client client) throws Exception {
+    public List<Client> updateClient(@RequestBody Client client) throws Exception {
         try {
             if (client.getClientID() == null) {
                 throw new Exception("Must provide ClientID");
