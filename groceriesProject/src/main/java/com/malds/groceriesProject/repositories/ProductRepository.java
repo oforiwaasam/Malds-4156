@@ -1,11 +1,38 @@
 package com.malds.groceriesProject.repositories;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.malds.groceriesProject.models.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
-public class ProductRepository{
+public class ProductRepository {
+
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
+
+    public Product findProductById(Integer productId) {
+        return dynamoDBMapper.load(Product.class, productId);
+
+    }
+
+    public List<Product> findAllProducts(){
+        DynamoDBQueryExpression<Product> query = new DynamoDBQueryExpression<>();
+        return dynamoDBMapper.query(Product.class, query);
+
+    }
+
+    public Product addProduct(Product newProduct) {
+        dynamoDBMapper.save(newProduct);
+        return newProduct;
+        // maybe add a print statement?
+    }
+
+    public void deleteProductByID(Integer productId) {
+        Product product = dynamoDBMapper.load(Product.class, productId);
+        dynamoDBMapper.delete(product);
+    }
 }
