@@ -8,7 +8,6 @@ import com.malds.groceriesProject.models.ShoppingList;
 
 @Service
 public class ShoppingListService {
-
     @Autowired    
     private ShoppingListRepository shoppingListRepository;
 

@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 import com.malds.groceriesProject.services.ShoppingListService;
 import com.malds.groceriesProject.models.ShoppingList;
 
 @RestController
 public class ShoppingListController {
-
     @Autowired
     private ShoppingListService shoppingListService;
 
@@ -38,6 +38,4 @@ public class ShoppingListController {
     public void deleteShoppingListByID(@PathVariable("id") String shoppingListID) {
         shoppingListService.deleteShoppingListByID(shoppingListID);
     }
-
-    
 }
