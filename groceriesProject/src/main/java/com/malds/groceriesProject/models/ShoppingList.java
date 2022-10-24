@@ -6,8 +6,10 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @DynamoDBTable(tableName = "ShoppingList")
 public class ShoppingList {
@@ -18,14 +20,9 @@ public class ShoppingList {
     private String shoppingListID;
 
     @DynamoDBAttribute
-    private Integer clientID;
+    private String clientID;
 
     @DynamoDBAttribute
-    private Integer productID;
-    
-    public ShoppingList() {
-        this.shoppingListID = null;
-        this.clientID = null;
-        this.productID = null;
-    }
+    private String productID;
+
 }
