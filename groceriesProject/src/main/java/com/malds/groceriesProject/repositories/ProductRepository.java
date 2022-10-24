@@ -14,16 +14,25 @@ public class ProductRepository {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
-    public Product getProductById(Integer productId) {
-
+    public Product findProductById(Integer productId) {
         return dynamoDBMapper.load(Product.class, productId);
+
     }
 
-    public List<Product> getAllProducts(){
+    public List<Product> findAllProducts(){
+        DynamoDBQueryExpression<Product> query = new DynamoDBQueryExpression<>();
+        return dynamoDBMapper.query(Product.class, query);
 
-        DynamoDBQueryExpression<Product> queryExpression = new DynamoDBQueryExpression<Product>();
-        List<Product> productList = dynamoDBMapper.query(Product.class,queryExpression);
-        return productList;
+    }
 
+    public Product addProduct(Product newProduct) {
+        dynamoDBMapper.save(newProduct);
+        return newProduct;
+        // maybe add a print statement?
+    }
+
+    public void deleteProductByID(Integer productId) {
+        Product product = dynamoDBMapper.load(Product.class, productId);
+        dynamoDBMapper.delete(product);
     }
 }
