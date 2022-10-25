@@ -13,12 +13,15 @@ public class ShoppingListService {
     @Autowired    
     private ShoppingListRepository shoppingListRepository;
 
-    public ShoppingList getShoppingListByID(String shoppingListID) {
+    public List<ShoppingList> getShoppingListByID(String shoppingListID) {
         System.out.println("Got to shopping list service");
         return shoppingListRepository.getShoppingListByID(shoppingListID);
     }
 
-    public ShoppingList createShoppingList(ShoppingList shoppingList){
+    public List<ShoppingList> createShoppingList(ShoppingList shoppingList) throws Exception{
+        if(shoppingListRepository.existsByID(shoppingList.getShoppingListID())) {
+            throw new Exception("client ID already exists - must use unique clientID");
+        }
         return shoppingListRepository.createShoppingList(shoppingList);
     }
 

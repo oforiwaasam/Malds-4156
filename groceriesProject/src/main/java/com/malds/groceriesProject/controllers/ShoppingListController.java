@@ -5,6 +5,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -19,13 +23,20 @@ public class ShoppingListController {
     private ShoppingListService shoppingListService;
 
     @RequestMapping(value = "/get_shopping_list/{id}", method = RequestMethod.GET)
-    public ShoppingList getShoppingList(@PathVariable("id") String shoppingListID) {
+    public List<ShoppingList> getShoppingList(@PathVariable("id") String shoppingListID) {
         return shoppingListService.getShoppingListByID(shoppingListID);
     }
 
     @RequestMapping(value = "/create_shopping_list", method = RequestMethod.POST)
-    public ShoppingList createShoppingList(@RequestBody ShoppingList shoppingList) {
-        return shoppingListService.createShoppingList(shoppingList);
+    public List<ShoppingList> createShoppingList(@RequestBody ShoppingList shoppingList) throws Exception{
+        try {
+            if (shoppingList.getShoppingListID() != null) {
+                throw new Exception("Do not provide shopping list ID");
+            }
+            return shoppingListService.createShoppingList(shoppingList);
+        } catch (Exception e){
+            throw new Exception("ERROR: check input values");
+        }
     }
 
     @RequestMapping(value = "/update_shopping_list", method = RequestMethod.PUT)

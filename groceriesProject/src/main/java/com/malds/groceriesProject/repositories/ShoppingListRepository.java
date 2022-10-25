@@ -49,21 +49,22 @@ public class ShoppingListRepository{
         return returnedList;
     }
 
-    public void saveItem(ShoppingList newItem){
+    public List<ShoppingList> saveItem(ShoppingList newItem){
         System.out.println("Got here");
         dynamoDBMapper.save(newItem);
+        return List.of(newItem);
     }
 
-    public ShoppingList getShoppingListByID(String shoppingListID){
+    public List<ShoppingList> getShoppingListByID(String shoppingListID){
         System.out.println("Got to shopping list repository");
         ShoppingList listed = dynamoDBMapper.load(ShoppingList.class, shoppingListID);
         System.out.println(listed);
-        return listed;
+        return List.of(listed);
     }
     
-    public ShoppingList createShoppingList(ShoppingList shoppingList){
+    public List<ShoppingList> createShoppingList(ShoppingList shoppingList){
         dynamoDBMapper.save(shoppingList);
-        return shoppingList;
+        return List.of(shoppingList);
     }
 
     public void deleteShoppingListByID(String shoppingListID) {
@@ -79,5 +80,13 @@ public class ShoppingListRepository{
                                         new AttributeValue().withS(shoppingList.getShoppingListID())
                                 )));
         return List.of(shoppingList);
+    }
+
+    public boolean existsByID(String shoppingListID) {
+        ShoppingList shoppingList = dynamoDBMapper.load(ShoppingList.class, shoppingListID);
+        if(shoppingList == null) {
+            return false;
+        }
+        return true;
     }
 }
