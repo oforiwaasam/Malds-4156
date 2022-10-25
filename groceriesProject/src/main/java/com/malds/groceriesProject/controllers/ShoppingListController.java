@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-
 import com.malds.groceriesProject.services.ShoppingListService;
 import com.malds.groceriesProject.models.ShoppingList;
 
