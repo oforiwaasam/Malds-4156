@@ -25,13 +25,10 @@ public class ClientController {
     @PostMapping("/clients")
     public List<Client> saveClient(@RequestBody Client client)throws Exception{
         try {
-            if (client.getClientID() != null) {
-                throw new Exception("Do not provide ClientID");
-            }
             clientService.checkValidInput(client);
             return clientService.saveClient(client);
         } catch (Exception e){
-            throw new Exception("ERROR: check input values");
+            throw new Exception("ERROR: check input values; client ID must not already exist in DB");
         } 
     }
 
@@ -56,9 +53,6 @@ public class ClientController {
     @PutMapping("/clients/{id}")
     public List<Client> updateClient(@RequestBody Client client) throws Exception {
         try {
-            if (client.getClientID() == null) {
-                throw new Exception("Must provide ClientID");
-            }
             clientService.checkValidInput(client);
             return clientService.updateClient(client);
         } catch (Exception e){

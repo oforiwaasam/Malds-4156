@@ -7,10 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.malds.groceriesProject.models.Client;
 
 @Repository
@@ -28,17 +25,20 @@ public class ClientRepository{
         return List.of(client);
     }
 
+    public boolean existsByID(String clientID) {
+        Client client = dynamoDBMapper.load(Client.class, clientID);
+        if(client == null) {
+            return false;
+        }
+        return true;
+    }
+
     public void deleteClientByID(String clientID) {
         dynamoDBMapper.delete(dynamoDBMapper.load(Client.class, clientID));
     }
 
     public List<Client> updateClient(Client client) {
-        dynamoDBMapper.save(client,
-                new DynamoDBSaveExpression()
-        .withExpectedEntry("clientID",
-                new ExpectedAttributeValue(
-                        new AttributeValue().withN(client.getClientID())
-                )));
+        dynamoDBMapper.save(client);
         return List.of(client);
     }
 
