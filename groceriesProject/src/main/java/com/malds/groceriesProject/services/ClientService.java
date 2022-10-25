@@ -23,6 +23,9 @@ public class ClientService {
     }
 
     public List<Client> saveClient(Client client) throws Exception {
+        if(clientRepo.existsByID(client.getClientID())) {
+            throw new Exception("client ID already exists - must use unique clientID");
+        }
         return clientRepo.saveClient(client);
     }
 

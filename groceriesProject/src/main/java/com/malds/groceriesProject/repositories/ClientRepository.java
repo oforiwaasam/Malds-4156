@@ -28,6 +28,14 @@ public class ClientRepository{
         return List.of(client);
     }
 
+    public boolean existsByID(String clientID) {
+        Client client = dynamoDBMapper.load(Client.class, clientID);
+        if(client == null) {
+            return false;
+        }
+        return true;
+    }
+
     public void deleteClientByID(String clientID) {
         dynamoDBMapper.delete(dynamoDBMapper.load(Client.class, clientID));
     }
