@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import com.malds.groceriesProject.services.ShoppingListService;
 import com.malds.groceriesProject.models.ShoppingList;
 
+import java.util.List;
+
 @RestController
 public class ShoppingListController {
     @Autowired
@@ -24,6 +26,18 @@ public class ShoppingListController {
     @RequestMapping(value = "/create_shopping_list", method = RequestMethod.POST)
     public ShoppingList createShoppingList(@RequestBody ShoppingList shoppingList) {
         return shoppingListService.createShoppingList(shoppingList);
+    }
+
+    @RequestMapping(value = "/update_shopping_list", method = RequestMethod.PUT)
+    public List<ShoppingList> updateShoppingList(@RequestBody ShoppingList shoppingList) throws Exception {
+        try {
+            if (shoppingList.getShoppingListID() == null) {
+                throw new Exception("Must provide ShoppingListID");
+            }
+            return shoppingListService.updateShoppingList(shoppingList);
+        } catch (Exception e){
+            throw new Exception("ERROR: check input values; be sure to include ShoppingListID");
+        }
     }
 
     @RequestMapping(value = "/delete_shopping_list/{id}", method = RequestMethod.DELETE)

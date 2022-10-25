@@ -2,9 +2,11 @@ package com.malds.groceriesProject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 import com.malds.groceriesProject.repositories.ShoppingListRepository;
 import com.malds.groceriesProject.models.ShoppingList;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
 @Service
 public class ShoppingListService {
@@ -18,6 +20,14 @@ public class ShoppingListService {
 
     public ShoppingList createShoppingList(ShoppingList shoppingList){
         return shoppingListRepository.createShoppingList(shoppingList);
+    }
+
+    public List<ShoppingList> updateShoppingList(ShoppingList shoppingList) throws ResourceNotFoundException{
+        if(shoppingListRepository.getShoppingListByID(shoppingList.getShoppingListID()) != null) {
+            return shoppingListRepository.updateShoppingList(shoppingList);
+        } else {
+            throw new ResourceNotFoundException("Shopping List ID not found");
+        }
     }
 
     public void deleteShoppingListByID(String shoppingListID) {

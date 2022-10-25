@@ -11,10 +11,17 @@ import org.springframework.stereotype.Repository;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.malds.groceriesProject.models.ShoppingList;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 @Repository
 public class ShoppingListRepository{
@@ -62,5 +69,15 @@ public class ShoppingListRepository{
     public void deleteShoppingListByID(String shoppingListID) {
         ShoppingList shoppingList = dynamoDBMapper.load(ShoppingList.class, shoppingListID);
         dynamoDBMapper.delete(shoppingList);
+    }
+
+    public List<ShoppingList> updateShoppingList(ShoppingList shoppingList) {
+        dynamoDBMapper.save(shoppingList,
+                new DynamoDBSaveExpression()
+                        .withExpectedEntry("shoppingListID",
+                                new ExpectedAttributeValue(
+                                        new AttributeValue().withS(shoppingList.getShoppingListID())
+                                )));
+        return List.of(shoppingList);
     }
 }
