@@ -33,12 +33,7 @@ public class ClientRepository{
     }
 
     public List<Client> updateClient(Client client) {
-        dynamoDBMapper.save(client,
-                new DynamoDBSaveExpression()
-        .withExpectedEntry("clientID",
-                new ExpectedAttributeValue(
-                        new AttributeValue().withN(client.getClientID())
-                )));
+        dynamoDBMapper.save(client);
         return List.of(client);
     }
 
