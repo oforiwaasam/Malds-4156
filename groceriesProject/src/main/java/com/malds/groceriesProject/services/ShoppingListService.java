@@ -12,7 +12,6 @@ public class ShoppingListService {
     private ShoppingListRepository shoppingListRepository;
 
     public ShoppingList getShoppingListByID(String shoppingListID) {
-        System.out.println("Got to shopping list service");
         return shoppingListRepository.getShoppingListByID(shoppingListID);
     }
 
