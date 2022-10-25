@@ -147,7 +147,7 @@
 				</executions>
 			</plugin>
 			<!-- Disable this if you want to build w/o violation -->
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>3.2.0</version>
@@ -160,7 +160,7 @@
 					  </goals>
 					</execution>
 				  </executions>
-			</plugin>
+			</plugin> -->
 		</plugins>
 		<pluginManagement>
 			<plugins>
