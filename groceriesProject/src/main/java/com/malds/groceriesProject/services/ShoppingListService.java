@@ -12,16 +12,18 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 public class ShoppingListService {
     @Autowired    
     private ShoppingListRepository shoppingListRepository;
+    public ShoppingListService(ShoppingListRepository shoppingListRepository) {
+        this.shoppingListRepository = shoppingListRepository;
+    }
 
     public List<ShoppingList> getShoppingListByID(String shoppingListID) {
         System.out.println("Got to shopping list service");
         return shoppingListRepository.getShoppingListByID(shoppingListID);
     }
 
-    public List<ShoppingList> createShoppingList(ShoppingList shoppingList) throws Exception{
-        if(shoppingListRepository.existsByID(shoppingList.getShoppingListID())) {
-            throw new Exception("client ID already exists - must use unique clientID");
-        }
+    public List<ShoppingList> createShoppingList(ShoppingList shoppingList){
+        System.out.println(shoppingList);
+        System.out.println("hi");
         return shoppingListRepository.createShoppingList(shoppingList);
     }
 

@@ -9,27 +9,36 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.List;
-
+import com.malds.groceriesProject.models.ShoppingList;
 import com.malds.groceriesProject.repositories.ShoppingListRepository;
 import com.malds.groceriesProject.services.ShoppingListService;
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import com.malds.groceriesProject.models.ShoppingList;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ShoppingListTest {
-
     @Autowired
     private ShoppingListService shoppingListService;
 
     @MockBean
     private ShoppingListRepository shoppingListRepository;
 
+    @Test
+    public void testSaveShoppingList() throws Exception {
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setClientID("123");
+        shoppingList.setProductID("444");
+
+        ShoppingList insertedShoppingList = new ShoppingList();
+        insertedShoppingList.setShoppingListID("1");
+        insertedShoppingList.setClientID("123");
+        insertedShoppingList.setProductID("444");
+
+        Mockito.when(shoppingListRepository.saveItem(shoppingList)).thenReturn(List.of(insertedShoppingList));
+        assertEquals(shoppingListService.createShoppingList(shoppingList).size(), 0);
+    }
     @Test
     public void testUpdateShoppingList() throws Exception{
         ShoppingList updatedShoppingList = new ShoppingList();

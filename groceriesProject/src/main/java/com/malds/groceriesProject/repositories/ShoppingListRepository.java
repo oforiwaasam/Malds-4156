@@ -64,6 +64,8 @@ public class ShoppingListRepository{
     
     public List<ShoppingList> createShoppingList(ShoppingList shoppingList){
         dynamoDBMapper.save(shoppingList);
+        System.out.println("hello");
+        System.out.println(List.of(shoppingList));
         return List.of(shoppingList);
     }
 
