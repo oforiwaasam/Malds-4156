@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.malds</groupId>
-	<artifactId>shoppingListProject</artifactId>
+	<artifactId>groceriesProject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>shoppingListProject</name>
+	<name>groceriesProject</name>
 	<description> Shopping List Backend </description>
 	<properties>
 		<java.version>11</java.version>
@@ -150,11 +150,12 @@
 				<groupId>com.heroku.sdk</groupId>
 				<artifactId>heroku-maven-plugin</artifactId>
 				<version>3.0.5</version>
-				<configuration>
+				  <configuration>
+					<appName>groceriesProject</appName>
 					<processTypes>
 					   <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
 					</processTypes>
-				  </configuration>
+				</configuration>
 			</plugin>
 			<!-- Disable this if you want to build w/o violation -->
 			<!--<plugin>
