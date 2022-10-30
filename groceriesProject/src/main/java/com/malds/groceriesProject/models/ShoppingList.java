@@ -25,4 +25,7 @@ public class ShoppingList {
     @DynamoDBAttribute
     private String productID;
 
+    //@DynamoDBAttribute
+    //private List<Product> listOfItems;
+
 }

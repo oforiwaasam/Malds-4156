@@ -1,27 +1,16 @@
 package com.malds.groceriesProject.configurations;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ListTablesRequest;
-import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
-import com.malds.groceriesProject.models.ShoppingList;
 
 
 //Used baeldung dynamodb setup
@@ -63,7 +52,7 @@ public class DynamoDBConfiguration {
     public AmazonDynamoDB amazonDynamoDB() {
         System.out.println("Connected");        
 
-
+        System.out.println("This is the endpoints + " + amazonDynamoDBEndpoint);
         AmazonDynamoDB createdClient=  AmazonDynamoDBClientBuilder.
             standard()
             .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, awsRegion))
@@ -106,7 +95,7 @@ public class DynamoDBConfiguration {
                 System.err.println(e.getErrorMessage());
                 System.exit(1);
             }
-        }   
+        }
         System.out.println("\nDone listing up tables");*/
         return createdClient;
 

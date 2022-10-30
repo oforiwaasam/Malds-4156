@@ -14,7 +14,7 @@ public class ProductService {
     private ProductRepository productRepository;
 
     // find product by ID
-    public Product getProductByID(Integer productID) {
+    public Product getProductByID(String productID) {
         return productRepository.findProductById(productID);
 
     }
@@ -27,7 +27,7 @@ public class ProductService {
         return productRepository.findAllProducts();
     }
 
-    public void deleteProductById(Integer productId) {
+    public void deleteProductById(String productId) {
         productRepository.deleteProductByID(productId);
     }
 

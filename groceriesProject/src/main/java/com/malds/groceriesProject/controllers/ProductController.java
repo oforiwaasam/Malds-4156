@@ -12,19 +12,19 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @RequestMapping(path = "/products", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public Product createProduct(@RequestBody Product product) {
         return productService.addNewProduct(product);
     }
 
-    @RequestMapping("/{id}")
-    public Product getProductByID(@PathVariable Integer productId) {
+    @RequestMapping(path="/{id}", method = RequestMethod.GET)
+    public Product getProductByID(@PathVariable String productId) {
         Product foundProduct = productService.getProductByID(productId);
         return foundProduct;
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
-    public void deleteProductByID(@PathVariable Integer productId) {
+    public void deleteProductByID(@PathVariable String productId) {
         productService.deleteProductById(productId);
     }
 }

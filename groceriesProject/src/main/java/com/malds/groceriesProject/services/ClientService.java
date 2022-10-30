@@ -23,11 +23,14 @@ public class ClientService {
     }
 
     public List<Client> saveClient(Client client) throws Exception {
+        if(clientRepo.existsByID(client.getClientID())) {
+            throw new Exception("client ID already exists - must use unique clientID");
+        }
         return clientRepo.saveClient(client);
     }
 
     public List<Client> getClientByID(String clientID) throws ResourceNotFoundException {
-        if(clientRepo.getClientByID(clientID) != null) {
+        if(clientRepo.existsByID(clientID)) {
             return clientRepo.getClientByID(clientID);
         } else {
             throw new ResourceNotFoundException("Client ID not found");
@@ -35,7 +38,7 @@ public class ClientService {
     }
 
     public void deleteClientByID(String clientID) throws ResourceNotFoundException{
-        if(clientRepo.getClientByID(clientID) != null) {
+        if(clientRepo.existsByID(clientID)) {
             clientRepo.deleteClientByID(clientID);
         } else {
             throw new ResourceNotFoundException("Client ID not found");
@@ -43,7 +46,7 @@ public class ClientService {
     }
 
     public List<Client> updateClient(Client client) throws ResourceNotFoundException{
-        if(clientRepo.getClientByID(client.getClientID()) != null) {
+        if(clientRepo.existsByID(client.getClientID())) {
             return clientRepo.updateClient(client);
         } else {
             throw new ResourceNotFoundException("Client ID not found");
