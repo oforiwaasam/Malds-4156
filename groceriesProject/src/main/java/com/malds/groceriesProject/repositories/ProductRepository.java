@@ -14,7 +14,7 @@ public class ProductRepository {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
-    public Product findProductById(Integer productId) {
+    public Product findProductById(String productId) {
         return dynamoDBMapper.load(Product.class, productId);
 
     }
@@ -22,7 +22,6 @@ public class ProductRepository {
     public List<Product> findAllProducts(){
         DynamoDBQueryExpression<Product> query = new DynamoDBQueryExpression<>();
         return dynamoDBMapper.query(Product.class, query);
-
     }
 
     public Product addProduct(Product newProduct) {
@@ -31,7 +30,7 @@ public class ProductRepository {
         // maybe add a print statement?
     }
 
-    public void deleteProductByID(Integer productId) {
+    public void deleteProductByID(String productId) {
         Product product = dynamoDBMapper.load(Product.class, productId);
         dynamoDBMapper.delete(product);
     }
