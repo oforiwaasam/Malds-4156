@@ -11,29 +11,38 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.malds.groceriesProject.services.ShoppingListService;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.ShoppingList;
 
 @RestController
-public class ShoppingListController {
+public class ShoppingListController extends BaseController{
     @Autowired
     private ShoppingListService shoppingListService;
 
     @RequestMapping(value = "/get_shopping_list/{id}", method = RequestMethod.GET)
-    public List<ShoppingList> getShoppingList(@PathVariable("id") String shoppingListID) {
+    public List<ShoppingList> getShoppingList(@PathVariable("id") String shoppingListID) throws ResourceNotFoundException {
         List<ShoppingList> newList = new ArrayList<>();
         newList.add(shoppingListService.getShoppingListByID(shoppingListID));
         return newList;
     }
 
     @RequestMapping(value = "/create_shopping_list", method = RequestMethod.POST)
-    public List<ShoppingList> createShoppingList(@RequestBody ShoppingList shoppingList) {
+    public List<ShoppingList> createShoppingList(@RequestBody ShoppingList shoppingList) throws Exception {
         List<ShoppingList> newList = new ArrayList<>();
-        newList.add(shoppingListService.createShoppingList(shoppingList));
-        return newList;
+        try{
+            newList.add(shoppingListService.createShoppingList(shoppingList));
+            return newList;
+        }catch(Exception e){
+            throw new Exception("ERROR: check input values");
+        }
     }
 
     @RequestMapping(value = "/delete_shopping_list/{id}", method = RequestMethod.DELETE)
-    public void deleteShoppingListByID(@PathVariable("id") String shoppingListID) {
-        shoppingListService.deleteShoppingListByID(shoppingListID);
+    public void deleteShoppingListByID(@PathVariable("id") String shoppingListID) throws ResourceNotFoundException{
+        try{
+            shoppingListService.deleteShoppingListByID(shoppingListID);
+        }catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("ERROR: check shoppingListID value");
+        }
     }
 }
