@@ -34,4 +34,6 @@ public class ProductRepository {
         Product product = dynamoDBMapper.load(Product.class, productId);
         dynamoDBMapper.delete(product);
     }
+
+    public void getListOfProductsByName(String productName){}
 }

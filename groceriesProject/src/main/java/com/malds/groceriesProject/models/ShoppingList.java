@@ -26,7 +26,7 @@ public class ShoppingList {
     private String clientID;
 
     @DynamoDBAttribute
-    private List<Map<String,String>> productIDToQuantity;
+    private Map<String,String> productIDToQuantity;
 
     //@DynamoDBAttribute
     //private List<Product> listOfItems;
