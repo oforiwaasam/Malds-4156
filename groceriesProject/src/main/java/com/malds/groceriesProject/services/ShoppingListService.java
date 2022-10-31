@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import com.malds.groceriesProject.repositories.ShoppingListRepository;
+import com.amazonaws.services.dynamodbv2.model.ResourceInUseException;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.ShoppingList;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
@@ -16,17 +18,6 @@ public class ShoppingListService {
         this.shoppingListRepository = shoppingListRepository;
     }
 
-    public List<ShoppingList> getShoppingListByID(String shoppingListID) {
-        System.out.println("Got to shopping list service");
-        return shoppingListRepository.getShoppingListByID(shoppingListID);
-    }
-
-    public List<ShoppingList> createShoppingList(ShoppingList shoppingList){
-        System.out.println(shoppingList);
-        System.out.println("hi");
-        return shoppingListRepository.createShoppingList(shoppingList);
-    }
-
     public List<ShoppingList> updateShoppingList(ShoppingList shoppingList) throws ResourceNotFoundException{
         if(shoppingListRepository.getShoppingListByID(shoppingList.getShoppingListID()) != null) {
             return shoppingListRepository.updateShoppingList(shoppingList);
@@ -35,7 +26,31 @@ public class ShoppingListService {
         }
     }
 
-    public List<ShoppingList> deleteShoppingListByID(String shoppingListID) {
-        return shoppingListRepository.deleteShoppingListByID(shoppingListID);
+    public List<ShoppingList> getShoppingListByID(String shoppingListID) throws ResourceNotFoundException{
+        ShoppingList shop;
+        if(shoppingListRepository.retriveList(shoppingListID).size() > 0){
+            shop = shoppingListRepository.getShoppingListByID(shoppingListID);
+        }else{
+           throw new ResourceNotFoundException("This shoppingList ID doesn't exists");
+        }
+        return List.of(shop);
+    }
+
+    public List<ShoppingList> createShoppingList(ShoppingList shoppingList) throws Exception{
+        ShoppingList shop;
+        if(shoppingListRepository.retriveList(shoppingList.getShoppingListID()).size() == 0){
+            shop = shoppingListRepository.createShoppingList(shoppingList);
+        }else{
+           throw new Exception("This shoppingList ID already exists");
+        }
+        return List.of(shop);
+    }
+
+    public void deleteShoppingListByID(String shoppingListID) throws ResourceNotFoundException{
+        if(shoppingListRepository.retriveList(shoppingListID).size() == 0){
+            shoppingListRepository.deleteShoppingListByID(shoppingListID);
+        }else{
+           throw new ResourceNotFoundException("This shoppingList ID already exists");
+        }
     }
 }

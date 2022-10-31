@@ -26,11 +26,11 @@ public class ShoppingListRepository{
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
-    public List<ShoppingList> retriveList(Integer shoppingListId){
+    public List<ShoppingList> retriveList(String shoppingListId){
         //dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB);
 
         Map<String,AttributeValue> eav = new HashMap<>();
-        eav.put(":val1", new AttributeValue().withN(shoppingListId.toString()));
+        eav.put(":val1", new AttributeValue().withS(shoppingListId));
 
         DynamoDBQueryExpression<ShoppingList> queryExpression = new DynamoDBQueryExpression<ShoppingList>()
             .withKeyConditionExpression("shoppingListID = :val1")
@@ -52,18 +52,17 @@ public class ShoppingListRepository{
         return List.of(newItem);
     }
 
-    public List<ShoppingList> getShoppingListByID(String shoppingListID){
+    public ShoppingList getShoppingListByID(String shoppingListID){
         System.out.println("Got to shopping list repository");
         ShoppingList listed = dynamoDBMapper.load(ShoppingList.class, shoppingListID);
-        System.out.println(listed);
-        return List.of(listed);
+        return listed;
     }
     
-    public List<ShoppingList> createShoppingList(ShoppingList shoppingList){
+    public ShoppingList createShoppingList(ShoppingList shoppingList){
         dynamoDBMapper.save(shoppingList);
         System.out.println("hello");
         System.out.println(List.of(shoppingList));
-        return List.of(shoppingList);
+        return shoppingList;
     }
 
     public List<ShoppingList> deleteShoppingListByID(String shoppingListID) {

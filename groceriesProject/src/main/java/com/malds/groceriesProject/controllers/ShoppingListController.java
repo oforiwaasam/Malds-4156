@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.malds.groceriesProject.services.ShoppingListService;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.ShoppingList;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,22 +30,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-public class ShoppingListController {
+public class ShoppingListController extends BaseController{
     @Autowired
     private ShoppingListService shoppingListService;
+
     @GetMapping("/shopping_list/{id}")
-    public List<ShoppingList> getShoppingList(@PathVariable("id") String shoppingListID) {
+    public List<ShoppingList> getShoppingList(@PathVariable("id") String shoppingListID) throws ResourceNotFoundException {
         return shoppingListService.getShoppingListByID(shoppingListID);
     }
     @PostMapping("/shopping_list")
     public List<ShoppingList> createShoppingList(@RequestBody ShoppingList shoppingList) throws Exception{
-        try {
-            if (shoppingList.getShoppingListID() != null) {
-                throw new Exception("Do not provide shopping list ID");
-            }
-            System.out.println(shoppingList);
+        try{
             return shoppingListService.createShoppingList(shoppingList);
-        } catch (Exception e){
+        }catch(Exception e){
             throw new Exception("ERROR: check input values");
         }
     }
@@ -60,7 +58,11 @@ public class ShoppingListController {
         }
     }
     @DeleteMapping("/shopping_list/{id}")
-    public List<ShoppingList> deleteShoppingListByID(@PathVariable("id") String shoppingListID) {
-        return shoppingListService.deleteShoppingListByID(shoppingListID);
+    public void deleteShoppingListByID(@PathVariable("id") String shoppingListID) {
+        try{
+            shoppingListService.deleteShoppingListByID(shoppingListID);
+        }catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("ERROR: check shoppingListID value");
+        }
     }
 }
