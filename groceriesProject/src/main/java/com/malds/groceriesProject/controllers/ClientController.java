@@ -1,7 +1,6 @@
 package com.malds.groceriesProject.controllers;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +17,7 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.Client;
 
 @RestController
-public class ClientController {
+public class ClientController extends BaseController {
 
     @Autowired
     private ClientService clientService;
