@@ -60,7 +60,7 @@ public class ShoppingListController {
         }
     }
     @DeleteMapping("/shopping_list/{id}")
-    public void deleteShoppingListByID(@PathVariable("id") String shoppingListID) {
-        shoppingListService.deleteShoppingListByID(shoppingListID);
+    public List<ShoppingList> deleteShoppingListByID(@PathVariable("id") String shoppingListID) {
+        return shoppingListService.deleteShoppingListByID(shoppingListID);
     }
 }

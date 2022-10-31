@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Map;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +26,7 @@ public class ShoppingList {
     private String clientID;
 
     @DynamoDBAttribute
-    private String productID;
+    private List<Map<String,String>> productIDToQuantity;
 
     //@DynamoDBAttribute
     //private List<Product> listOfItems;

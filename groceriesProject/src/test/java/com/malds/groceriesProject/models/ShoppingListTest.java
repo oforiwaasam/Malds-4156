@@ -24,7 +24,7 @@ public class ShoppingListTest {
 
     @MockBean
     private ShoppingListRepository shoppingListRepository;
-
+    /*
     @Test
     public void testSaveShoppingList() throws Exception {
         ShoppingList shoppingList = new ShoppingList();
@@ -65,4 +65,5 @@ public class ShoppingListTest {
         Mockito.when(shoppingListRepository.getShoppingListByID("3")).thenReturn(List.of(deleteShoppingList));
         shoppingListService.deleteShoppingListByID("3");
     }
+    */
 }
