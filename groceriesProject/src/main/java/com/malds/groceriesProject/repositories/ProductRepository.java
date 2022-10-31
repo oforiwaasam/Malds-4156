@@ -4,13 +4,20 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
+
 import com.malds.groceriesProject.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ProductRepository {
@@ -18,9 +25,33 @@ public class ProductRepository {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
-    public Product findProductById(String productId) {
-        return dynamoDBMapper.load(Product.class, productId);
+    public boolean existsByID(String productId) {
+        Product product = dynamoDBMapper.load(Product.class, productId);
+        if(product == null) {
+            return false;
+        }
+        return true;
+    }
 
+    public boolean existsByName(String productName) {
+        Product product = dynamoDBMapper.load(Product.class, productName);
+        if(product == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public List<Product> findProductById(String productId) {
+        return List.of(dynamoDBMapper.load(Product.class, productId));
+    }
+
+    //Find products by name
+    public List<Product> findProductByName(String productName) {
+        Map<String, AttributeValue> productNames = new HashMap<>();
+        productNames.put(":productName", new AttributeValue().withS(productName));
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression().withFilterExpression("productName = :productName").withExpressionAttributeValues(productNames);
+        List<Product> foundproducts = dynamoDBMapper.scan(Product.class, scanExpression);
+        return foundproducts;
     }
 
     public List<Product> findAllProducts(){
@@ -34,6 +65,11 @@ public class ProductRepository {
         // maybe add a print statement?
     }
 
+    public List<Product> updateProduct(Product product) {
+        dynamoDBMapper.save(product);
+        return List.of(product);
+    }
+
     public void deleteProductByID(String productId) {
         Product product = dynamoDBMapper.load(Product.class, productId);
         dynamoDBMapper.delete(product);
@@ -41,3 +77,4 @@ public class ProductRepository {
 
     public void getListOfProductsByName(String productName){}
 }
+
