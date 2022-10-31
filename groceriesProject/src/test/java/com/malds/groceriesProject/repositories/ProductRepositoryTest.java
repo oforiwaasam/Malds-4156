@@ -124,11 +124,18 @@ public class ProductRepositoryTest {
         returnProduct.setVendorID("54321");
         returnProduct.setPrice("4.19");
         returnProduct.setQuantity("1");
+
+        Product returnProduct1 = new Product();
+        returnProduct1.setProductID("3432");
+        returnProduct1.setProductName("TestProduct");
+        returnProduct1.setVendorID("54321");
+        returnProduct1.setPrice("4.59");
+        returnProduct1.setQuantity("1");
         
         Mockito.when(productRepo.existsByName("TestProduct")).thenReturn(true);
-        Mockito.when(productRepo.findProductByName("TestProduct")).thenReturn(List.of(returnProduct));
+        Mockito.when(productRepo.findProductByName("TestProduct")).thenReturn(List.of(returnProduct, returnProduct1));
 
-        Assertions.assertEquals(productService.getProductByName("TestProduct"), List.of(returnProduct));
+        Assertions.assertEquals(productService.getProductByName("TestProduct"), List.of(returnProduct, returnProduct1));
     }
 
     //No ProductName Find
