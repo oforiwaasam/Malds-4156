@@ -47,21 +47,17 @@ public class ShoppingListRepository{
     }
 
     public List<ShoppingList> saveItem(ShoppingList newItem){
-        System.out.println("Got here");
         dynamoDBMapper.save(newItem);
         return List.of(newItem);
     }
 
     public ShoppingList getShoppingListByID(String shoppingListID){
-        System.out.println("Got to shopping list repository");
         ShoppingList listed = dynamoDBMapper.load(ShoppingList.class, shoppingListID);
         return listed;
     }
     
     public ShoppingList createShoppingList(ShoppingList shoppingList){
         dynamoDBMapper.save(shoppingList);
-        System.out.println("hello");
-        System.out.println(List.of(shoppingList));
         return shoppingList;
     }
 
