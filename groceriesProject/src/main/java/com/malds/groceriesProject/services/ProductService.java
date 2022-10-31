@@ -25,11 +25,7 @@ public class ProductService {
 
     // find product by Name, fix this to be in order?
     public List<Product> getProductByName(String productName) throws ResourceNotFoundException{
-        if(productRepository.existsByName(productName)) {
-            return productRepository.findProductByName(productName);
-        } else {
-            throw new ResourceNotFoundException("Product Name not found");
-        }
+        return productRepository.findProductByName(productName);
     }
 
     // update product

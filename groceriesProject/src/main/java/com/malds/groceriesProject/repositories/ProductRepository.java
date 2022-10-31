@@ -1,20 +1,14 @@
 package com.malds.groceriesProject.repositories;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ScanRequest;
-import com.amazonaws.services.dynamodbv2.model.ScanResult;
 
 import com.malds.groceriesProject.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +44,7 @@ public class ProductRepository {
         Map<String, AttributeValue> productNames = new HashMap<>();
         productNames.put(":productName", new AttributeValue().withS(productName));
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression().withFilterExpression("productName = :productName").withExpressionAttributeValues(productNames);
-        List<Product> foundproducts = dynamoDBMapper.scan(Product.class, scanExpression);
-        return foundproducts;
+        return dynamoDBMapper.scan(Product.class, scanExpression);
     }
 
     public List<Product> findAllProducts(){
