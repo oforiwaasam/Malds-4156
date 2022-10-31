@@ -11,7 +11,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.malds.groceriesProject.models.ShoppingList;
 import com.malds.groceriesProject.repositories.ShoppingListRepository;
 import com.malds.groceriesProject.services.ShoppingListService;
@@ -24,34 +27,45 @@ public class ShoppingListTest {
 
     @MockBean
     private ShoppingListRepository shoppingListRepository;
-    /*
+
     @Test
     public void testSaveShoppingList() throws Exception {
+
+        final String EXPECTED_SHOPPINGLIST_ID = "1";
+        final String EXPECTED_CLIENT_ID = "123";
+        final Map<String,String> EXPECTED_PRODUCT_ID_TO_QUANTITY = new HashMap<String,String>();
+        EXPECTED_PRODUCT_ID_TO_QUANTITY.put("445","1");
+
+        Map<String,String> productIDToQuantity = new HashMap<String,String>();
+        productIDToQuantity.put("445","1");
+
         ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("1");
         shoppingList.setClientID("123");
-        shoppingList.setProductID("444");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
 
-        ShoppingList insertedShoppingList = new ShoppingList();
-        insertedShoppingList.setShoppingListID("1");
-        insertedShoppingList.setClientID("123");
-        insertedShoppingList.setProductID("444");
 
-        Mockito.when(shoppingListRepository.saveItem(shoppingList)).thenReturn(List.of(insertedShoppingList));
-        assertEquals(shoppingListService.createShoppingList(shoppingList).size(), 0);
+        Mockito.when(shoppingListRepository.createShoppingList(shoppingList)).thenReturn(shoppingList);
+        assertEquals(shoppingListService.createShoppingList(shoppingList).get(0).getShoppingListID(), EXPECTED_SHOPPINGLIST_ID);
+        assertEquals(shoppingListService.createShoppingList(shoppingList).get(0).getClientID(), EXPECTED_CLIENT_ID);
+        assertEquals(shoppingListService.createShoppingList(shoppingList).get(0).getProductIDToQuantity(), EXPECTED_PRODUCT_ID_TO_QUANTITY);
+
     }
     @Test
     public void testUpdateShoppingList() throws Exception{
         ShoppingList updatedShoppingList = new ShoppingList();
         updatedShoppingList.setShoppingListID("1");
         updatedShoppingList.setClientID("123");
-        updatedShoppingList.setProductID("445");
+        Map<String,String> productIDToQuantity = new HashMap<String,String>();
+        productIDToQuantity.put("445","1");
+        updatedShoppingList.setProductIDToQuantity(productIDToQuantity);
 
-        Mockito.when(shoppingListRepository.getShoppingListByID("1")).thenReturn(List.of(updatedShoppingList));
+        Mockito.when(shoppingListRepository.getShoppingListByID("1")).thenReturn(updatedShoppingList);
         Mockito.when(shoppingListRepository.updateShoppingList(updatedShoppingList)).thenReturn(List.of(updatedShoppingList));
 
         assertEquals(shoppingListService.updateShoppingList(updatedShoppingList).get(0).getShoppingListID(), updatedShoppingList.getShoppingListID());
         assertEquals(shoppingListService.updateShoppingList(updatedShoppingList).get(0).getClientID(), updatedShoppingList.getClientID());
-        assertEquals(shoppingListService.updateShoppingList(updatedShoppingList).get(0).getProductID(), updatedShoppingList.getProductID());
+        assertEquals(shoppingListService.updateShoppingList(updatedShoppingList).get(0).getProductIDToQuantity(), updatedShoppingList.getProductIDToQuantity());
 
     }
     @Test
@@ -60,10 +74,12 @@ public class ShoppingListTest {
         ShoppingList deleteShoppingList = new ShoppingList();
         deleteShoppingList.setShoppingListID("3");
         deleteShoppingList.setClientID("123");
-        deleteShoppingList.setProductID("445");
+        Map<String,String> productIDToQuantity = new HashMap<String,String>();
+        productIDToQuantity.put("445","1");
+        deleteShoppingList.setProductIDToQuantity(productIDToQuantity);
 
-        Mockito.when(shoppingListRepository.getShoppingListByID("3")).thenReturn(List.of(deleteShoppingList));
-        shoppingListService.deleteShoppingListByID("3");
+        //Mockito.when(shoppingListRepository.getShoppingListByID("3")).thenReturn(List.of(deleteShoppingList));
+        //shoppingListService.deleteShoppingListByID("3");
     }
-    */
+
 }
