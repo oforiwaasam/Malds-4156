@@ -62,6 +62,11 @@ public class ClientService {
     }
 
     public void checkValidInput(Client client) throws Exception{
+        if (client.getClientID() == null || client.getEmail() == null 
+            || client.getFirstName() == null || client.getLastName() == null
+            || client.getGender() == null || client.getZipcode() == null) {
+                throw new Exception("Value cannot be null");
+            }
         if (!isValidEmail(client.getEmail())) {
             throw new Exception("Email is invalid");
         } else if (client.getEmail().isBlank() || client.getEmail().length() > 320 ) {
@@ -82,7 +87,7 @@ public class ClientService {
                     throw new Exception("Date of Birth cannot be greater than or equal to today's date");
                 }
                 if (!GenericValidator.isDate(client.getDateOfBirth(), "MM/dd/yyyy", false)) {
-                    throw new Exception("Invalid date of birth formate: 'MM/dd/yyyy");
+                    throw new Exception("Invalid date of birth format: 'MM/dd/yyyy'");
                 }
             } catch (ParseException e){
                 throw new Exception("Invalid date of birth format: 'MM/dd/yyyy'");
