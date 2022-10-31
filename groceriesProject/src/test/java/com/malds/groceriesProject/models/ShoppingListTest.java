@@ -2,14 +2,11 @@ package com.malds.groceriesProject.models;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import com.malds.groceriesProject.GroceriesProjectApplication;
-import org.junit.Test;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;s
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -20,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.malds.groceriesProject.models.ShoppingList;
 import com.malds.groceriesProject.repositories.ShoppingListRepository;
 import com.malds.groceriesProject.services.ShoppingListService;
 
