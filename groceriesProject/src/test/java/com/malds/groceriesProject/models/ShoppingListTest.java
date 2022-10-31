@@ -2,7 +2,7 @@ package com.malds.groceriesProject.models;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;s
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
