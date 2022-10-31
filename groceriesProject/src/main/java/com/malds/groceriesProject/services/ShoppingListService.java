@@ -3,12 +3,14 @@ package com.malds.groceriesProject.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
 
 import com.malds.groceriesProject.repositories.ShoppingListRepository;
 import com.amazonaws.services.dynamodbv2.model.ResourceInUseException;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.ShoppingList;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 public class ShoppingListService {
@@ -51,6 +53,13 @@ public class ShoppingListService {
             shoppingListRepository.deleteShoppingListByID(shoppingListID);
         }else{
            throw new ResourceNotFoundException("This shoppingList ID doesn't exist");
+        }
+    }
+    public Map<String,String> getProductsToQuantityByID(String shoppingListID) throws ResourceNotFoundException{
+        if (shoppingListRepository.existsByID(shoppingListID)) {
+            return shoppingListRepository.getProductsToQuantityByID(shoppingListID);
+        }else{
+            throw new ResourceNotFoundException("This shoppingList ID doesn't exist");
         }
     }
 }

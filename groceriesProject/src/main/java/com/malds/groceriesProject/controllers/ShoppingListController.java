@@ -2,8 +2,7 @@ package com.malds.groceriesProject.controllers;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,6 +36,14 @@ public class ShoppingListController extends BaseController{
     @GetMapping("/shopping_list/{id}")
     public List<ShoppingList> getShoppingList(@PathVariable("id") String shoppingListID) throws ResourceNotFoundException {
         return shoppingListService.getShoppingListByID(shoppingListID);
+    }
+    @GetMapping("/shopping_list/products/{id}")
+    public Map<String,String> getProductsToQuantityByID(@PathVariable("id") String shoppingListID) throws ResourceNotFoundException{
+        try{
+            return shoppingListService.getProductsToQuantityByID(shoppingListID);
+        }catch(ResourceNotFoundException e){
+            throw new ResourceNotFoundException("ERROR: check input values");
+        }
     }
     @PostMapping("/shopping_list")
     public List<ShoppingList> createShoppingList(@RequestBody ShoppingList shoppingList) throws Exception{

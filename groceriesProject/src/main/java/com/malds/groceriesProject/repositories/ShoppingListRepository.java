@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -83,5 +84,9 @@ public class ShoppingListRepository{
             return false;
         }
         return true;
+    }
+    public Map<String,String> getProductsToQuantityByID(String shoppingListID) {
+        ShoppingList listed = dynamoDBMapper.load(ShoppingList.class, shoppingListID);
+        return listed.getProductIDToQuantity();
     }
 }

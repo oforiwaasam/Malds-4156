@@ -107,6 +107,24 @@ public class ShoppingListTest {
         Mockito.when(shoppingListRepository.existsByID("3")).thenReturn(true);
         shoppingListService.deleteShoppingListByID("3");
     }
+    @Test
+    public void testGetProductsToQuantity() {
+        final Map<String,String> EXPECTED_PRODUCT_ID_TO_QUANTITY = new HashMap<String,String>();
+        EXPECTED_PRODUCT_ID_TO_QUANTITY.put("445","1");
+
+        Map<String,String> productIDToQuantity = new HashMap<String,String>();
+        productIDToQuantity.put("445","1");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("1");
+        shoppingList.setClientID("123");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        Mockito.when(shoppingListRepository.existsByID("1")).thenReturn(true);
+        Mockito.when(shoppingListRepository.getProductsToQuantityByID("1")).thenReturn(shoppingList.getProductIDToQuantity());
+
+        assertEquals(shoppingListService.getProductsToQuantityByID("1"), EXPECTED_PRODUCT_ID_TO_QUANTITY);
+    }
 
     @Test
     public void testNoShoppingListIDUpdate() {
@@ -130,6 +148,13 @@ public class ShoppingListTest {
         Mockito.when(shoppingListRepository.existsByID("32")).thenReturn(false);
         Throwable exception = assertThrows(ResourceNotFoundException.class,
                 ()->{shoppingListService.deleteShoppingListByID("32");} );
+        assertEquals("This shoppingList ID doesn't exist (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)", exception.getMessage());
+    }
+    @Test
+    public void testNoGetProductsToQuantity() {
+        Mockito.when(shoppingListRepository.existsByID("32")).thenReturn(false);
+        Throwable exception = assertThrows(ResourceNotFoundException.class,
+                ()->{shoppingListService.getProductsToQuantityByID("32");} );
         assertEquals("This shoppingList ID doesn't exist (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)", exception.getMessage());
     }
 
