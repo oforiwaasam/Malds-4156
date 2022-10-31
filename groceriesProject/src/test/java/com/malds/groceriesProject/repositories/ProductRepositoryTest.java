@@ -138,15 +138,6 @@ public class ProductRepositoryTest {
         Assertions.assertEquals(productService.getProductByName("TestProduct"), List.of(returnProduct, returnProduct1));
     }
 
-    //No ProductName Find
-    @Test
-    public void testNoProductNameFindProductByName() throws Exception{
-
-        Throwable exception = Assertions.assertThrows(Exception.class, ()->{productService.getProductByName("FakeTestProduct");} );
-
-        Assertions.assertEquals("Product Name not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)", exception.getMessage());
-    }
-
     @Test
     public void testDeleteProductById() throws Exception{
         Product product1 = new Product();

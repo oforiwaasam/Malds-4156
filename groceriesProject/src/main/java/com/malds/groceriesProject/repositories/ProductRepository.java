@@ -45,8 +45,7 @@ public class ProductRepository {
         Map<String, AttributeValue> productNames = new HashMap<>();
         productNames.put(":productName", new AttributeValue().withS(productName));
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression().withFilterExpression("productName = :productName").withExpressionAttributeValues(productNames);
-        List<Product> foundproducts = dynamoDBMapper.scan(Product.class, scanExpression);
-        return foundproducts;
+        return dynamoDBMapper.scan(Product.class, scanExpression);
     }
 
     public List<Product> findAllProducts(){
