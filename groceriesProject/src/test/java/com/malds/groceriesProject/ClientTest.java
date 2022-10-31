@@ -1,6 +1,6 @@
 package com.malds.groceriesProject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -29,9 +30,19 @@ public class ClientTest {
     private ClientRepository clientRepo;
 
     @Test
-    public void testSaveClient() throws Exception {
-        //initialize client
+    public void testGetClientByID() throws Exception {
+
+        final String EXPECTED_CLIENT_ID = "1";
+        final String EXPECTED_EMAIL = "sd2818@columbia.edu";
+        final String EXPECTED_FIRST_NAME = "Sarah";
+        final String EXPECTED_LAST_NAME = "Delgado";
+        final String EXPECTED_GENDER = "Female";
+        final String EXPECTED_DOB = "01/08/2002";
+        final String EXPECTED_ZIPCODE = "11101";
+
+        //create new client to be saved
         Client client = new Client();
+        client.setClientID("1");
         client.setEmail("sd2818@columbia.edu");
         client.setFirstName("Sarah");
         client.setLastName("Delgado");
@@ -39,24 +50,61 @@ public class ClientTest {
         client.setDateOfBirth("01/08/2002");
         client.setZipcode("11101");
 
-        //create newly inserted client
-        Client insertedClient = new Client();
-        insertedClient.setClientID("1");
-        insertedClient.setEmail("sd2818@columbia.edu");
-        insertedClient.setFirstName("Sarah");
-        insertedClient.setLastName("Delgado");
-        insertedClient.setGender("Female");
-        insertedClient.setDateOfBirth("01/08/2002");
-        insertedClient.setZipcode("11101");
+        Mockito.when(clientRepo.existsByID("1")).thenReturn(true);
+        Mockito.when(clientRepo.getClientByID("1")).thenReturn(List.of(client));
 
-        Mockito.when(clientRepo.saveClient(client)).thenReturn(List.of(insertedClient));
-        
-        assertEquals(clientService.saveClient(client).get(0).getClientID(), "1");
+        assertEquals(clientService.getClientByID("1").get(0).getClientID(), EXPECTED_CLIENT_ID);
+        assertEquals(clientService.getClientByID("1").get(0).getEmail(), EXPECTED_EMAIL);
+        assertEquals(clientService.getClientByID("1").get(0).getFirstName(), EXPECTED_FIRST_NAME);
+        assertEquals(clientService.getClientByID("1").get(0).getLastName(), EXPECTED_LAST_NAME);
+        assertEquals(clientService.getClientByID("1").get(0).getGender(), EXPECTED_GENDER);
+        assertEquals(clientService.getClientByID("1").get(0).getDateOfBirth(), EXPECTED_DOB);
+        assertEquals(clientService.getClientByID("1").get(0).getZipcode(), EXPECTED_ZIPCODE);
+    }
+
+    @Test
+    public void testSaveClient() throws Exception {
+
+        final String EXPECTED_CLIENT_ID = "1";
+        final String EXPECTED_EMAIL = "sd2818@columbia.edu";
+        final String EXPECTED_FIRST_NAME = "Sarah";
+        final String EXPECTED_LAST_NAME = "Delgado";
+        final String EXPECTED_GENDER = "Female";
+        final String EXPECTED_DOB = "01/08/2002";
+        final String EXPECTED_ZIPCODE = "11101";
+
+        //create new client to be saved
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail("sd2818@columbia.edu");
+        client.setFirstName("Sarah");
+        client.setLastName("Delgado");
+        client.setGender("Female");
+        client.setDateOfBirth("01/08/2002");
+        client.setZipcode("11101");
+
+        Mockito.when(clientRepo.saveClient(client)).thenReturn(List.of(client));
+
+        assertEquals(clientService.saveClient(client).get(0).getClientID(), EXPECTED_CLIENT_ID);
+        assertEquals(clientService.saveClient(client).get(0).getEmail(), EXPECTED_EMAIL);
+        assertEquals(clientService.saveClient(client).get(0).getFirstName(), EXPECTED_FIRST_NAME);
+        assertEquals(clientService.saveClient(client).get(0).getLastName(), EXPECTED_LAST_NAME);
+        assertEquals(clientService.saveClient(client).get(0).getGender(), EXPECTED_GENDER);
+        assertEquals(clientService.saveClient(client).get(0).getDateOfBirth(), EXPECTED_DOB);
+        assertEquals(clientService.saveClient(client).get(0).getZipcode(), EXPECTED_ZIPCODE);
     }
 
     @Test
     public void testUpdateClient() {
         
+        final String EXPECTED_CLIENT_ID = "1";
+        final String EXPECTED_EMAIL = "sarah.delgado@columbia.edu";
+        final String EXPECTED_FIRST_NAME = "Sarah";
+        final String EXPECTED_LAST_NAME = "Delgado";
+        final String EXPECTED_GENDER = "Female";
+        final String EXPECTED_DOB = "08/01/2002";
+        final String EXPECTED_ZIPCODE = "10260";
+
         //initialize updated Client
         Client updatedClient = new Client();
         updatedClient.setClientID("1");
@@ -64,20 +112,19 @@ public class ClientTest {
         updatedClient.setFirstName("Sarah");
         updatedClient.setLastName("Delgado");
         updatedClient.setGender("Female");
-        updatedClient.setDateOfBirth("01/08/2002");
+        updatedClient.setDateOfBirth("08/01/2002");
         updatedClient.setZipcode("10260");
 
-        Mockito.when(clientRepo.getClientByID("1")).thenReturn(List.of(updatedClient));
-
+        Mockito.when(clientRepo.existsByID("1")).thenReturn(true);
         Mockito.when(clientRepo.updateClient(updatedClient)).thenReturn(List.of(updatedClient));
 
-        assertEquals(clientService.updateClient(updatedClient).get(0).getClientID(), updatedClient.getClientID());
-        assertEquals(clientService.updateClient(updatedClient).get(0).getEmail(), updatedClient.getEmail());
-        assertEquals(clientService.updateClient(updatedClient).get(0).getFirstName(), updatedClient.getFirstName());
-        assertEquals(clientService.updateClient(updatedClient).get(0).getLastName(), updatedClient.getLastName());
-        assertEquals(clientService.updateClient(updatedClient).get(0).getGender(), updatedClient.getGender());
-        assertEquals(clientService.updateClient(updatedClient).get(0).getDateOfBirth(), updatedClient.getDateOfBirth());
-        assertEquals(clientService.updateClient(updatedClient).get(0).getZipcode(), updatedClient.getZipcode());
+        assertEquals(clientService.updateClient(updatedClient).get(0).getClientID(), EXPECTED_CLIENT_ID);
+        assertEquals(clientService.updateClient(updatedClient).get(0).getEmail(), EXPECTED_EMAIL);
+        assertEquals(clientService.updateClient(updatedClient).get(0).getFirstName(), EXPECTED_FIRST_NAME);
+        assertEquals(clientService.updateClient(updatedClient).get(0).getLastName(), EXPECTED_LAST_NAME);
+        assertEquals(clientService.updateClient(updatedClient).get(0).getGender(), EXPECTED_GENDER);
+        assertEquals(clientService.updateClient(updatedClient).get(0).getDateOfBirth(), EXPECTED_DOB);
+        assertEquals(clientService.updateClient(updatedClient).get(0).getZipcode(), EXPECTED_ZIPCODE);
     }
 
     @Test
@@ -92,13 +139,13 @@ public class ClientTest {
         deleteClient.setDateOfBirth("01/08/2002");
         deleteClient.setZipcode("10260");
 
-        Mockito.when(clientRepo.getClientByID("3")).thenReturn(List.of(deleteClient));
-
+        Mockito.when(clientRepo.existsByID("3")).thenReturn(true);
         clientService.deleteClientByID("3");
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    public void testNoClientIDUpdate() throws ResourceNotFoundException {
+    //@Test(expected = ResourceNotFoundException.class)
+    @Test
+    public void testNoClientIDUpdate() {
         //Initialize client update
         Client updatedClient = new Client();
         updatedClient.setClientID("32");
@@ -109,16 +156,21 @@ public class ClientTest {
         updatedClient.setDateOfBirth("03/08/2000");
         updatedClient.setZipcode("11023");
 
-        Mockito.when(clientRepo.getClientByID("32")).thenReturn(null);
-        
-        clientService.updateClient(updatedClient);
+        Mockito.when(clientRepo.existsByID("32")).thenReturn(false);
+        Throwable exception = assertThrows(ResourceNotFoundException.class,
+            ()->{clientService.updateClient(updatedClient);} );
+        //clientService.updateClient(updatedClient);
+        assertEquals("Client ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)", exception.getMessage());
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    public void testNoClientIDDelete() throws ResourceNotFoundException {
+    @Test
+    public void testNoClientIDDelete() {
 
-        Mockito.when(clientRepo.getClientByID("32")).thenReturn(null);
-        clientService.deleteClientByID("32");
+        Mockito.when(clientRepo.existsByID("32")).thenReturn(false);
+        Throwable exception = assertThrows(ResourceNotFoundException.class,
+            ()->{clientService.deleteClientByID("32");} );
+        assertEquals("Client ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)", exception.getMessage());
+        //clientService.deleteClientByID("32");
     }
 
     @Test
@@ -126,15 +178,17 @@ public class ClientTest {
         String invalid_email = "incorrect email input";
         String blank_email = "      ";
         String valid_email = "ss6168@columbia.edu";
+
         assertFalse(clientService.isValidEmail(invalid_email));
         assertFalse(clientService.isValidEmail(blank_email));
         assertTrue(clientService.isValidEmail(valid_email));
     }
 
-    @Test(expected = Exception.class)
-    public void testCheckInputInvalidEmail() throws Exception {
+    @Test
+    public void testCheckInputInvalidEmail() {
         //initialize invalid email client - no @
         Client client = new Client();
+        client.setClientID("1");
         client.setEmail("sd2818columbia.edu");
         client.setFirstName("Sarah");
         client.setLastName("Delgado");
@@ -142,13 +196,17 @@ public class ClientTest {
         client.setDateOfBirth("01/08/2002");
         client.setZipcode("11101");
 
-        clientService.checkValidInput(client);
+        Throwable exception = assertThrows(Exception.class,
+            ()->{clientService.checkValidInput(client);} );
+        assertEquals("Email is invalid", exception.getMessage());
+        //clientService.checkValidInput(client);
     }
 
-    @Test(expected = Exception.class)
-    public void testCheckInputInvalidName () throws Exception {
+    @Test
+    public void testCheckInputInvalidName () {
         //initialize invalid name - too long
        Client client = new Client();
+       client.setClientID("1");
        client.setEmail("sd2818@columbia.edu");
        client.setFirstName("SarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarahSarah");
        client.setLastName("Delgado");
@@ -156,13 +214,17 @@ public class ClientTest {
        client.setDateOfBirth("01/08/2002");
        client.setZipcode("11101");
 
-       clientService.checkValidInput(client);
+       Throwable exception = assertThrows(Exception.class,
+            ()->{clientService.checkValidInput(client);} );
+        assertEquals("First Name must not be blank or longer than 128 chars", exception.getMessage());
+       //clientService.checkValidInput(client);
     }
 
-    @Test(expected = Exception.class)
-    public void testCheckInputInvalidLastName () throws Exception {
+    @Test
+    public void testCheckInputInvalidLastName () {
         //initialize invalid name - blank space
        Client client = new Client();
+       client.setClientID("1");
        client.setEmail("sd2818@columbia.edu");
        client.setFirstName("Sarah");
        client.setLastName("   ");
@@ -170,13 +232,17 @@ public class ClientTest {
        client.setDateOfBirth("01/08/2002");
        client.setZipcode("11101");
 
-       clientService.checkValidInput(client);
+       Throwable exception = assertThrows(Exception.class,
+            ()->{clientService.checkValidInput(client);} );
+        assertEquals("Last Name must not be blank or longer than 128 chars", exception.getMessage());
+       //clientService.checkValidInput(client);
     }
 
-    @Test(expected = Exception.class)
-    public void testCheckInputInvalidGender () throws Exception {
+    @Test
+    public void testCheckInputInvalidGender () {
         //initialize invalid gender -  null
        Client client = new Client();
+       client.setClientID("1");
        client.setEmail("sd2818@columbia.edu");
        client.setFirstName("Sarah");
        client.setLastName("Delgado");
@@ -184,13 +250,17 @@ public class ClientTest {
        client.setDateOfBirth("01/08/2002");
        client.setZipcode("11101");
 
-       clientService.checkValidInput(client);
+       Throwable exception = assertThrows(Exception.class,
+            ()->{clientService.checkValidInput(client);} );
+        assertEquals("Value cannot be null", exception.getMessage());
+       //clientService.checkValidInput(client);
     }
 
-    @Test(expected = Exception.class)
-    public void testCheckInputInvalidDoBYear() throws Exception {
+    @Test
+    public void testCheckInputInvalidDoBYear() {
         //initialize invalid dob - past today's date
        Client client = new Client();
+       client.setClientID("1");
        client.setEmail("sd2818@columbia.edu");
        client.setFirstName("Sarah");
        client.setLastName("Delgado");
@@ -198,13 +268,17 @@ public class ClientTest {
        client.setDateOfBirth("10/25/2024");
        client.setZipcode("11101");
 
-       clientService.checkValidInput(client);
+       Throwable exception = assertThrows(Exception.class,
+            ()->{clientService.checkValidInput(client);} );
+        assertEquals("Date of Birth cannot be greater than or equal to today's date", exception.getMessage());
+       //clientService.checkValidInput(client);
     }
 
-    @Test(expected = Exception.class) 
-    public void testCheckInputInvalidDoBYear2() throws Exception {
+    @Test
+    public void testCheckInputInvalidDoBYear2() {
         //initialize invalid dob - year 0000
        Client client = new Client();
+       client.setClientID("1");
        client.setEmail("sd2818@columbia.edu");
        client.setFirstName("Sarah");
        client.setLastName("Delgado");
@@ -212,13 +286,17 @@ public class ClientTest {
        client.setDateOfBirth("10/10/0000");
        client.setZipcode("11101");
 
-       clientService.checkValidInput(client);
+       Throwable exception = assertThrows(Exception.class,
+            ()->{clientService.checkValidInput(client);} );
+        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
+       //clientService.checkValidInput(client);
     }
     
-    @Test(expected = Exception.class) 
-    public void testCheckInputInvalidDoBFormat() throws Exception {
+    @Test
+    public void testCheckInputInvalidDoBFormat() {
         //initialize invalid dob - incorrect format
        Client client = new Client();
+       client.setClientID("1");
        client.setEmail("sd2818@columbia.edu");
        client.setFirstName("Sarah");
        client.setLastName("Delgado");
@@ -226,13 +304,17 @@ public class ClientTest {
        client.setDateOfBirth("10-25-2010");
        client.setZipcode("11101");
 
-       clientService.checkValidInput(client);
+       Throwable exception = assertThrows(Exception.class,
+            ()->{clientService.checkValidInput(client);} );
+        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
+       //clientService.checkValidInput(client);
     }
 
-    @Test(expected = Exception.class) 
-    public void testCheckInvalidDoBMonth() throws Exception {
+    @Test
+    public void testCheckInvalidDoBMonth() {
         //initialize invalid dob - month 13
        Client client = new Client();
+       client.setClientID("1");
        client.setEmail("sd2818@columbia.edu");
        client.setFirstName("Sarah");
        client.setLastName("Delgado");
@@ -240,13 +322,16 @@ public class ClientTest {
        client.setDateOfBirth("13/25/2010");
        client.setZipcode("11101");
 
-       clientService.checkValidInput(client);
+       Throwable exception = assertThrows(Exception.class,
+            ()->{clientService.checkValidInput(client);} );
+        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
     }
 
-    @Test(expected = Exception.class) 
-    public void testCheckInputInvalidDoBDay() throws Exception {
+    @Test
+    public void testCheckInputInvalidDoBDay() {
         //initialize invalid dob - day 33
        Client client = new Client();
+       client.setClientID("1");
        client.setEmail("sd2818@columbia.edu");
        client.setFirstName("Sarah");
        client.setLastName("Delgado");
@@ -254,20 +339,25 @@ public class ClientTest {
        client.setDateOfBirth("10/33/2010");
        client.setZipcode("11101");
 
-       clientService.checkValidInput(client);
+       Throwable exception = assertThrows(Exception.class,
+            ()->{clientService.checkValidInput(client);} );
+        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
     }
 
-    @Test(expected = Exception.class)
-    public void testCheckInputInvalidZipcode() throws Exception {
+    @Test
+    public void testCheckInputInvalidZipcode() {
         //initialize invalid dob - day 33
         Client client = new Client();
+        client.setClientID("1");
         client.setEmail("sd2818@columbia.edu");
         client.setFirstName("Sarah");
         client.setLastName("Delgado");
         client.setGender("female");
         client.setDateOfBirth("12/33/2002");
-        client.setZipcode("11000000000");
+        client.setZipcode("11001");
  
-        clientService.checkValidInput(client);
+        Throwable exception = assertThrows(Exception.class,
+            ()->{clientService.checkValidInput(client);} );
+        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
     }
 }
