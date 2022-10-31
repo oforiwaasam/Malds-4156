@@ -47,10 +47,10 @@ public class ShoppingListService {
     }
 
     public void deleteShoppingListByID(String shoppingListID) throws ResourceNotFoundException{
-        if(shoppingListRepository.retriveList(shoppingListID).size() == 0){
+        if(shoppingListRepository.existsByID(shoppingListID)){
             shoppingListRepository.deleteShoppingListByID(shoppingListID);
         }else{
-           throw new ResourceNotFoundException("This shoppingList ID already exists");
+           throw new ResourceNotFoundException("This shoppingList ID doesn't exist");
         }
     }
 }
