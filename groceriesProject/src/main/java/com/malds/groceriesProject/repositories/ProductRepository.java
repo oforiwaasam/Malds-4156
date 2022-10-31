@@ -14,9 +14,29 @@ public class ProductRepository {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
-    public Product findProductById(String productId) {
-        return dynamoDBMapper.load(Product.class, productId);
+    public boolean existsByID(String productId) {
+        Product product = dynamoDBMapper.load(Product.class, productId);
+        if(product == null) {
+            return false;
+        }
+        return true;
+    }
 
+    public boolean existsByName(String productName) {
+        Product product = dynamoDBMapper.load(Product.class, productName);
+        if(product == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public List<Product> findProductById(String productId) {
+        return List.of(dynamoDBMapper.load(Product.class, productId));
+    }
+
+    //Find product by name
+    public List<Product> findProductByName(String productName) {
+        return List.of(dynamoDBMapper.load(Product.class, productName));
     }
 
     public List<Product> findAllProducts(){
@@ -28,6 +48,11 @@ public class ProductRepository {
         dynamoDBMapper.save(newProduct);
         return newProduct;
         // maybe add a print statement?
+    }
+
+    public List<Product> updateProduct(Product product) {
+        dynamoDBMapper.save(product);
+        return List.of(product);
     }
 
     public void deleteProductByID(String productId) {
