@@ -62,4 +62,19 @@ public class ShoppingListService {
             throw new ResourceNotFoundException("This shoppingList ID doesn't exist");
         }
     }
+
+    public void checkValidInput(ShoppingList shoppingList) throws Exception{
+        if (shoppingList.getShoppingListID() == null || shoppingList.getClientID() == null
+            || shoppingList.getProductIDToQuantity() == null) {
+            throw new Exception("Value cannot be null");
+        }
+
+        for (Map.Entry<String, String> entry : shoppingList.getProductIDToQuantity().entrySet()) {
+            String quantity = entry.getValue();
+            if (!(quantity.matches("[0-9]+"))){
+                throw new Exception("The quantity value within the productIDToQuantity is invalid. Make sure it only contains numbers");
+            }
+        }
+
+    }
 }
