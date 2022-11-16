@@ -20,7 +20,7 @@ public class Vendor {
     private String companyName;
 
     private String industry;
-    
+
     private String zipcode;
 
     public Vendor() {
@@ -30,18 +30,12 @@ public class Vendor {
         this.industry = null;
         this.zipcode = null;
     }
-    
-   
+
+
     @Override
     public String toString() {
-        return "\nVendor { " +
-                "\n\t vendorID=" + vendorID +
-                ",\n\t email=" + email +
-                ",\n\t companyName='" + companyName + '\'' +
-                ",\n\t industry='" + industry + '\'' +
-                '\'' +
-                "\n\t zipcode='" + zipcode + 
-                '\'' +
-                '}';
+        return "\nVendor { " + "\n\t vendorID=" + vendorID + ",\n\t email=" + email
+                + ",\n\t companyName='" + companyName + '\'' + ",\n\t industry='" + industry + '\''
+                + '\'' + "\n\t zipcode='" + zipcode + '\'' + '}';
     }
 }

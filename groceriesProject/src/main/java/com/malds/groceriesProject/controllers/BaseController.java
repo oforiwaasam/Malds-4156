@@ -7,10 +7,10 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
 @RestController
 public class BaseController {
-    
 
-    @ExceptionHandler({ ResourceNotFoundException.class, Exception.class})
-    public String handleException(Exception ex){
-        return ex.getMessage();    
+
+    @ExceptionHandler({ResourceNotFoundException.class, Exception.class})
+    public String handleException(Exception ex) {
+        return ex.getMessage();
     }
 }

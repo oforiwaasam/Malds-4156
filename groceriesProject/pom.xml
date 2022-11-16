@@ -165,6 +165,7 @@
 					</processTypes>-->
 				</configuration>
 			</plugin>
+			<!-- Disable this if you want to build w/o violation -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -208,6 +209,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>3.2.0</version>
+				<configuration>
+					<configLocation>google_checks.xml</configLocation>
+				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
