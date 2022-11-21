@@ -17,9 +17,8 @@ import com.malds.groceriesProject.repositories.ClientRepository;
 @Service
 public class ClientService {
     /**
-     * ClientService.
-     * Carries out the operations and interacts with the persistence layer,
-     * client Repository, to create, read, update, and delete from the database.
+     * ClientService. Carries out the operations and interacts with the persistence layer, client
+     * Repository, to create, read, update, and delete from the database.
      */
 
     @Autowired
@@ -43,6 +42,7 @@ public class ClientService {
 
     /**
      * ClientService Constructor.
+     * 
      * @param clientRepository
      */
     public ClientService(final ClientRepository clientRepository) {
@@ -50,29 +50,29 @@ public class ClientService {
     }
 
     /**
-     * Saves Client into Client table and returns saved client in a list.
-     * Throws Exception if clientID already exists.
+     * Saves Client into Client table and returns saved client in a list. Throws Exception if
+     * clientID already exists.
+     * 
      * @param client
      * @return List containing the saved client.
      * @throws Exception
      */
     public List<Client> saveClient(final Client client) throws Exception {
         if (clientRepo.existsByID(client.getClientID())) {
-            throw new Exception("client ID already exists"
-            + " - must use unique clientID");
+            throw new Exception("client ID already exists" + " - must use unique clientID");
         }
         return clientRepo.saveClient(client);
     }
 
     /**
-     * Given clientID, searches for client with clientID and return client.
-     * Throws ResourceNotFoundException if client with clientID does not exist.
+     * Given clientID, searches for client with clientID and return client. Throws
+     * ResourceNotFoundException if client with clientID does not exist.
+     * 
      * @param clientID
      * @return List containing Client with specified clientID
      * @throws ResourceNotFoundException
      */
-    public List<Client> getClientByID(final String clientID)
-    throws ResourceNotFoundException {
+    public List<Client> getClientByID(final String clientID) throws ResourceNotFoundException {
         if (clientRepo.existsByID(clientID)) {
             return clientRepo.getClientByID(clientID);
         } else {
@@ -81,13 +81,13 @@ public class ClientService {
     }
 
     /**
-     * Deletes client by clientID provided.
-     * Throws ResourceNotFoundException if client with clientID does not exist.
+     * Deletes client by clientID provided. Throws ResourceNotFoundException if client with clientID
+     * does not exist.
+     * 
      * @param clientID
      * @throws ResourceNotFoundException
      */
-    public void deleteClientByID(final String clientID)
-    throws ResourceNotFoundException {
+    public void deleteClientByID(final String clientID) throws ResourceNotFoundException {
         if (clientRepo.existsByID(clientID)) {
             clientRepo.deleteClientByID(clientID);
         } else {
@@ -96,14 +96,14 @@ public class ClientService {
     }
 
     /**
-     * Updates existing client info and returns updated client in a list.
-     * Throws ResourceNotFoundException if client does not exist.
+     * Updates existing client info and returns updated client in a list. Throws
+     * ResourceNotFoundException if client does not exist.
+     * 
      * @param client
      * @return List containing the updated Client
      * @throws ResourceNotFoundException
      */
-    public List<Client> updateClient(final Client client)
-    throws ResourceNotFoundException {
+    public List<Client> updateClient(final Client client) throws ResourceNotFoundException {
         if (clientRepo.existsByID(client.getClientID())) {
             return clientRepo.updateClient(client);
         } else {
@@ -113,6 +113,7 @@ public class ClientService {
 
     /**
      * Finds and returns all existing clients in dynamoDB Client table.
+     * 
      * @return List of all clients that exists
      */
     public List<Client> findAll() {
@@ -120,8 +121,8 @@ public class ClientService {
     }
 
     /**
-     * Checks whether email is of the valid format and
-     * returns true if valid, otherwise false.
+     * Checks whether email is of the valid format and returns true if valid, otherwise false.
+     * 
      * @param email
      * @return True if email is valid, False otherwise
      */
@@ -130,57 +131,47 @@ public class ClientService {
     }
 
     /**
-     * Checks whether inputted values by users are valid,
-     * is not blank, and is of accepted lengths.
+     * Checks whether inputted values by users are valid, is not blank, and is of accepted lengths.
      * Throws Exception if inputs are invalid.
+     * 
      * @param client
      * @throws Exception
      */
     public void checkValidInput(final Client client) throws Exception {
         if (client.getClientID() == null || client.getEmail() == null
-        || client.getFirstName() == null || client.getLastName() == null
-        || client.getGender() == null || client.getZipcode() == null) {
+                || client.getFirstName() == null || client.getLastName() == null
+                || client.getGender() == null || client.getZipcode() == null) {
             throw new Exception("Value cannot be null");
         }
         if (!isValidEmail(client.getEmail())) {
             throw new Exception("Email is invalid");
-        } else if (client.getEmail().isBlank()
-        || client.getEmail().length() > EMAIL_UPPER_LENGTH) {
-            throw new Exception("Email must not be blank"
-            + " or longer than 320 chars");
+        } else if (client.getEmail().isBlank() || client.getEmail().length() > EMAIL_UPPER_LENGTH) {
+            throw new Exception("Email must not be blank" + " or longer than 320 chars");
         } else if (client.getFirstName().isBlank()
-        || client.getFirstName().length() > NAME_UPPER_LENGTH) {
-            throw new Exception("First Name must not be blank"
-            + " or longer than 128 chars");
+                || client.getFirstName().length() > NAME_UPPER_LENGTH) {
+            throw new Exception("First Name must not be blank" + " or longer than 128 chars");
         } else if (client.getLastName().isBlank()
-        || client.getLastName().length() > NAME_UPPER_LENGTH) {
-            throw new Exception("Last Name must not be blank"
-            + " or longer than 128 chars");
+                || client.getLastName().length() > NAME_UPPER_LENGTH) {
+            throw new Exception("Last Name must not be blank" + " or longer than 128 chars");
         } else if (client.getGender().isBlank()
-        || client.getGender().length() > GENDER_UPPER_LENGTH) {
-            throw new Exception("Gender must not be blank"
-            + " or longer than 20 chars");
+                || client.getGender().length() > GENDER_UPPER_LENGTH) {
+            throw new Exception("Gender must not be blank" + " or longer than 20 chars");
         } else if (client.getZipcode().isBlank()
-        || client.getZipcode().length() > ZIPCODE_UPPER_LENGTH) {
-            throw new Exception("Zipcode must not be blank"
-            + " or longer than 10 chars");
+                || client.getZipcode().length() > ZIPCODE_UPPER_LENGTH) {
+            throw new Exception("Zipcode must not be blank" + " or longer than 10 chars");
         } else {
             Date today = new Date();
             try {
-                Date dob = new SimpleDateFormat("MM/dd/yyyy")
-                                    .parse(client.getDateOfBirth());
+                Date dob = new SimpleDateFormat("MM/dd/yyyy").parse(client.getDateOfBirth());
                 if (dob.compareTo(today) >= 0) {
-                    throw new Exception("Date of Birth cannot be greater than"
-                    + " or equal to today's date");
+                    throw new Exception(
+                            "Date of Birth cannot be greater than" + " or equal to today's date");
                 }
-                if (!GenericValidator.isDate(client.getDateOfBirth(),
-                "MM/dd/yyyy", false)) {
-                    throw new Exception("Invalid date of birth format:"
-                    + " 'MM/dd/yyyy'");
+                if (!GenericValidator.isDate(client.getDateOfBirth(), "MM/dd/yyyy", false)) {
+                    throw new Exception("Invalid date of birth format:" + " 'MM/dd/yyyy'");
                 }
             } catch (ParseException e) {
-                throw new Exception("Invalid date of birth format:"
-                + " 'MM/dd/yyyy'");
+                throw new Exception("Invalid date of birth format:" + " 'MM/dd/yyyy'");
             }
         }
     }

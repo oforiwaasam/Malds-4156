@@ -13,16 +13,15 @@ import com.malds.groceriesProject.models.Client;
 @Repository
 public class ClientRepository {
     /**
-     * Client Repository. Contains functions allowing for
-     * creating, reading, updating, and deleting from
-     * the Client Table in DynamoDB
+     * Client Repository. Contains functions allowing for creating, reading, updating, and deleting
+     * from the Client Table in DynamoDB
      */
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
     /**
-     * Saves client to Client table in DynamoDB
-     * and returns the saved Client in a List.
+     * Saves client to Client table in DynamoDB and returns the saved Client in a List.
+     * 
      * @param client
      * @return A list containing the Client that was saved
      */
@@ -33,6 +32,7 @@ public class ClientRepository {
 
     /**
      * Searches for Client with clientID and returns the Client object.
+     * 
      * @param clientID
      * @return A list containing the Client with specified clientID
      */
@@ -42,9 +42,9 @@ public class ClientRepository {
     }
 
     /**
-     * Searches for Client with clientID
-     * and returns True if Client exists in Client table,
+     * Searches for Client with clientID and returns True if Client exists in Client table,
      * otherwise False.
+     * 
      * @param clientID
      * @return True if client with clientID exists, otherwise False
      */
@@ -58,6 +58,7 @@ public class ClientRepository {
 
     /**
      * Deletes client with clientID from the Client table in dynamoDB.
+     * 
      * @param clientID
      */
     public void deleteClientByID(final String clientID) {
@@ -65,8 +66,8 @@ public class ClientRepository {
     }
 
     /**
-     * Updates client from Client table in dynamoDB
-     * and returns the updated Client in a list.
+     * Updates client from Client table in dynamoDB and returns the updated Client in a list.
+     * 
      * @param client
      * @return A list containing the client that was updated
      */
@@ -76,8 +77,8 @@ public class ClientRepository {
     }
 
     /**
-     * Returns a list containing all clients
-     * from Client table in DynamoDB.
+     * Returns a list containing all clients from Client table in DynamoDB.
+     * 
      * @return A list containing all clients
      */
     public List<Client> findAll() {
