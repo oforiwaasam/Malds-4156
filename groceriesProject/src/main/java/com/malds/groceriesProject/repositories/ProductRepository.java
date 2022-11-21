@@ -15,11 +15,22 @@ import java.util.Map;
 
 @Repository
 public class ProductRepository {
+    /**
+     * Product Repository. Contains functions allowing for creating,
+     * reading, updating, and deleting from the Product Table in DynamoDB
+     */
 
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
-    public boolean existsByID(String productId) {
+    /**
+     * Searches for Product with productId and returns True if
+     * Product exists in Product table, otherwise False.
+     *
+     * @param productId
+     * @return True if product with productId exists, otherwise False
+     */
+    public boolean existsByID(final String productId) {
         Product product = dynamoDBMapper.load(Product.class, productId);
         if (product == null) {
             return false;
@@ -27,7 +38,14 @@ public class ProductRepository {
         return true;
     }
 
-    public boolean existsByName(String productName) {
+    /**
+     * Searches for Product with productName and returns True if
+     * Product exists in Product table, otherwise False.
+     *
+     * @param productName
+     * @return True if product with productName exists, otherwise False
+     */
+    public boolean existsByName(final String productName) {
         Product product = dynamoDBMapper.load(Product.class, productName);
         if (product == null) {
             return false;
@@ -35,41 +53,78 @@ public class ProductRepository {
         return true;
     }
 
-    public List<Product> findProductById(String productId) {
+    /**
+     * Searches for Product with productId and returns the Product
+     * object in a list.
+     *
+     * @param productId
+     * @return A list containing the Product with specified productId
+     */
+    public List<Product> findProductById(final String productId) {
         return List.of(dynamoDBMapper.load(Product.class, productId));
     }
 
-    // Find products by name
-    public List<Product> findProductByName(String productName) {
+    /**
+     * Searches for Product with productName and returns the Product
+     * object in a list.
+     *
+     * @param productName
+     * @return A list containing the Product with specified productName
+     */
+    public List<Product> findProductByName(final String productName) {
         Map<String, AttributeValue> productNames = new HashMap<>();
-        productNames.put(":productName", new AttributeValue().withS(productName));
+        productNames.put(":productName", new AttributeValue()
+                .withS(productName));
         DynamoDBScanExpression scanExpression =
-                new DynamoDBScanExpression().withFilterExpression("productName = :productName")
+                new DynamoDBScanExpression()
+                        .withFilterExpression("productName = :productName")
                         .withExpressionAttributeValues(productNames);
         return dynamoDBMapper.scan(Product.class, scanExpression);
     }
 
+    /**
+     * Returns a list containing all products from Product table in DynamoDB.
+     *
+     * @return A list containing all products
+     */
     public List<Product> findAllProducts() {
-        DynamoDBQueryExpression<Product> query = new DynamoDBQueryExpression<>();
+        DynamoDBQueryExpression<Product> query =
+                new DynamoDBQueryExpression<>();
         return dynamoDBMapper.query(Product.class, query);
     }
 
-    public Product addProduct(Product newProduct) {
+    /**
+     * Adds product to Product table in DynamoDB and returns the added Product.
+     *
+     * @param newProduct
+     * @return The Product that was added
+     */
+    public Product addProduct(final Product newProduct) {
         dynamoDBMapper.save(newProduct);
         return newProduct;
-        // maybe add a print statement?
     }
 
-    public List<Product> updateProduct(Product product) {
+    /**
+     * Updates product from Product table in dynamoDB and returns the
+     * updated Product in a list.
+     *
+     * @param product
+     * @return A list containing the product that was updated
+     */
+    public List<Product> updateProduct(final Product product) {
         dynamoDBMapper.save(product);
         return List.of(product);
     }
 
-    public void deleteProductByID(String productId) {
+    /**
+     * Deletes product with productId from the Product table in dynamoDB.
+     *
+     * @param productId
+     */
+    public void deleteProductByID(final String productId) {
         Product product = dynamoDBMapper.load(Product.class, productId);
         dynamoDBMapper.delete(product);
     }
 
-    public void getListOfProductsByName(String productName) {}
 }
 
