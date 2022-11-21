@@ -19,29 +19,51 @@ public class ShoppingListService {
         this.shoppingListRepository = shoppingListRepository;
     }
 
+
+    /**
+     * @param shoppingList
+     * @return List<ShoppingList>
+     * @throws ResourceNotFoundException
+     */
     public List<ShoppingList> updateShoppingList(ShoppingList shoppingList)
             throws ResourceNotFoundException {
-        if (shoppingListRepository.getShoppingListByID(shoppingList.getShoppingListID()) != null) {
+        if (shoppingListRepository.getShoppingListByID(
+                shoppingList.getShoppingListID()) != null) {
             return shoppingListRepository.updateShoppingList(shoppingList);
         } else {
             throw new ResourceNotFoundException("Shopping List ID not found");
         }
     }
 
+
+    /**
+     * @param shoppingListID
+     * @return List<ShoppingList>
+     * @throws ResourceNotFoundException
+     */
     public List<ShoppingList> getShoppingListByID(String shoppingListID)
             throws ResourceNotFoundException {
         ShoppingList shop;
         if (shoppingListRepository.retriveList(shoppingListID).size() > 0) {
             shop = shoppingListRepository.getShoppingListByID(shoppingListID);
         } else {
-            throw new ResourceNotFoundException("This shoppingList ID doesn't exists");
+            throw new ResourceNotFoundException(
+                    "This shoppingList ID doesn't exists");
         }
         return List.of(shop);
     }
 
-    public List<ShoppingList> createShoppingList(ShoppingList shoppingList) throws Exception {
+
+    /**
+     * @param shoppingList
+     * @return List<ShoppingList>
+     * @throws Exception
+     */
+    public List<ShoppingList> createShoppingList(ShoppingList shoppingList)
+            throws Exception {
         ShoppingList shop;
-        if (shoppingListRepository.retriveList(shoppingList.getShoppingListID()).size() == 0) {
+        if (shoppingListRepository.retriveList(shoppingList.getShoppingListID())
+                .size() == 0) {
             shop = shoppingListRepository.createShoppingList(shoppingList);
         } else {
             throw new Exception("This shoppingList ID already exists");
@@ -49,20 +71,35 @@ public class ShoppingListService {
         return List.of(shop);
     }
 
-    public void deleteShoppingListByID(String shoppingListID) throws ResourceNotFoundException {
+
+    /**
+     * @param shoppingListID
+     * @throws ResourceNotFoundException
+     */
+    public void deleteShoppingListByID(String shoppingListID)
+            throws ResourceNotFoundException {
         if (shoppingListRepository.existsByID(shoppingListID)) {
             shoppingListRepository.deleteShoppingListByID(shoppingListID);
         } else {
-            throw new ResourceNotFoundException("This shoppingList ID doesn't exist");
+            throw new ResourceNotFoundException(
+                    "This shoppingList ID doesn't exist");
         }
     }
 
-    public Map<String, String> getProductsToQuantityByID(final String shoppingListID)
-            throws ResourceNotFoundException {
+
+    /**
+     * @param shoppingListID
+     * @return Map<String, String>
+     * @throws ResourceNotFoundException
+     */
+    public Map<String, String> getProductsToQuantityByID(
+            final String shoppingListID) throws ResourceNotFoundException {
         if (shoppingListRepository.existsByID(shoppingListID)) {
-            return shoppingListRepository.getProductsToQuantityByID(shoppingListID);
+            return shoppingListRepository
+                    .getProductsToQuantityByID(shoppingListID);
         } else {
-            throw new ResourceNotFoundException("This shoppingList ID doesn't exist");
+            throw new ResourceNotFoundException(
+                    "This shoppingList ID doesn't exist");
         }
     }
 }

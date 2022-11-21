@@ -20,25 +20,45 @@ public class ShoppingListController extends BaseController {
     @Autowired
     private ShoppingListService shoppingListService;
 
+
+    /**
+     * @param getShoppingList(
+     * @return List<ShoppingList>
+     * @throws ResourceNotFoundException
+     */
     @GetMapping("/shopping_list/{id}")
-    public List<ShoppingList> getShoppingList(@PathVariable("id") String shoppingListID)
+    public List<ShoppingList> getShoppingList(
+            @PathVariable("id") String shoppingListID)
             throws ResourceNotFoundException {
         return shoppingListService.getShoppingListByID(shoppingListID);
     }
 
+
+    /**
+     * @param getProductsToQuantityByID(
+     * @return Map<String, String>
+     * @throws ResourceNotFoundException
+     */
     @GetMapping("/shopping_list/products/{id}")
-    public Map<String, String> getProductsToQuantityByID(@PathVariable("id") String shoppingListID)
+    public Map<String, String> getProductsToQuantityByID(
+            @PathVariable("id") String shoppingListID)
             throws ResourceNotFoundException {
         try {
-            return shoppingListService.getProductsToQuantityByID(shoppingListID);
+            return shoppingListService
+                    .getProductsToQuantityByID(shoppingListID);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("ERROR: check input values");
         }
     }
 
+
+    /**
+     * @param createShoppingList(
+     * @return List<ShoppingList>
+     */
     @PostMapping("/shopping_list")
-    public List<ShoppingList> createShoppingList(@RequestBody ShoppingList shoppingList)
-            throws Exception {
+    public List<ShoppingList> createShoppingList(
+            @RequestBody ShoppingList shoppingList) throws Exception {
         try {
             return shoppingListService.createShoppingList(shoppingList);
         } catch (Exception e) {
@@ -46,25 +66,37 @@ public class ShoppingListController extends BaseController {
         }
     }
 
+
+    /**
+     * @param updateShoppingList(
+     * @return List<ShoppingList>
+     */
     @PutMapping("/shopping_list")
-    public List<ShoppingList> updateShoppingList(@RequestBody ShoppingList shoppingList)
-            throws Exception {
+    public List<ShoppingList> updateShoppingList(
+            @RequestBody ShoppingList shoppingList) throws Exception {
         try {
             if (shoppingList.getShoppingListID() == null) {
                 throw new Exception("Must provide ShoppingListID");
             }
             return shoppingListService.updateShoppingList(shoppingList);
         } catch (Exception e) {
-            throw new Exception("ERROR: check input values; be sure to include ShoppingListID");
+            throw new Exception(
+                    "ERROR: check input values; be sure to include ShoppingListID");
         }
     }
 
+
+    /**
+     * @param deleteShoppingListByID(
+     */
     @DeleteMapping("/shopping_list/{id}")
-    public void deleteShoppingListByID(@PathVariable("id") String shoppingListID) {
+    public void deleteShoppingListByID(
+            @PathVariable("id") String shoppingListID) {
         try {
             shoppingListService.deleteShoppingListByID(shoppingListID);
         } catch (ResourceNotFoundException e) {
-            throw new ResourceNotFoundException("ERROR: check shoppingListID value");
+            throw new ResourceNotFoundException(
+                    "ERROR: check shoppingListID value");
         }
     }
 }

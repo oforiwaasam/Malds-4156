@@ -53,13 +53,20 @@ public class ClientTest {
         Mockito.when(clientRepo.existsByID("1")).thenReturn(true);
         Mockito.when(clientRepo.getClientByID("1")).thenReturn(List.of(client));
 
-        assertEquals(clientService.getClientByID("1").get(0).getClientID(), EXPECTED_CLIENT_ID);
-        assertEquals(clientService.getClientByID("1").get(0).getEmail(), EXPECTED_EMAIL);
-        assertEquals(clientService.getClientByID("1").get(0).getFirstName(), EXPECTED_FIRST_NAME);
-        assertEquals(clientService.getClientByID("1").get(0).getLastName(), EXPECTED_LAST_NAME);
-        assertEquals(clientService.getClientByID("1").get(0).getGender(), EXPECTED_GENDER);
-        assertEquals(clientService.getClientByID("1").get(0).getDateOfBirth(), EXPECTED_DOB);
-        assertEquals(clientService.getClientByID("1").get(0).getZipcode(), EXPECTED_ZIPCODE);
+        assertEquals(clientService.getClientByID("1").get(0).getClientID(),
+                EXPECTED_CLIENT_ID);
+        assertEquals(clientService.getClientByID("1").get(0).getEmail(),
+                EXPECTED_EMAIL);
+        assertEquals(clientService.getClientByID("1").get(0).getFirstName(),
+                EXPECTED_FIRST_NAME);
+        assertEquals(clientService.getClientByID("1").get(0).getLastName(),
+                EXPECTED_LAST_NAME);
+        assertEquals(clientService.getClientByID("1").get(0).getGender(),
+                EXPECTED_GENDER);
+        assertEquals(clientService.getClientByID("1").get(0).getDateOfBirth(),
+                EXPECTED_DOB);
+        assertEquals(clientService.getClientByID("1").get(0).getZipcode(),
+                EXPECTED_ZIPCODE);
     }
 
     @Test
@@ -85,13 +92,20 @@ public class ClientTest {
 
         Mockito.when(clientRepo.saveClient(client)).thenReturn(List.of(client));
 
-        assertEquals(clientService.saveClient(client).get(0).getClientID(), EXPECTED_CLIENT_ID);
-        assertEquals(clientService.saveClient(client).get(0).getEmail(), EXPECTED_EMAIL);
-        assertEquals(clientService.saveClient(client).get(0).getFirstName(), EXPECTED_FIRST_NAME);
-        assertEquals(clientService.saveClient(client).get(0).getLastName(), EXPECTED_LAST_NAME);
-        assertEquals(clientService.saveClient(client).get(0).getGender(), EXPECTED_GENDER);
-        assertEquals(clientService.saveClient(client).get(0).getDateOfBirth(), EXPECTED_DOB);
-        assertEquals(clientService.saveClient(client).get(0).getZipcode(), EXPECTED_ZIPCODE);
+        assertEquals(clientService.saveClient(client).get(0).getClientID(),
+                EXPECTED_CLIENT_ID);
+        assertEquals(clientService.saveClient(client).get(0).getEmail(),
+                EXPECTED_EMAIL);
+        assertEquals(clientService.saveClient(client).get(0).getFirstName(),
+                EXPECTED_FIRST_NAME);
+        assertEquals(clientService.saveClient(client).get(0).getLastName(),
+                EXPECTED_LAST_NAME);
+        assertEquals(clientService.saveClient(client).get(0).getGender(),
+                EXPECTED_GENDER);
+        assertEquals(clientService.saveClient(client).get(0).getDateOfBirth(),
+                EXPECTED_DOB);
+        assertEquals(clientService.saveClient(client).get(0).getZipcode(),
+                EXPECTED_ZIPCODE);
     }
 
     @Test
@@ -116,19 +130,28 @@ public class ClientTest {
         updatedClient.setZipcode("10260");
 
         Mockito.when(clientRepo.existsByID("1")).thenReturn(true);
-        Mockito.when(clientRepo.updateClient(updatedClient)).thenReturn(List.of(updatedClient));
+        Mockito.when(clientRepo.updateClient(updatedClient))
+                .thenReturn(List.of(updatedClient));
 
-        assertEquals(clientService.updateClient(updatedClient).get(0).getClientID(),
+        assertEquals(
+                clientService.updateClient(updatedClient).get(0).getClientID(),
                 EXPECTED_CLIENT_ID);
-        assertEquals(clientService.updateClient(updatedClient).get(0).getEmail(), EXPECTED_EMAIL);
-        assertEquals(clientService.updateClient(updatedClient).get(0).getFirstName(),
+        assertEquals(
+                clientService.updateClient(updatedClient).get(0).getEmail(),
+                EXPECTED_EMAIL);
+        assertEquals(
+                clientService.updateClient(updatedClient).get(0).getFirstName(),
                 EXPECTED_FIRST_NAME);
-        assertEquals(clientService.updateClient(updatedClient).get(0).getLastName(),
+        assertEquals(
+                clientService.updateClient(updatedClient).get(0).getLastName(),
                 EXPECTED_LAST_NAME);
-        assertEquals(clientService.updateClient(updatedClient).get(0).getGender(), EXPECTED_GENDER);
-        assertEquals(clientService.updateClient(updatedClient).get(0).getDateOfBirth(),
-                EXPECTED_DOB);
-        assertEquals(clientService.updateClient(updatedClient).get(0).getZipcode(),
+        assertEquals(
+                clientService.updateClient(updatedClient).get(0).getGender(),
+                EXPECTED_GENDER);
+        assertEquals(clientService.updateClient(updatedClient).get(0)
+                .getDateOfBirth(), EXPECTED_DOB);
+        assertEquals(
+                clientService.updateClient(updatedClient).get(0).getZipcode(),
                 EXPECTED_ZIPCODE);
     }
 
@@ -162,9 +185,10 @@ public class ClientTest {
         updatedClient.setZipcode("11023");
 
         Mockito.when(clientRepo.existsByID("32")).thenReturn(false);
-        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> {
-            clientService.updateClient(updatedClient);
-        });
+        Throwable exception =
+                assertThrows(ResourceNotFoundException.class, () -> {
+                    clientService.updateClient(updatedClient);
+                });
         // clientService.updateClient(updatedClient);
         assertEquals(
                 "Client ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)",
@@ -175,9 +199,10 @@ public class ClientTest {
     public void testNoClientIDDelete() {
 
         Mockito.when(clientRepo.existsByID("32")).thenReturn(false);
-        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> {
-            clientService.deleteClientByID("32");
-        });
+        Throwable exception =
+                assertThrows(ResourceNotFoundException.class, () -> {
+                    clientService.deleteClientByID("32");
+                });
         assertEquals(
                 "Client ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)",
                 exception.getMessage());
@@ -289,7 +314,8 @@ public class ClientTest {
         Throwable exception = assertThrows(Exception.class, () -> {
             clientService.checkValidInput(client);
         });
-        assertEquals("Date of Birth cannot be greater than or equal to today's date",
+        assertEquals(
+                "Date of Birth cannot be greater than or equal to today's date",
                 exception.getMessage());
         // clientService.checkValidInput(client);
     }
@@ -309,7 +335,8 @@ public class ClientTest {
         Throwable exception = assertThrows(Exception.class, () -> {
             clientService.checkValidInput(client);
         });
-        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
+        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'",
+                exception.getMessage());
         // clientService.checkValidInput(client);
     }
 
@@ -328,7 +355,8 @@ public class ClientTest {
         Throwable exception = assertThrows(Exception.class, () -> {
             clientService.checkValidInput(client);
         });
-        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
+        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'",
+                exception.getMessage());
         // clientService.checkValidInput(client);
     }
 
@@ -347,7 +375,8 @@ public class ClientTest {
         Throwable exception = assertThrows(Exception.class, () -> {
             clientService.checkValidInput(client);
         });
-        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
+        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'",
+                exception.getMessage());
     }
 
     @Test
@@ -365,7 +394,8 @@ public class ClientTest {
         Throwable exception = assertThrows(Exception.class, () -> {
             clientService.checkValidInput(client);
         });
-        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
+        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'",
+                exception.getMessage());
     }
 
     @Test
@@ -383,6 +413,7 @@ public class ClientTest {
         Throwable exception = assertThrows(Exception.class, () -> {
             clientService.checkValidInput(client);
         });
-        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
+        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'",
+                exception.getMessage());
     }
 }
