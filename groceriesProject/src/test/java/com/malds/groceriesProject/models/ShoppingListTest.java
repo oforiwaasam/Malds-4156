@@ -188,4 +188,60 @@ public class ShoppingListTest {
                 exception.getMessage());
     }
 
+    @Test
+    public void testInvalidShoppingListID() throws Exception {
+        Map<String,String> productIDToQuantity = new HashMap<String,String>();
+        productIDToQuantity.put("445","1");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setClientID("123");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+
+        Throwable exception = assertThrows(Exception.class,
+                ()->{shoppingListService.checkValidInput(shoppingList);} );
+        assertEquals("Value cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void testInvalidClientID() throws Exception{
+        Map<String,String> productIDToQuantity = new HashMap<String,String>();
+        productIDToQuantity.put("445","1");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("1");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        Throwable exception = assertThrows(Exception.class,
+                ()->{shoppingListService.checkValidInput(shoppingList);} );
+        assertEquals("Value cannot be null", exception.getMessage());
+    }
+    @Test
+    public void testInvalidProductIDToQuantity() throws Exception{
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("1");
+        shoppingList.setClientID("123");
+
+        Throwable exception = assertThrows(Exception.class,
+                ()->{shoppingListService.checkValidInput(shoppingList);} );
+        assertEquals("Value cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void testInvalidProductIDToQuantityType() throws Exception {
+        Map<String,String> productIDToQuantity = new HashMap<String,String>();
+        productIDToQuantity.put("445","abc");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("1");
+        shoppingList.setClientID("123");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+
+        Throwable exception = assertThrows(Exception.class,
+                ()->{shoppingListService.checkValidInput(shoppingList);} );
+        assertEquals("The quantity value within the productIDToQuantity is invalid. Make sure it only contains numbers", exception.getMessage());
+    }
 }
+
+
