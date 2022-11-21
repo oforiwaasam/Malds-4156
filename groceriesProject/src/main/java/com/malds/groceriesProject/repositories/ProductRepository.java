@@ -21,7 +21,7 @@ public class ProductRepository {
 
     public boolean existsByID(String productId) {
         Product product = dynamoDBMapper.load(Product.class, productId);
-        if(product == null) {
+        if (product == null) {
             return false;
         }
         return true;
@@ -29,7 +29,7 @@ public class ProductRepository {
 
     public boolean existsByName(String productName) {
         Product product = dynamoDBMapper.load(Product.class, productName);
-        if(product == null) {
+        if (product == null) {
             return false;
         }
         return true;
@@ -39,15 +39,17 @@ public class ProductRepository {
         return List.of(dynamoDBMapper.load(Product.class, productId));
     }
 
-    //Find products by name
+    // Find products by name
     public List<Product> findProductByName(String productName) {
         Map<String, AttributeValue> productNames = new HashMap<>();
         productNames.put(":productName", new AttributeValue().withS(productName));
-        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression().withFilterExpression("productName = :productName").withExpressionAttributeValues(productNames);
+        DynamoDBScanExpression scanExpression =
+                new DynamoDBScanExpression().withFilterExpression("productName = :productName")
+                        .withExpressionAttributeValues(productNames);
         return dynamoDBMapper.scan(Product.class, scanExpression);
     }
 
-    public List<Product> findAllProducts(){
+    public List<Product> findAllProducts() {
         DynamoDBQueryExpression<Product> query = new DynamoDBQueryExpression<>();
         return dynamoDBMapper.query(Product.class, query);
     }
@@ -68,6 +70,6 @@ public class ProductRepository {
         dynamoDBMapper.delete(product);
     }
 
-    public void getListOfProductsByName(String productName){}
+    public void getListOfProductsByName(String productName) {}
 }
 
