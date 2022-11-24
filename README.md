@@ -10,5 +10,5 @@ Team members: Lily Sam (los2119), Ammran Mohamed (ahm2169), Deji Oyerinde(oko210
 
 P.S: access & secret key cannot be published to public repo (so cannot access dynamoDB directly) 
 
-## Demo Testing (In Heroku)
+## Demo Testing (On Heroku)
 You can also test the API in Heroku using this link: https://groceries-project.herokuapp.com/swagger-ui/index.html
