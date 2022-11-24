@@ -23,11 +23,11 @@ public class ShoppingListService {
 
     /**
      * ShoppingListService Constructor.
-     * @param shoppingListRepository
+     * @param shoppingListRepo
      */
     public ShoppingListService(final ShoppingListRepository
-                                       shoppingListRepository) {
-        this.shoppingListRepository = shoppingListRepository;
+                                       shoppingListRepo) {
+        this.shoppingListRepository = shoppingListRepo;
     }
 
     /**
