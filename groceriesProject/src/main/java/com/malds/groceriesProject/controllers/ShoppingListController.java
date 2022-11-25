@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.ShoppingList;
 import com.malds.groceriesProject.services.ShoppingListService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin
 @RestController
@@ -60,6 +61,27 @@ public class ShoppingListController extends BaseController {
                     .getProductsToQuantityByID(shoppingListID);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("ERROR: check input values");
+        }
+    }
+
+    /**
+     * Searches for ShoppingList with clientID
+     * and returns the ShoppingList object.
+     * Throws ResourceNotFoundException if clientID
+     * does not match any shoppingList
+     * @param clientID
+     * @return the Shopping List with specified clientID
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/shopping_list/client/{id}")
+    public ShoppingList getShoppingListByClientID(
+            @PathVariable("id") final String clientID)
+            throws ResourceNotFoundException {
+        try {
+            return shoppingListService.getShoppingListByClientID(clientID);
+        } catch (ResourceNotFoundException e){
+            throw new ResourceNotFoundException("Shopping List does "
+                    + "not exist for clientID");
         }
     }
 

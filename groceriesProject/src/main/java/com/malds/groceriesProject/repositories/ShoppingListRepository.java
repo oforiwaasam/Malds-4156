@@ -3,6 +3,9 @@ package com.malds.groceriesProject.repositories;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -53,12 +56,15 @@ public class ShoppingListRepository {
      */
     public List<ShoppingList> retriveAllItems() {
         // dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB);
-
+        /*
         DynamoDBQueryExpression<ShoppingList> queryExpression =
                 new DynamoDBQueryExpression<ShoppingList>();
         List<ShoppingList> returnedList = dynamoDBMapper
                 .query(ShoppingList.class, queryExpression);
-        return returnedList;
+        return returnedList;*/
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        List<ShoppingList> scanResult = dynamoDBMapper.scan(ShoppingList.class, scanExpression);
+        return scanResult;
     }
 
     /**
@@ -79,8 +85,27 @@ public class ShoppingListRepository {
      * @return the Shopping List with specified shoppingListID
      */
     public ShoppingList getShoppingListByID(final String shoppingListID) {
+
         ShoppingList listed = dynamoDBMapper
                 .load(ShoppingList.class, shoppingListID);
+        return listed;
+    }
+
+    /**
+     * Searches for ShoppingList with clientID
+     * and returns the ShoppingList object.
+     * @param clientID
+     * @return the Shopping List with specified clientID
+     */
+    public ShoppingList getShoppingListByClientID(final String clientID) {
+        List<ShoppingList> shoppingLists = retriveAllItems();
+        ShoppingList listed = null;
+        for (ShoppingList shoppingList : shoppingLists) {
+            if (shoppingList.getClientID().equals(clientID)) {
+                listed = shoppingList;
+                break;
+            }
+        }
         return listed;
     }
 

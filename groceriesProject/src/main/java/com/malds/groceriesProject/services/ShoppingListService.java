@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.ShoppingList;
 import com.malds.groceriesProject.repositories.ShoppingListRepository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 public class ShoppingListService {
@@ -68,6 +69,27 @@ public class ShoppingListService {
                     "This shoppingList ID doesn't exists");
         }
         return List.of(shop);
+    }
+
+    /**
+     * Searches for ShoppingList with clientID
+     * and returns the ShoppingList object.
+     * Throws ResourceNotFoundException if clientID
+     * does not match any shoppingList
+     * @param clientID
+     * @return the Shopping List with specified clientID
+     * @throws ResourceNotFoundException
+     */
+    public ShoppingList getShoppingListByClientID(final String clientID)
+            throws ResourceNotFoundException {
+        ShoppingList shoppingList = shoppingListRepository
+                .getShoppingListByClientID(clientID);
+        if (shoppingList!= null){
+            return shoppingList;
+        } else {
+            throw new ResourceNotFoundException("Shopping List does "
+                    + "not exist for clientID");
+        }
     }
 
     /**
