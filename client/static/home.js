@@ -2,6 +2,31 @@ const searchBtn = document.getElementById('search-btn');
 const searchInput = document.getElementById('search-input');
 const searchResultsDiv = document.getElementById("search-results")
 
+const updateShoppingList = (shoppingList) => {
+    $.ajax({
+        type: 'PUT',
+        url: `http://localhost:8080/shopping_list`,
+        data: JSON.stringify(shoppingList),
+        dataType: "json",
+        contentType: 'application/json; charset=utf-8',
+        success: function(result){
+            console.log(result);
+        },
+        error: function(request, status, error){
+            console.log('Error');
+            console.log(request);
+            console.log(status);
+            console.log(error);
+        }
+    })
+}
+
+const getShoppingListByClientID = async (clientID) => {
+    const response = await fetch(`http://localhost:8080/shopping_list/client/${clientID}`);
+    const data = await response.json();
+    return data;
+}
+
 const get_search_results = async (query) => {
     const response = await fetch(`http://localhost:8080/products/get_product_by_name/${query}`);
     const data = await response.json();
@@ -21,6 +46,7 @@ const display_search_results = (products) => {
         const addBtn = document.createElement("btn");
 
         const product = products[i]
+        const productID = product['productID']
         const productName = product['productName']
         const price = `$${parseFloat(product['price']).toFixed(2).toString()}`
 
@@ -30,8 +56,20 @@ const display_search_results = (products) => {
         priceDiv.innerHTML = price;
         addBtn.classList.add("btn", "btn-dark");
         addBtn.innerHTML = "Add product"
-        addBtn.addEventListener("click",()=>{
-            console.log(product);
+        addBtn.addEventListener("click",async ()=>{
+            const shoppingList = await getShoppingListByClientID("445");
+            const productIDToQuantity = shoppingList['productIDToQuantity']
+
+            if (productID in productIDToQuantity){
+                let quantity = productIDToQuantity[productID]
+                let updatedQuantity = parseInt(quantity) + 1
+                productIDToQuantity[productID] = updatedQuantity;
+            } else{
+                productIDToQuantity[productID] = '1'
+            }
+            shoppingList['productIDToQuantity'] = productIDToQuantity;
+
+            updateShoppingList(shoppingList);
         })
 
         addBtnDiv.classList.add("col-3");

@@ -14,9 +14,11 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.ShoppingList;
 import com.malds.groceriesProject.services.ShoppingListService;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @CrossOrigin
 @RestController
+@RequestMapping("/shopping_list")
 public class ShoppingListController extends BaseController {
     /**
      * Shopping List Controller.
@@ -35,7 +37,7 @@ public class ShoppingListController extends BaseController {
      * @return List containing the ShoppingList with specified shoppingListID
      * @throws ResourceNotFoundException
      */
-    @GetMapping("/shopping_list/{id}")
+    @GetMapping("/{id}")
     public List<ShoppingList> getShoppingList(
             @PathVariable("id") final String shoppingListID)
             throws ResourceNotFoundException {
@@ -52,7 +54,7 @@ public class ShoppingListController extends BaseController {
      * the value is the quantity
      * @throws ResourceNotFoundException
      */
-    @GetMapping("/shopping_list/products/{id}")
+    @GetMapping("/products/{id}")
     public Map<String, String> getProductsToQuantityByID(
             @PathVariable("id") final String shoppingListID)
             throws ResourceNotFoundException {
@@ -73,7 +75,7 @@ public class ShoppingListController extends BaseController {
      * @return the Shopping List with specified clientID
      * @throws ResourceNotFoundException
      */
-    @GetMapping("/shopping_list/client/{id}")
+    @GetMapping("/client/{id}")
     public ShoppingList getShoppingListByClientID(
             @PathVariable("id") final String clientID)
             throws ResourceNotFoundException {
@@ -93,7 +95,7 @@ public class ShoppingListController extends BaseController {
      * @return List containing the saved/created shoppingList
      * @throws Exception
      */
-    @PostMapping("/shopping_list")
+    @PostMapping()
     public List<ShoppingList> createShoppingList(
             @RequestBody final ShoppingList shoppingList)
             throws Exception {
@@ -111,7 +113,7 @@ public class ShoppingListController extends BaseController {
      * @return List containing the updated ShoppingList
      * @throws Exception
      */
-    @PutMapping("/shopping_list")
+    @PutMapping()
     public List<ShoppingList> updateShoppingList(
             @RequestBody final ShoppingList shoppingList)
             throws Exception {
@@ -131,7 +133,7 @@ public class ShoppingListController extends BaseController {
      *  Throws ResourceNotFoundException if shoppingListID does not exist.
      * @param shoppingListID
      */
-    @DeleteMapping("/shopping_list/{id}")
+    @DeleteMapping("/{id}")
     public void deleteShoppingListByID(
             @PathVariable("id") final String shoppingListID) {
         try {
