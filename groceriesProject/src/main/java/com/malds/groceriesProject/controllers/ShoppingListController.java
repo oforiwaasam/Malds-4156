@@ -14,7 +14,7 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.ShoppingList;
 import com.malds.groceriesProject.services.ShoppingListService;
 
-
+@CrossOrigin
 @RestController
 public class ShoppingListController extends BaseController {
     /**

@@ -16,6 +16,7 @@ import com.malds.groceriesProject.services.ClientService;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.Client;
 
+@CrossOrigin
 @RestController
 public class ClientController extends BaseController {
 
