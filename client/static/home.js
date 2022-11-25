@@ -2,6 +2,8 @@ const searchBtn = document.getElementById('search-btn');
 const searchInput = document.getElementById('search-input');
 const searchResultsDiv = document.getElementById("search-results")
 
+localStorage.setItem("clientID", "445")
+
 const updateShoppingList = (shoppingList) => {
     $.ajax({
         type: 'PUT',
@@ -63,7 +65,7 @@ const display_search_results = (products) => {
             if (productID in productIDToQuantity){
                 let quantity = productIDToQuantity[productID]
                 let updatedQuantity = parseInt(quantity) + 1
-                productIDToQuantity[productID] = updatedQuantity;
+                productIDToQuantity[productID] = updatedQuantity.toString();
             } else{
                 productIDToQuantity[productID] = '1'
             }

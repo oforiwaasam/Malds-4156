@@ -1,4 +1,23 @@
 const shoppingListItemsDiv = document.getElementById("shopping-list-items");
+let shoppingListObj;
+const updateShoppingList = (shoppingList) => {
+    $.ajax({
+        type: 'PUT',
+        url: `http://localhost:8080/shopping_list`,
+        data: JSON.stringify(shoppingList),
+        dataType: "json",
+        contentType: 'application/json; charset=utf-8',
+        success: function(result){
+            console.log(result);
+        },
+        error: function(request, status, error){
+            console.log('Error');
+            console.log(request);
+            console.log(status);
+            console.log(error);
+        }
+    })
+}
 
 const getProductByID = async (productID) => {
     const response = await fetch(`http://localhost:8080/products/get_product_by_id/${productID}`);
@@ -28,6 +47,7 @@ const displayShoppingList = (products) => {
         const minusBtnDiv = document.createElement("div");
         const addBtnDiv = document.createElement("div");
         const addBtn = document.createElement("btn");
+        const minusBtn = document.createElement("btn");
 
         const productID = product['productID']
         const productName = product['productName']
@@ -41,17 +61,55 @@ const displayShoppingList = (products) => {
         quantityDiv.classList.add("col-2");
         quantityDiv.innerHTML = quantityInShoppingList;
         minusBtnDiv.classList.add("col-2")
-        minusBtnDiv.innerHTML = "-"
-        addBtnDiv.classList.add("col-2");
-        addBtnDiv.innerHTML = "+"
 
-        rowDiv.classList.add("row", "py-2", "mx-auto");
+        addBtn.innerHTML = "+"
+        addBtn.classList.add("btn", "btn-dark", "py-0");
+        addBtnDiv.classList.add("col-2");
+        addBtnDiv.append(addBtn)
+
+        minusBtn.innerHTML = "-"
+        minusBtn.classList.add("btn", "btn-dark", "py-0");
+        minusBtnDiv.classList.add("col-2");
+        minusBtnDiv.append(minusBtn)
+
+        addBtn.addEventListener("click", ()=>{
+            const productIDToQuantity = shoppingListObj['productIDToQuantity']
+            if (productID in productIDToQuantity){
+                let quantity = productIDToQuantity[productID]
+                let updatedQuantity = parseInt(quantity) + 1
+                productIDToQuantity[productID] = updatedQuantity.toString();
+            } else{
+                productIDToQuantity[productID] = '1'
+            }
+            shoppingListObj['productIDToQuantity'] = productIDToQuantity;
+            updateShoppingList(shoppingListObj);
+            /*const products = getProducts(productIDToQuantity);
+            displayShoppingList(products)*/
+            location.reload()
+        })
+        minusBtn.addEventListener("click", ()=>{
+            const productIDToQuantity = shoppingListObj['productIDToQuantity']
+            if (productID in productIDToQuantity){
+                let quantity = productIDToQuantity[productID]
+                let updatedQuantity = parseInt(quantity) - 1
+                if  (updatedQuantity <= 0) {
+                    delete productIDToQuantity[productID]
+                } else {
+                    productIDToQuantity[productID] = updatedQuantity.toString();
+                }
+            }
+            shoppingListObj['productIDToQuantity'] = productIDToQuantity;
+            console.log(shoppingListObj)
+            updateShoppingList(shoppingListObj);
+            location.reload()
+            /*const products = getProducts(productIDToQuantity);
+            displayShoppingList(products)*/
+
+        })
+
+        rowDiv.classList.add("row", "py-4", "mx-auto");
         rowDiv.append(productNameDiv, priceDiv, quantityDiv , addBtnDiv, minusBtnDiv);
         shoppingListItemsDiv.append(rowDiv);
-
-
-
-
     }
 }
 
@@ -62,7 +120,7 @@ const getShoppingListByClientID = async (clientID) => {
 }
 
 const init = async () => {
-    const shoppingListObj = await getShoppingListByClientID('445');
+    shoppingListObj = await getShoppingListByClientID('445');
     const productIDToQuantity = shoppingListObj['productIDToQuantity'];
     const products = await getProducts(productIDToQuantity);
 
