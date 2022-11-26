@@ -23,11 +23,11 @@ public class ShoppingListService {
 
     /**
      * ShoppingListService Constructor.
-     * @param shoppingListRepository
+     * @param shoppingListRepo
      */
     public ShoppingListService(final ShoppingListRepository
-                                       shoppingListRepository) {
-        this.shoppingListRepository = shoppingListRepository;
+                                       shoppingListRepo) {
+        this.shoppingListRepository = shoppingListRepo;
     }
 
     /**
@@ -68,6 +68,27 @@ public class ShoppingListService {
                     "This shoppingList ID doesn't exists");
         }
         return List.of(shop);
+    }
+
+    /**
+     * Searches for ShoppingList with clientID
+     * and returns the ShoppingList object.
+     * Throws ResourceNotFoundException if clientID
+     * does not match any shoppingList
+     * @param clientID
+     * @return the Shopping List with specified clientID
+     * @throws ResourceNotFoundException
+     */
+    public ShoppingList getShoppingListByClientID(final String clientID)
+            throws ResourceNotFoundException {
+        ShoppingList shoppingList = shoppingListRepository
+                .getShoppingListByClientID(clientID);
+        if (shoppingList != null) {
+            return shoppingList;
+        } else {
+            throw new ResourceNotFoundException("Shopping List does "
+                    + "not exist for clientID");
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,6 +55,33 @@ public class ShoppingListTest {
         assertEquals(shoppingListService.getShoppingListByID("1").get(0).getClientID(),
                 EXPECTED_CLIENT_ID);
         assertEquals(shoppingListService.getShoppingListByID("1").get(0).getProductIDToQuantity(),
+                EXPECTED_PRODUCT_ID_TO_QUANTITY);
+    }
+
+    @Test
+    public void testGetShoppingListByClientID() throws Exception {
+
+        final String EXPECTED_SHOPPING_LIST_ID = "1";
+        final String EXPECTED_CLIENT_ID = "123";
+        final Map<String, String> EXPECTED_PRODUCT_ID_TO_QUANTITY = new HashMap<String, String>();
+        EXPECTED_PRODUCT_ID_TO_QUANTITY.put("445", "1");
+
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("445", "1");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("1");
+        shoppingList.setClientID("123");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        Mockito.when(shoppingListRepository.retriveAllItems()).thenReturn(List.of(shoppingList));
+        Mockito.when(shoppingListRepository.getShoppingListByClientID("123")).thenReturn(shoppingList);
+
+        assertEquals(shoppingListService.getShoppingListByClientID("123").getShoppingListID(),
+                EXPECTED_SHOPPING_LIST_ID);
+        assertEquals(shoppingListService.getShoppingListByClientID("123").getClientID(),
+                EXPECTED_CLIENT_ID);
+        assertEquals(shoppingListService.getShoppingListByClientID("123").getProductIDToQuantity(),
                 EXPECTED_PRODUCT_ID_TO_QUANTITY);
     }
 
