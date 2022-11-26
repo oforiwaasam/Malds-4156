@@ -121,7 +121,7 @@ public class ProductService {
      * @throws Exception
      */
     public void checkValidInput(final Product product) throws Exception {
-        if (product.getProductID() == null || product.getProductName() == null
+        if (product.getProductName() == null
                 || product.getVendorID() == null || product.getPrice() == null
                 || product.getQuantity() == null) {
 
