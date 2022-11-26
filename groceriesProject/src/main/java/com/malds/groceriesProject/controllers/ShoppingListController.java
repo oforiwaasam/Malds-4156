@@ -81,7 +81,7 @@ public class ShoppingListController extends BaseController {
             throws ResourceNotFoundException {
         try {
             return shoppingListService.getShoppingListByClientID(clientID);
-        } catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("Shopping List does "
                     + "not exist for clientID");
         }

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -63,7 +62,8 @@ public class ShoppingListRepository {
                 .query(ShoppingList.class, queryExpression);
         return returnedList;*/
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-        List<ShoppingList> scanResult = dynamoDBMapper.scan(ShoppingList.class, scanExpression);
+        List<ShoppingList> scanResult = dynamoDBMapper.scan(
+                ShoppingList.class, scanExpression);
         return scanResult;
     }
 
