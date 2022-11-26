@@ -16,22 +16,36 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 // Used baeldung dynamodb setup
 
 @Configuration
-@EnableDynamoDBRepositories(basePackages = 
-        "com.malds.groceriesProject.repositories")
+@EnableDynamoDBRepositories(basePackages = "com.malds.groceriesProject.repositories")
 public class DynamoDBConfiguration {
-
+     /**
+     * amazon.dynamodb.endpoint --> DynamoDB Endpoint.
+     */
     @Value("${amazon.dynamodb.endpoint}")
     private String amazonDynamoDBEndpoint;
 
+     /**
+     * amazon.aws.accesskey --> AWS credentials.
+     */
     @Value("${amazon.aws.accesskey}")
     private String amazonAWSAccessKey;
 
+     /**
+     * amazon.region --> AWS region in which DynamoDB endpoint is stored in.
+     */
     @Value("${aws.region}")
     private String awsRegion;
 
+     /**
+     * amazon.aws.secretkey --> AWS credentials.
+     */
     @Value("${amazon.aws.secretkey}")
     private String amazonAWSSecretKey;
 
+    /**
+     * @return DynamoDBMapper
+     * @throws FileNotFoundException
+     */
     @Bean
     public DynamoDBMapper dynamoDBMapper() throws FileNotFoundException {
         DynamoDBMapper mape = new DynamoDBMapper(amazonDynamoDB());
@@ -39,7 +53,7 @@ public class DynamoDBConfiguration {
         /*
          * Test Code to verify Mapper. Map<String,AttributeValue> eav = new HashMap<>();
          * eav.put(":val1", new AttributeValue().withS("1-fg-3"));
-         * 
+         *
          * DynamoDBQueryExpression<ShoppingList> queryExpression = new
          * DynamoDBQueryExpression<ShoppingList>()
          * .withKeyConditionExpression("shoppingListID = :val1")
@@ -60,6 +74,9 @@ public class DynamoDBConfiguration {
         return mape;
     }
 
+    /**
+     * @return AmazonDynamoDB
+     */
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         System.out.println("Connected");
