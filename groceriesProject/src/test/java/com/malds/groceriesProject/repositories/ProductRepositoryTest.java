@@ -8,14 +8,18 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import com.malds.groceriesProject.models.Product;
 import com.malds.groceriesProject.services.ProductService;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class ProductRepositoryTest {
 
@@ -158,6 +162,16 @@ public class ProductRepositoryTest {
     }
 
     @Test
+    public void testFindProductByNameNotExist() throws Exception {
+
+        Mockito.when(productRepo.existsByName("TestProduct")).thenReturn(false);
+        Mockito.when(productRepo.findProductByName("TestProduct"))
+                .thenReturn(new ArrayList<Product>());
+
+        Assertions.assertEquals(productService.getProductByName("TestProduct"), new ArrayList<Product>());
+    }
+
+    @Test
     public void testDeleteProductById() throws Exception {
         Product product1 = new Product();
         product1.setProductID("123456");
@@ -211,7 +225,6 @@ public class ProductRepositoryTest {
         Assertions.assertEquals(productService.getAllProducts().size(), 2);
     }
 
-
     // Invalid Input Tests
 
     @Test
@@ -245,6 +258,22 @@ public class ProductRepositoryTest {
 
         Assertions.assertEquals("java.lang.Exception: Quantity is invalid", exception.getMessage());
 
+    }
+
+    @Test
+    public void testNullInput() throws Exception {
+        Product product = new Product();
+        product.setProductID("123456");
+        product.setProductName(null);
+        product.setVendorID("54321");
+        product.setPrice("4.23");
+        product.setQuantity("number");
+
+        Throwable exception = Assertions.assertThrows(Exception.class, () -> {
+            productService.addNewProduct(product);
+        });
+
+        Assertions.assertEquals("java.lang.Exception: Value cannot be null", exception.getMessage());
     }
 
     @Test
