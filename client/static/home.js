@@ -35,24 +35,29 @@ const get_search_results = async (query) => {
     return data;
 }
 
-const display_search_results = (products) => {
+const display_search_results = (products, vendors) => {
     if (products.length == 0) {
-        searchResultsDiv.innerHTML = "0 results"
+        //searchResultsDiv.innerHTML = "0 results"
         return
     }
     for (let i in products){
         const rowDiv = document.createElement("div");
+        const vendorDiv = document.createElement("div");
         const productNameDiv = document.createElement("div");
         const priceDiv = document.createElement("div");
         const addBtnDiv = document.createElement("div");
         const addBtn = document.createElement("btn");
 
         const product = products[i]
+        const vendorID = product["vendorID"]
         const productID = product['productID']
         const productName = product['productName']
         const price = `$${parseFloat(product['price']).toFixed(2).toString()}`
 
-        productNameDiv.classList.add("col-6");
+        vendorDiv.classList.add("col-3");
+        //TODO: replace "vendor name" with actual vendor name
+        vendorDiv.innerHTML = "vendor name";
+        productNameDiv.classList.add("col-3");
         productNameDiv.innerHTML = productName;
         priceDiv.classList.add("col-3")
         priceDiv.innerHTML = price;
@@ -78,7 +83,7 @@ const display_search_results = (products) => {
         addBtnDiv.append(addBtn);
 
         rowDiv.classList.add("row", "py-2", "mx-auto", "w-50");
-        rowDiv.append(productNameDiv, priceDiv, addBtnDiv);
+        rowDiv.append(vendorDiv, productNameDiv, priceDiv, addBtnDiv);
         searchResultsDiv.append(rowDiv);
     }
 }
@@ -86,7 +91,7 @@ const display_search_results = (products) => {
 searchBtn.addEventListener('click',async ()=> {
     const query = searchInput.value;
     const products = await get_search_results(query);
-    searchResultsDiv.innerHTML = ""
+    //searchResultsDiv.innerHTML = ""
     display_search_results(products)
 })
 
