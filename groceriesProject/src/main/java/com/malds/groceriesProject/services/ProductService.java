@@ -46,6 +46,18 @@ public class ProductService {
         return productRepository.findProductByName(productName);
     }
 
+    /**
+     * Searches the Product table in DynamoDB and returns
+     * the products with the given vendorID.
+     * @param vendorID
+     * @return List containing the products with the
+     * specified vendorID
+     */
+    public List<Product> getProductsByVendorID(final String vendorID) {
+        List<Product> productsFromVendorID = productRepository
+                .getProductsByVendorID(vendorID);
+        return productsFromVendorID;
+    }
 
     /**
      * Updates product info and returns new product with updated info.

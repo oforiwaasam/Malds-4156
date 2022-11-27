@@ -104,6 +104,22 @@ public class ProductController extends BaseController {
     }
 
     /**
+     * Searches the Product table in DynamoDB and returns
+     * the products with the given vendorID.
+     * @param vendorID
+     * @return List containing the products with the
+     * specified vendorID
+     */
+    @RequestMapping(path = "get_product_by_vendor_id/{id}",
+            method = RequestMethod.GET)
+    public List<Product> getProductsByVendorID(
+            @PathVariable("id") final String vendorID) {
+        List<Product> productsFromVendorID = productService
+                .getProductsByVendorID(vendorID);
+        return productsFromVendorID;
+    }
+
+    /**
      * Deletes product in the Product table in DynamoDB
      * Throws ResourceNotFoundException if productId does not exist.
      *
