@@ -27,5 +27,6 @@ jobs:
           java-version: 11
           distribution: 'temurin'
 
-      - name: Run All Tests
-        run: maven clean install
+      - name: Build Groceries Project
+        working-directory: ./groceriesProject
+        run: mvn -B package --file pom.xml
