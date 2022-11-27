@@ -1,6 +1,7 @@
 
 package com.malds.groceriesProject.repositories;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -242,5 +243,44 @@ public class ProductRepositoryTest {
 
         Assertions.assertEquals("java.lang.Exception: Quantity is invalid", exception.getMessage());
 
+    }
+
+    @Test
+    public void testGetProductsByVendorID() {
+        Product product1 = new Product();
+        product1.setProductID("123456");
+        product1.setProductName("TestProduct1");
+        product1.setVendorID("54321");
+        product1.setPrice("4.19");
+        product1.setQuantity("1");
+
+        Product product2 = new Product();
+        product2.setProductID("56789");
+        product2.setProductName("TestProduct2");
+        product2.setVendorID("98765");
+        product2.setPrice("2.29");
+        product2.setQuantity("1");
+
+        Mockito.when(productRepo.findAllProducts()).thenReturn(List.of(product1, product2));
+        Mockito.when(productRepo.getProductsByVendorID("98765")).thenReturn(List.of(product2));
+    }
+    @Test
+    public void testGetProductsByInvalidVendorID() {
+        Product product1 = new Product();
+        product1.setProductID("123456");
+        product1.setProductName("TestProduct1");
+        product1.setVendorID("54321");
+        product1.setPrice("4.19");
+        product1.setQuantity("1");
+
+        Product product2 = new Product();
+        product2.setProductID("56789");
+        product2.setProductName("TestProduct2");
+        product2.setVendorID("98765");
+        product2.setPrice("2.29");
+        product2.setQuantity("1");
+
+        Mockito.when(productRepo.findAllProducts()).thenReturn(List.of(product1, product2));
+        Mockito.when(productRepo.getProductsByVendorID("98")).thenReturn(new ArrayList<Product>());
     }
 }

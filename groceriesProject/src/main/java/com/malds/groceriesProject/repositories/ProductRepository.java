@@ -1,7 +1,6 @@
 package com.malds.groceriesProject.repositories;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
@@ -9,6 +8,7 @@ import com.malds.groceriesProject.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,14 +86,37 @@ public class ProductRepository {
     }
 
     /**
+     * Searches the Product table in DynamoDB and returns
+     * the products with the given vendorID.
+     * @param vendorID
+     * @return List containing the products with the
+     * specified vendorID
+     */
+    public List<Product> getProductsByVendorID(final String vendorID) {
+        List<Product> allProducts = findAllProducts();
+        List<Product> productsByVendorID = new ArrayList<Product>();
+        for (Product product: allProducts) {
+            if (product.getVendorID().equals(vendorID)) {
+                productsByVendorID.add(product);
+            }
+        }
+        return productsByVendorID;
+    }
+
+    /**
      * Returns a list containing all products from Product table in DynamoDB.
      *
      * @return A list containing all products
      */
     public List<Product> findAllProducts() {
+        /*
         DynamoDBQueryExpression<Product> query =
                 new DynamoDBQueryExpression<>();
-        return dynamoDBMapper.query(Product.class, query);
+        return dynamoDBMapper.query(Product.class, query);*/
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        List<Product> scanResult = dynamoDBMapper.scan(
+                Product.class, scanExpression);
+        return scanResult;
     }
 
     /**
