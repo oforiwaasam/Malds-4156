@@ -1,0 +1,31 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# Workflow name
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # define job for maven build
+  build-and-test:
+    # run on ubuntu-latest
+    runs-on: ubuntu-latest
+
+    steps:
+      # check out repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Set up JDK 11
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'temurin'
+
+      - name: Run All Tests
+        run: maven clean install
