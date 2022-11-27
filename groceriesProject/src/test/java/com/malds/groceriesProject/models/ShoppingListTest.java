@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +59,19 @@ public class ShoppingListTest {
     }
 
     @Test
+    public void testGetShoppingListByIDNotFound() throws Exception {
+
+        final String EXPECTED_EXCEPTION = "This shoppingList ID doesn't exists (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
+
+        Mockito.when(shoppingListRepository.retriveList("1")).thenReturn(new ArrayList<ShoppingList>());
+
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> {
+                shoppingListService.getShoppingListByID("1");
+            });
+            assertEquals(EXPECTED_EXCEPTION, exception.getMessage());
+    }
+
+    @Test
     public void testGetShoppingListByClientID() throws Exception {
 
         final String EXPECTED_SHOPPING_LIST_ID = "1";
@@ -86,6 +99,20 @@ public class ShoppingListTest {
     }
 
     @Test
+    public void testGetShoppingListByClientIDNotFound() throws Exception {
+
+        final String EXPECTED_EXCEPTION = "Shopping List does not exist for clientID (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
+
+        Mockito.when(shoppingListRepository.retriveAllItems()).thenReturn(new ArrayList<ShoppingList>());
+        Mockito.when(shoppingListRepository.getShoppingListByClientID("123")).thenReturn(null);
+
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> {
+                shoppingListService.getShoppingListByClientID("123");
+            });
+            assertEquals(EXPECTED_EXCEPTION, exception.getMessage());
+    }
+
+    @Test
     public void testSaveShoppingList() throws Exception {
 
         final String EXPECTED_SHOPPINGLIST_ID = "1";
@@ -101,7 +128,6 @@ public class ShoppingListTest {
         shoppingList.setClientID("123");
         shoppingList.setProductIDToQuantity(productIDToQuantity);
 
-
         Mockito.when(shoppingListRepository.createShoppingList(shoppingList))
                 .thenReturn(shoppingList);
         assertEquals(
@@ -112,6 +138,26 @@ public class ShoppingListTest {
         assertEquals(shoppingListService.createShoppingList(shoppingList).get(0)
                 .getProductIDToQuantity(), EXPECTED_PRODUCT_ID_TO_QUANTITY);
 
+    }
+
+    @Test
+    public void testSaveShoppingListIDExists() throws Exception {
+
+        final String EXPECTED_EXCEPTION = "This shoppingList ID already exists";
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("445", "1");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("1");
+        shoppingList.setClientID("123");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        Mockito.when(shoppingListRepository.retriveList("1")).thenReturn(List.of(shoppingList));
+        
+        Throwable exception = assertThrows(Exception.class, () -> {
+                shoppingListService.createShoppingList(shoppingList);
+            });
+            assertEquals(EXPECTED_EXCEPTION, exception.getMessage());
     }
 
     @Test

@@ -58,6 +58,27 @@ public class VendorTest {
     }
 
     @Test
+    public void testGetVendorByIDNotFound() throws Exception {
+
+        final String EXPECTED_EXCEPTION = "Vendor ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
+
+        // create new vendor to be saved
+        Vendor vendor = new Vendor();
+        vendor.setVendorID("1");
+        vendor.setEmail("groceries_test@trader_joes.com");
+        vendor.setCompanyName("Trader Joe's");
+        vendor.setIndustry("Grocery");
+        vendor.setZipcode("11101");
+
+        Mockito.when(vendorRepo.existsByID("1")).thenReturn(false);
+
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> {
+            vendorService.getVendorByID("1");
+        });
+        assertEquals(EXPECTED_EXCEPTION, exception.getMessage()); 
+    }
+
+    @Test
     public void testSaveVendor() throws Exception {
 
         final String EXPECTED_VENDOR_ID = "1";
@@ -74,6 +95,7 @@ public class VendorTest {
         vendor.setIndustry("Grocery");
         vendor.setZipcode("11101");
 
+        Mockito.when(vendorRepo.existsByID("1")).thenReturn(false);
         Mockito.when(vendorRepo.saveVendor(vendor)).thenReturn(List.of(vendor));
 
         assertEquals(vendorService.saveVendor(vendor).get(0).getVendorID(), EXPECTED_VENDOR_ID);
@@ -81,6 +103,27 @@ public class VendorTest {
         assertEquals(vendorService.saveVendor(vendor).get(0).getCompanyName(), EXPECTED_COMPANY_NAME);
         assertEquals(vendorService.saveVendor(vendor).get(0).getIndustry(), EXPECTED_INDUSTRY);
         assertEquals(vendorService.saveVendor(vendor).get(0).getZipcode(), EXPECTED_ZIPCODE);
+    }
+
+    @Test
+    public void testSaveVendorIDExists() throws Exception {
+
+        final String EXPECTED_EXCEPTION = "vendor ID already exists - must use unique vendorID";
+
+        // create new vendor to be saved
+        Vendor vendor = new Vendor();
+        vendor.setVendorID("1");
+        vendor.setEmail("groceries_test@trader_joes.com");
+        vendor.setCompanyName("Trader Joe's");
+        vendor.setIndustry("Grocery");
+        vendor.setZipcode("11101");
+
+        Mockito.when(vendorRepo.existsByID("1")).thenReturn(true);
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+           vendorService.saveVendor(vendor);
+        });
+        assertEquals(EXPECTED_EXCEPTION, exception.getMessage()); 
     }
 
     @Test
@@ -115,20 +158,6 @@ public class VendorTest {
     }
 
     @Test
-    public void testDeleteVendorByID() {
-        // initialize Vendor to be deleted
-        Vendor deleteVendor = new Vendor();
-        deleteVendor.setVendorID("3");
-        deleteVendor.setEmail("groceries_test@trader_joes.com");
-        deleteVendor.setCompanyName("Trader Joe's");
-        deleteVendor.setIndustry("Grocery");
-        deleteVendor.setZipcode("10260");
-
-        Mockito.when(vendorRepo.existsByID("3")).thenReturn(true);
-        vendorService.deleteVendorByID("3");
-    }
-
-    @Test
     public void testNoVendorIDUpdate() {
         // Initialize vendor update
         Vendor updatedVendor = new Vendor();
@@ -148,6 +177,20 @@ public class VendorTest {
     }
 
     @Test
+    public void testDeleteVendorByID() {
+        // initialize Vendor to be deleted
+        Vendor deleteVendor = new Vendor();
+        deleteVendor.setVendorID("3");
+        deleteVendor.setEmail("groceries_test@trader_joes.com");
+        deleteVendor.setCompanyName("Trader Joe's");
+        deleteVendor.setIndustry("Grocery");
+        deleteVendor.setZipcode("10260");
+
+        Mockito.when(vendorRepo.existsByID("3")).thenReturn(true);
+        vendorService.deleteVendorByID("3");
+    }
+
+    @Test
     public void testNoVendorIDDelete() {
 
         Mockito.when(vendorRepo.existsByID("32")).thenReturn(false);
@@ -159,6 +202,35 @@ public class VendorTest {
                 exception.getMessage());
     }
 
+    @Test
+    public void testFindAllVendors() {
+        // create new vendors to be saved
+        Vendor vendor1 = new Vendor();
+        vendor1.setVendorID("1");
+        vendor1.setEmail("groceries_test@trader_joes.com");
+        vendor1.setCompanyName("Trader Joe's");
+        vendor1.setIndustry("Grocery");
+        vendor1.setZipcode("11101");
+
+        Vendor vendor2 = new Vendor();
+        vendor2.setVendorID("2");
+        vendor2.setEmail("groceries_test@whole_foods.com");
+        vendor2.setCompanyName("Whole Foods");
+        vendor2.setIndustry("Grocery");
+        vendor2.setZipcode("11101");
+
+        Vendor vendor3 = new Vendor();
+        vendor3.setVendorID("3");
+        vendor3.setEmail("fashion_test@zara.com");
+        vendor3.setCompanyName("Zara");
+        vendor3.setIndustry("Fashion");
+        vendor3.setZipcode("11101");
+
+        Mockito.when(vendorRepo.findAll()).thenReturn(List.of(vendor1, vendor2, vendor3));
+
+        assertEquals(vendorService.findAll(), List.of(vendor1, vendor2, vendor3));
+    }
+    
     @Test
     public void testEmailValidity() {
         String invalid_email = "incorrect email input";
