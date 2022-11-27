@@ -259,6 +259,54 @@ public class VendorTest {
     }
 
     @Test
+    public void testCheckBlankEmail() {
+        // initialize invalid email vendor - blank
+        Vendor vendor = new Vendor();
+        vendor.setVendorID("1");
+        vendor.setEmail("");
+        vendor.setCompanyName("Zara");
+        vendor.setIndustry("Fashion");
+        vendor.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            vendorService.checkValidInput(vendor);
+        });
+        assertEquals("Email must not be blank or longer than 320 chars", exception.getMessage());
+    }
+
+    @Test
+    public void testCheckNullEmail() {
+        // initialize invalid email vendor - null
+        Vendor vendor = new Vendor();
+        vendor.setVendorID("1");
+        vendor.setEmail(null);
+        vendor.setCompanyName("Zara");
+        vendor.setIndustry("Fashion");
+        vendor.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            vendorService.checkValidInput(vendor);
+        });
+        assertEquals("Value cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void testCheckNullVendorID() {
+        // initialize invalid vendorID - null
+        Vendor vendor = new Vendor();
+        vendor.setVendorID(null);
+        vendor.setEmail("groceries_test@trader_joes.com");
+        vendor.setCompanyName("Zara");
+        vendor.setIndustry("Fashion");
+        vendor.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            vendorService.checkValidInput(vendor);
+        });
+        assertEquals("Value cannot be null", exception.getMessage());
+    }
+
+    @Test
     public void testCheckInputInvalidCompanyName() {
         // initialize invalid name - too long
         Vendor vendor = new Vendor();
@@ -278,6 +326,39 @@ public class VendorTest {
     }
 
     @Test
+    public void testCheckBlankCompanyName() {
+        // initialize invalid name - blank
+        Vendor vendor = new Vendor();
+        vendor.setVendorID("1");
+        vendor.setEmail("groceries_test@trader_joes.com");
+        vendor.setCompanyName(" ");
+        vendor.setIndustry("Grocery");
+        vendor.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            vendorService.checkValidInput(vendor);
+        });
+        assertEquals("Company Name must not be blank or longer than 128 chars",
+                exception.getMessage());
+    }
+
+    @Test
+    public void testCheckNullCompanyName() {
+        // initialize invalid name - null
+        Vendor vendor = new Vendor();
+        vendor.setVendorID("1");
+        vendor.setEmail("groceries_test@trader_joes.com");
+        vendor.setCompanyName(null);
+        vendor.setIndustry("Grocery");
+        vendor.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            vendorService.checkValidInput(vendor);
+        });
+        assertEquals("Value cannot be null", exception.getMessage());
+    }
+
+    @Test
     public void testCheckInputInvalidIndustry() {
         // initialize invalid industry - null
         Vendor vendor = new Vendor();
@@ -294,8 +375,24 @@ public class VendorTest {
     }
 
     @Test
+    public void testBlankIndustry() {
+        // initialize invalid industry - "" - blank
+        Vendor vendor = new Vendor();
+        vendor.setVendorID("1");
+        vendor.setEmail("random_email@zara.com");
+        vendor.setCompanyName("Zara");
+        vendor.setIndustry("");
+        vendor.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            vendorService.checkValidInput(vendor);
+        });
+        assertEquals("Industry must not be blank or longer than 128 chars", exception.getMessage());
+    }
+
+    @Test
     public void testCheckInputInvalidZipcode() {
-        // initialize invalid email zipcode - empty string
+        // initialize invalid zipcode - empty string
         Vendor vendor = new Vendor();
         vendor.setVendorID("1");
         vendor.setEmail("random_email@zara.com");
@@ -308,7 +405,39 @@ public class VendorTest {
         });
         assertEquals("Zipcode must not be blank or longer than 10 chars",
         exception.getMessage());
-      
+    }
+
+    @Test
+    public void testTooLongZipcode() {
+        // initialize invalid zipcode - longer than 10 chars
+        Vendor vendor = new Vendor();
+        vendor.setVendorID("1");
+        vendor.setEmail("random_email@zara.com");
+        vendor.setCompanyName("Zara");
+        vendor.setIndustry("Fashion");
+        vendor.setZipcode("111011110111101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            vendorService.checkValidInput(vendor);
+        });
+        assertEquals("Zipcode must not be blank or longer than 10 chars",
+        exception.getMessage());
+    }
+
+    @Test
+    public void testNullZipcode() {
+        // initialize invalid zipcode - null
+        Vendor vendor = new Vendor();
+        vendor.setVendorID("1");
+        vendor.setEmail("random_email@zara.com");
+        vendor.setCompanyName("Zara");
+        vendor.setIndustry("Fashion");
+        vendor.setZipcode(null);
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            vendorService.checkValidInput(vendor);
+        });
+        assertEquals("Value cannot be null", exception.getMessage());
     }
     
 }

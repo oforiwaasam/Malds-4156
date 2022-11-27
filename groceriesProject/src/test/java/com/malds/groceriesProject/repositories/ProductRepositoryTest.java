@@ -2,6 +2,7 @@
 package com.malds.groceriesProject.repositories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -261,19 +262,63 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void testNullInput() throws Exception {
+    public void testNullProductName() throws Exception {
         Product product = new Product();
         product.setProductID("123456");
         product.setProductName(null);
         product.setVendorID("54321");
         product.setPrice("4.23");
-        product.setQuantity("number");
+        product.setQuantity("2");
 
-        Throwable exception = Assertions.assertThrows(Exception.class, () -> {
-            productService.addNewProduct(product);
+        Throwable exception = assertThrows(Exception.class, () -> {
+            productService.checkValidInput(product);
         });
+        Assertions.assertEquals("Value cannot be null", exception.getMessage());
+    }
 
-        Assertions.assertEquals("java.lang.Exception: Value cannot be null", exception.getMessage());
+    @Test
+    public void testNullVendorID() throws Exception {
+        Product product = new Product();
+        product.setProductID("1");
+        product.setProductName("Oranges");
+        product.setVendorID(null);
+        product.setPrice("4.23");
+        product.setQuantity("2");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            productService.checkValidInput(product);
+        });
+        Assertions.assertEquals("Value cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void testNullPrice() throws Exception {
+        Product product = new Product();
+        product.setProductID("1");
+        product.setProductName("Oranges");
+        product.setVendorID("12345");
+        product.setPrice(null);
+        product.setQuantity("2");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            productService.checkValidInput(product);
+        });
+        Assertions.assertEquals("Value cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void testNullQuantity() throws Exception {
+        Product product = new Product();
+        product.setProductID("1");
+        product.setProductName("Oranges");
+        product.setVendorID("12345");
+        product.setPrice("2");
+        product.setQuantity(null);
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            productService.checkValidInput(product);
+        });
+        Assertions.assertEquals("Value cannot be null", exception.getMessage());
     }
 
     @Test
