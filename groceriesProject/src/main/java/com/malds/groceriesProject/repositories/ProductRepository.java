@@ -31,6 +31,9 @@ public class ProductRepository {
      * @return True if product with productId exists, otherwise False
      */
     public boolean existsByID(final String productId) {
+        if (productId == null) {
+            return false;
+        }
         Product product = dynamoDBMapper.load(Product.class, productId);
         if (product == null) {
             return false;
