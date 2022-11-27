@@ -1,8 +1,21 @@
 const searchBtn = document.getElementById('search-btn');
 const searchInput = document.getElementById('search-input');
 const searchResultsDiv = document.getElementById("search-results")
+const zeroResultsDiv = document.getElementById("zero-results");
+const searchResultsColumns = document.getElementById("column-names");
 
 localStorage.setItem("clientID", "445")
+
+const getVendorByID = async (vendorID) => {
+    try{
+        const response = await fetch(`http://localhost:8080/vendors/${vendorID}`);
+        const data = await response.json();
+        return data[0];
+    } catch {
+        return {}
+    }
+
+}
 
 const updateShoppingList = (shoppingList) => {
     $.ajax({
@@ -35,11 +48,14 @@ const get_search_results = async (query) => {
     return data;
 }
 
-const display_search_results = (products, vendors) => {
+const display_search_results = async (products) => {
     if (products.length == 0) {
-        //searchResultsDiv.innerHTML = "0 results"
+        zeroResultsDiv.classList.remove("d-none");
+        searchResultsDiv.append(zeroResultsDiv)
         return
     }
+    zeroResultsDiv.classList.add("d-none");
+    searchResultsDiv.append(searchResultsColumns)
     for (let i in products){
         const rowDiv = document.createElement("div");
         const vendorDiv = document.createElement("div");
@@ -50,13 +66,18 @@ const display_search_results = (products, vendors) => {
 
         const product = products[i]
         const vendorID = product["vendorID"]
+        const vendor = await getVendorByID(vendorID)
+
+        let vendorName = "placeholder"
+        if (Object.keys(vendor).length != 0){
+            vendorName = vendor["companyName"];
+        }
         const productID = product['productID']
         const productName = product['productName']
         const price = `$${parseFloat(product['price']).toFixed(2).toString()}`
 
         vendorDiv.classList.add("col-3");
-        //TODO: replace "vendor name" with actual vendor name
-        vendorDiv.innerHTML = "vendor name";
+        vendorDiv.innerHTML = vendorName;
         productNameDiv.classList.add("col-3");
         productNameDiv.innerHTML = productName;
         priceDiv.classList.add("col-3")
@@ -91,8 +112,9 @@ const display_search_results = (products, vendors) => {
 searchBtn.addEventListener('click',async ()=> {
     const query = searchInput.value;
     const products = await get_search_results(query);
-    //searchResultsDiv.innerHTML = ""
+    searchResultsDiv.innerHTML = ""
     display_search_results(products)
+    searchInput.value = ""
 })
 
 
