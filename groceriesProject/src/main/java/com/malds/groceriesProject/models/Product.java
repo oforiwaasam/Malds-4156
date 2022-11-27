@@ -55,13 +55,4 @@ public class Product {
         this.quantity = null;
     }
 
-    /**
-     * toString Method for Product.
-     */
-    @Override
-    public String toString() {
-        return "\nProduct { " + "\n\t productID=" + productID
-                + ",\n\t vendorID=" + vendorID + ",\n\t price='"
-                + price + '\'' + ",\n\t quantity='" + quantity + '}';
-    }
 }
