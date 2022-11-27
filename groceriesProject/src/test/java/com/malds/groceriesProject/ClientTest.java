@@ -280,7 +280,60 @@ public class ClientTest {
             clientService.checkValidInput(client);
         });
         assertEquals("Email is invalid", exception.getMessage());
-        // clientService.checkValidInput(client);
+    }
+
+    @Test
+    public void testNullEmail() {
+        // initialize invalid email - null
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail(null);
+        client.setFirstName("Sarah");
+        client.setLastName("Delgado");
+        client.setGender("Female");
+        client.setDateOfBirth("01/08/2002");
+        client.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkValidInput(client);
+        });
+        assertEquals("Value cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void testBlankEmail() {
+        // initialize invalid email client - "" - blank
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail("");
+        client.setFirstName("Sarah");
+        client.setLastName("Delgado");
+        client.setGender("Female");
+        client.setDateOfBirth("01/08/2002");
+        client.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkValidInput(client);
+        });
+        assertEquals("Email must not be blank or longer than 320 chars", exception.getMessage());
+    }
+
+    @Test
+    public void testNullClientID() {
+        // initialize invalid clientID - null
+        Client client = new Client();
+        client.setClientID(null);
+        client.setEmail("sd2818@columbia.edu");
+        client.setFirstName("Sarah");
+        client.setLastName("Delgado");
+        client.setGender("Female");
+        client.setDateOfBirth("01/08/2002");
+        client.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkValidInput(client);
+        });
+        assertEquals("Value cannot be null", exception.getMessage());
     }
 
     @Test
@@ -305,6 +358,42 @@ public class ClientTest {
     }
 
     @Test
+    public void testNullFirstName() {
+        // initialize invalid name - null
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail("sd2818@columbia.edu");
+        client.setFirstName(null);
+        client.setLastName("   ");
+        client.setGender("Female");
+        client.setDateOfBirth("01/08/2002");
+        client.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkValidInput(client);
+        });
+        assertEquals("Value cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void testBlankFirstName() {
+        // initialize invalid name - blank
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail("sd2818@columbia.edu");
+        client.setFirstName("");
+        client.setLastName("   ");
+        client.setGender("Female");
+        client.setDateOfBirth("01/08/2002");
+        client.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkValidInput(client);
+        });
+        assertEquals("First Name must not be blank or longer than 128 chars", exception.getMessage());
+    }
+
+    @Test
     public void testCheckInputInvalidLastName() {
         // initialize invalid name - blank space
         Client client = new Client();
@@ -321,7 +410,24 @@ public class ClientTest {
         });
         assertEquals("Last Name must not be blank or longer than 128 chars",
                 exception.getMessage());
-        // clientService.checkValidInput(client);
+    }
+
+    @Test
+    public void testNullLastName() {
+        // initialize invalid name - null
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail("sd2818@columbia.edu");
+        client.setFirstName("Sarah");
+        client.setLastName(null);
+        client.setGender("Female");
+        client.setDateOfBirth("01/08/2002");
+        client.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkValidInput(client);
+        });
+        assertEquals("Value cannot be null", exception.getMessage());
     }
 
     @Test
@@ -340,7 +446,42 @@ public class ClientTest {
             clientService.checkValidInput(client);
         });
         assertEquals("Value cannot be null", exception.getMessage());
-        // clientService.checkValidInput(client);
+    }
+
+    @Test
+    public void testCheckInputOver20CharsGender() {
+        // initialize invalid gender - over 20 chars
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail("sd2818@columbia.edu");
+        client.setFirstName("Sarah");
+        client.setLastName("Delgado");
+        client.setGender("manymanymanymanymanymany chars");
+        client.setDateOfBirth("01/08/2002");
+        client.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkValidInput(client);
+        });
+        assertEquals("Gender must not be blank or longer than 20 chars", exception.getMessage());
+    }
+
+    @Test
+    public void testCheckBlankGender() {
+        // initialize invalid gender - blank
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail("sd2818@columbia.edu");
+        client.setFirstName("Sarah");
+        client.setLastName("Delgado");
+        client.setGender("");
+        client.setDateOfBirth("01/08/2002");
+        client.setZipcode("11101");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkValidInput(client);
+        });
+        assertEquals("Gender must not be blank or longer than 20 chars", exception.getMessage());
     }
 
     @Test
@@ -438,20 +579,56 @@ public class ClientTest {
     }
 
     @Test
-    public void testCheckInputInvalidZipcode() {
-        // initialize invalid dob - day 33
+    public void testCheckInputInvalidZipcodeOver10Chars() {
+        // initialize invalid zipcode - over 10 chars
         Client client = new Client();
         client.setClientID("1");
         client.setEmail("sd2818@columbia.edu");
         client.setFirstName("Sarah");
         client.setLastName("Delgado");
         client.setGender("female");
-        client.setDateOfBirth("12/33/2002");
-        client.setZipcode("11001");
+        client.setDateOfBirth("12/30/2002");
+        client.setZipcode("110011100111001");
 
         Throwable exception = assertThrows(Exception.class, () -> {
             clientService.checkValidInput(client);
         });
-        assertEquals("Invalid date of birth format: 'MM/dd/yyyy'", exception.getMessage());
+        assertEquals("Zipcode must not be blank or longer than 10 chars", exception.getMessage());
+    }
+
+    @Test
+    public void testNullZipcode() {
+        // initialize invalid zipcode - null
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail("sd2818@columbia.edu");
+        client.setFirstName("Sarah");
+        client.setLastName("Delgado");
+        client.setGender("female");
+        client.setDateOfBirth("12/30/2002");
+        client.setZipcode(null);
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkValidInput(client);
+        });
+        assertEquals("Value cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void testBlankZipcode() {
+        // initialize invalid zipcode - blank
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail("sd2818@columbia.edu");
+        client.setFirstName("Sarah");
+        client.setLastName("Delgado");
+        client.setGender("female");
+        client.setDateOfBirth("12/30/2002");
+        client.setZipcode("     ");
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkValidInput(client);
+        });
+        assertEquals("Zipcode must not be blank or longer than 10 chars", exception.getMessage());
     }
 }
