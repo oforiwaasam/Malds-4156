@@ -63,6 +63,19 @@ public class ClientTest {
     }
 
     @Test
+    public void testGetClientByIDNotFound() throws Exception {
+
+        final String EXPECTED_EXCEPTION = "Client ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
+
+        Mockito.when(clientRepo.existsByID("1")).thenReturn(false);
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.getClientByID("1");
+        });
+        assertEquals(EXPECTED_EXCEPTION, exception.getMessage());
+    }
+
+    @Test
     public void testSaveClient() throws Exception {
 
         final String EXPECTED_CLIENT_ID = "1";
@@ -83,6 +96,7 @@ public class ClientTest {
         client.setDateOfBirth("01/08/2002");
         client.setZipcode("11101");
 
+        Mockito.when(clientRepo.existsByID("1")).thenReturn(false);
         Mockito.when(clientRepo.saveClient(client)).thenReturn(List.of(client));
 
         assertEquals(clientService.saveClient(client).get(0).getClientID(), EXPECTED_CLIENT_ID);
@@ -92,6 +106,28 @@ public class ClientTest {
         assertEquals(clientService.saveClient(client).get(0).getGender(), EXPECTED_GENDER);
         assertEquals(clientService.saveClient(client).get(0).getDateOfBirth(), EXPECTED_DOB);
         assertEquals(clientService.saveClient(client).get(0).getZipcode(), EXPECTED_ZIPCODE);
+    }
+
+    @Test
+    public void testSaveClientIDExists() throws Exception {
+
+        final String EXPECTED_EXCEPTION = "client ID already exists - must use unique clientID";
+
+        // create new client to be saved
+        Client client = new Client();
+        client.setClientID("1");
+        client.setEmail("sd2818@columbia.edu");
+        client.setFirstName("Sarah");
+        client.setLastName("Delgado");
+        client.setGender("Female");
+        client.setDateOfBirth("01/08/2002");
+        client.setZipcode("11101");
+
+        Mockito.when(clientRepo.existsByID("1")).thenReturn(true);
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.saveClient(client);
+        });
+        assertEquals(EXPECTED_EXCEPTION, exception.getMessage());
     }
 
     @Test
@@ -133,23 +169,6 @@ public class ClientTest {
     }
 
     @Test
-    public void testDeleteClientByID() {
-        // initialize Client to be deleted
-        Client deleteClient = new Client();
-        deleteClient.setClientID("3");
-        deleteClient.setEmail("sarah.delgado@columbia.edu");
-        deleteClient.setFirstName("Sarah");
-        deleteClient.setLastName("Delgado");
-        deleteClient.setGender("Female");
-        deleteClient.setDateOfBirth("01/08/2002");
-        deleteClient.setZipcode("10260");
-
-        Mockito.when(clientRepo.existsByID("3")).thenReturn(true);
-        clientService.deleteClientByID("3");
-    }
-
-    // @Test(expected = ResourceNotFoundException.class)
-    @Test
     public void testNoClientIDUpdate() {
         // Initialize client update
         Client updatedClient = new Client();
@@ -172,6 +191,22 @@ public class ClientTest {
     }
 
     @Test
+    public void testDeleteClientByID() {
+        // initialize Client to be deleted
+        Client deleteClient = new Client();
+        deleteClient.setClientID("3");
+        deleteClient.setEmail("sarah.delgado@columbia.edu");
+        deleteClient.setFirstName("Sarah");
+        deleteClient.setLastName("Delgado");
+        deleteClient.setGender("Female");
+        deleteClient.setDateOfBirth("01/08/2002");
+        deleteClient.setZipcode("10260");
+
+        Mockito.when(clientRepo.existsByID("3")).thenReturn(true);
+        clientService.deleteClientByID("3");
+    }
+
+    @Test
     public void testNoClientIDDelete() {
 
         Mockito.when(clientRepo.existsByID("32")).thenReturn(false);
@@ -182,6 +217,40 @@ public class ClientTest {
                 "Client ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)",
                 exception.getMessage());
         // clientService.deleteClientByID("32");
+    }
+
+    @Test
+    public void testFindAllClients() {
+        // create new clients to be saved
+        Client client1 = new Client();
+        client1.setClientID("1");
+        client1.setEmail("sd2818@columbia.edu");
+        client1.setFirstName("Sarah");
+        client1.setLastName("Delgado");
+        client1.setGender("Female");
+        client1.setDateOfBirth("01/08/2002");
+        client1.setZipcode("11101");
+
+        Client client2 = new Client();
+        client2.setClientID("2");
+        client2.setEmail("samuel18@gmail.com");
+        client2.setFirstName("Samuel");
+        client2.setLastName("Smith");
+        client2.setGender("Male");
+        client2.setDateOfBirth("01/28/1992");
+        client2.setZipcode("11101");
+
+        Client client3 = new Client();
+        client3.setClientID("3");
+        client3.setEmail("blake_s@cu.edu");
+        client3.setFirstName("Blake");
+        client3.setLastName("Smith");
+        client3.setGender("Female");
+        client3.setDateOfBirth("02/28/2000");
+        client3.setZipcode("11101");
+
+        Mockito.when(clientRepo.findAll()).thenReturn(List.of(client1, client2, client3));
+        assertEquals(clientService.findAll(), List.of(client1, client2, client3));
     }
 
     @Test
