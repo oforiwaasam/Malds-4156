@@ -1,6 +1,8 @@
 
 package com.malds.groceriesProject.repositories;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -263,7 +265,38 @@ public class ProductRepositoryTest {
 
         Mockito.when(productRepo.findAllProducts()).thenReturn(List.of(product1, product2));
         Mockito.when(productRepo.getProductsByVendorID("98765")).thenReturn(List.of(product2));
+        assertEquals(productService.getProductsByVendorID("98765").get(0), product2);
     }
+
+    @Test
+    public void testGetMultipleProductsByVendorID() {
+        Product product1 = new Product();
+        product1.setProductID("123456");
+        product1.setProductName("TestProduct1");
+        product1.setVendorID("54321");
+        product1.setPrice("4.19");
+        product1.setQuantity("1");
+
+        Product product2 = new Product();
+        product2.setProductID("56789");
+        product2.setProductName("TestProduct2");
+        product2.setVendorID("54321");
+        product2.setPrice("2.29");
+        product2.setQuantity("1");
+
+        Product product3 = new Product();
+        product3.setProductID("24680");
+        product3.setProductName("TestProduct3");
+        product3.setVendorID("54321");
+        product3.setPrice("4.33");
+        product3.setQuantity("3");
+
+        Mockito.when(productRepo.findAllProducts()).thenReturn(List.of(product1, product2, product3));
+        Mockito.when(productRepo.getProductsByVendorID("54321")).thenReturn(List.of(product1, product2, product3));
+        assertEquals(productService.getProductsByVendorID("54321"), (List.of(product1, product2, product3)));
+    }
+
+
     @Test
     public void testGetProductsByInvalidVendorID() {
         Product product1 = new Product();
@@ -282,5 +315,6 @@ public class ProductRepositoryTest {
 
         Mockito.when(productRepo.findAllProducts()).thenReturn(List.of(product1, product2));
         Mockito.when(productRepo.getProductsByVendorID("98")).thenReturn(new ArrayList<Product>());
+        assertEquals(productService.getProductsByVendorID("98"), new ArrayList<Product>());
     }
 }
