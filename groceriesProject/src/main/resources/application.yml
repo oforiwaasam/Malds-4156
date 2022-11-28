@@ -1,0 +1,8 @@
+auth0:
+  audience: https://clients/api
+spring:
+  security:
+    oauth2:
+        resourceserver:
+            jwt:
+                issuer-uri: https://dev-yofxxyx6kqh2a4pi.us.auth0.com/
