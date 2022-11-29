@@ -15,3 +15,4 @@ P.S: access & secret key cannot be published to public repo (so cannot access dy
     - To see code coverage, run `mvn jacoco:report` after runnning `mvn clean test`. The report should be accessible at `target/site/jacoco/index.html`
 ## Demo Testing (On Heroku)
 You can also test the API in Heroku using this link: https://groceries-project.herokuapp.com/swagger-ui/index.html
+- To deploy the latest code onto Heroku, run `mvn clean heroku:deploy`
