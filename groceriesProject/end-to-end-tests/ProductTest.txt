@@ -1,0 +1,152 @@
+assumption: initially empty Product table
+assumption: vendorID = 1, 2, 3 exists
+
+on Swagger UI:
+1) GET /products/get_product_by_id/1:
+(id = 1, test get product by id when productID does not yet exist - EXCEPTION)
+    Response Body:
+    Product ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+2) GET /products/get_product_by_name/apple
+(test get all products with name = apple when there are no apple products)
+    Response Body:
+    []
+
+3) PUT /products/1:
+(id = 1, test update product when productID does not yet exist - EXCEPTION)
+    Request Body:
+    {
+        "productID": "1",
+        "productName": "Orange",
+        "vendorID": "1",
+        "price": "2.00",
+        "quantity": "3"
+    }
+    Response Body:
+    Error: com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException: Product ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+3) DELETE /products/1:
+(id = 1, test delete product when productID does not yet exist - EXCEPTION)
+    Response Body:
+    ERROR: com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException: Product ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null) (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+4) POST /products:
+(id =1, test add product when productID does not yet exist - SUCCESS)
+    Request Body:
+    {
+        "productID": "1",
+        "productName": "Orange",
+        "vendorID": "1",
+        "price": "2.00",
+        "quantity": "3"
+    }
+    Response Body:
+    {
+        "productID": "1",
+        "productName": "Orange",
+        "vendorID": "1",
+        "price": "2.00",
+        "quantity": "3"
+    }
+
+5) POST /products:
+(again with the same productID - i.e. productID now already exists - EXCEPTION)
+    Request Body:
+    {
+        "productID": "1",
+        "productName": "Orange",
+        "vendorID": "1",
+        "price": "2.00",
+        "quantity": "3"
+    }
+    Response Body:
+    Error: java.lang.Exception: product ID already exists - must use unique productID
+
+6) POST /products:
+(with different productID but invalid inputs - i.e. invalid price format - cannot be parsed to number - EXCEPTION)
+    Request Body:
+    {
+        "productID": "2",
+        "productName": "Orange",
+        "vendorID": "2",
+        "price": "incorrect format",
+        "quantity": "3"
+    }
+    Response Body:
+    Error: java.lang.Exception: Price is invalid
+
+7) POST/products:
+(with different productID and valid inputs - SUCCESS)
+    Request Body:
+    {
+        "productID": "2",
+        "productName": "Orange",
+        "vendorID": "2",
+        "price": "2.50",
+        "quantity": "3"
+    }
+    Response Body:
+    {
+        "productID": "2",
+        "productName": "Orange",
+        "vendorID": "2",
+        "price": "2.50",
+        "quantity": "3"
+    }
+
+8) GET /products/get_product_by_id/1:
+(get product with productID = 1 - SUCCESS)
+    Response Body:
+    [
+        {
+            "productID": "1",
+            "productName": "Orange",
+            "vendorID": "1",
+            "price": "2.00",
+            "quantity": "3"
+        }
+    ]
+
+9) PUT /products/1:
+(update product with productID = 1 - SUCCESS)
+    Request Body:
+    {
+        "productID": "1",
+        "productName": "Orange",
+        "vendorID": "1",
+        "price": "2.50",
+        "quantity": "3"
+    }
+    Response Body:
+    [
+        {
+            "productID": "1",
+            "productName": "Orange",
+            "vendorID": "1",
+            "price": "2.50",
+            "quantity": "3"
+        }
+    ]
+
+10) GET /products/get_product_by_id/1:
+(gets the UPDATED product info from part 9 - SUCCESS)
+    Response Body:
+    [
+        {
+            "productID": "1",
+            "productName": "Orange",
+            "vendorID": "1",
+            "price": "2.50",
+            "quantity": "3"
+        }
+    ]
+
+11) DELETE /products/2:
+(deletes product with productID = 2 - SUCCESS)
+    no response body - returns void - but have
+    Code: 200, Description: OK
+
+12) GET /products/get_product_by_id/2:
+(get product with productID = 2 - will throw an exception because step 11 deletes the product with productID = 2 - EXCEPTION)
+    Response Body:
+    Product ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
