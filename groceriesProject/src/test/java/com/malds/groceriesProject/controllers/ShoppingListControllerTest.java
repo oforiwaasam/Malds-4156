@@ -130,6 +130,50 @@ public class ShoppingListControllerTest {
     }
 
     @Test
+    public void testUpdateShoppingListWithInvalidProductToQuantityValue() throws Exception {
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("123456789", "kjlk");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("2");
+        shoppingList.setClientID("345");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        MvcResult mvcResult = mockMvc.perform(put("/shopping_list")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(shoppingList))
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andReturn();
+        assertEquals("ERROR: check input values; be sure to include ShoppingListID"
+                , mvcResult.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testUpdateShoppingListWithInvalidProductToQuantityKey() throws Exception {
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("faklsdf", "5");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("988");
+        shoppingList.setClientID("344");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        MvcResult mvcResult = mockMvc.perform(put("/shopping_list")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(shoppingList))
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andReturn();
+        assertEquals("ERROR: check input values; be sure to include ShoppingListID"
+                , mvcResult.getResponse().getContentAsString());
+    }
+
+    @Test
     public void testGetProductsToQuantityByID() throws Exception {
         Map<String, String> productIDToQuantity = new HashMap<String, String>();
         productIDToQuantity.put("123456789", "5");
