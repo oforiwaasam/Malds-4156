@@ -1,0 +1,185 @@
+Implement end-to-end tests where your client exercises as much functionality of your server as possible. 
+Although ideally automated, it's ok to run end-to-end tests manually. 
+ Document any manual tests with a checklist or some other mechanism to make sure you can 
+ re-run the exact same set of tests as needed, e.g., after fixing a bug. 
+
+assumption: initially empty Client table
+
+on Swagger UI:
+1) GET /clients/1:
+(id = 1, test get client when clientID does not yet exist - EXCEPTION)
+    Response Body:
+    ERROR: check clientID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+2) PUT /clients/1:
+(id = 1, test update client when clientID does not yet exist - EXCEPTION)
+    Request Body:
+    {
+        "clientID": "1",
+        "email": "sd1234@Columbia.edu",
+        "firstName": "Sarah",
+        "lastName": "D",
+        "gender": "Female",
+        "dateOfBirth": "01/08/2002",
+        "zipcode": "11101"
+    }
+    Response Body:
+    ERROR: check input values; be sure to include clientID
+
+3) DELETE /clients/1:
+(id = 1, test delete client when clientID does not yet exist - EXCEPTION)
+    Response Body:
+    ERROR: check clientID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+4) POST /clients:
+(id =1, test add client when clientID does not yet exist - SUCCESS)
+    Request Body:
+    {
+        "clientID": "1",
+        "email": "sd1234@columbia.edu",
+        "firstName": "Sarah",
+        "lastName": "D",
+        "gender": "Female",
+        "dateOfBirth": "01/08/2002",
+        "zipcode": "11101"
+    }
+    Response Body:
+    [
+        {
+            "clientID": "1",
+            "email": "sd1234@columbia.edu",
+            "firstName": "Sarah",
+            "lastName": "D",
+            "gender": "Female",
+            "dateOfBirth": "01/08/2002",
+            "zipcode": "11101"
+        }
+    ]
+
+5) POST /clients:
+(again with the same clientID - i.e. clientID now already exists - EXCEPTION)
+    Request Body:
+    {
+        "clientID": "1",
+        "email": "sd1234@columbia.edu",
+        "firstName": "Sarah",
+        "lastName": "D",
+        "gender": "Female",
+        "dateOfBirth": "01/08/2002",
+        "zipcode": "11101"
+    }
+    Response Body:
+    ERROR: check input values; client ID must not already exist in DB
+
+6) POST /clients:
+(with different clientID but invalid inputs - i.e. invalid email format - EXCEPTION)
+    Request Body:
+    {
+        "clientID": "2",
+        "email": "incorrectemailcolumbia.edu",
+        "firstName": "Kat",
+        "lastName": "S",
+        "gender": "Female",
+        "dateOfBirth": "01/28/1996",
+        "zipcode": "10260"
+    }
+    Response Body:
+    ERROR: check input values; client ID must not already exist in DB
+
+7) POST/clients:
+(with different clientID and valid inputs - SUCCESS)
+    Request Body:
+    {
+        "clientID": "2",
+        "email": "kat.s@columbia.edu",
+        "firstName": "Kat",
+        "lastName": "S",
+        "gender": "Female",
+        "dateOfBirth": "01/28/1996",
+        "zipcode": "10260"
+    }
+    Response Body:
+    [
+        {
+            "clientID": "2",
+            "email": "kat.s@columbia.edu",
+            "firstName": "Kat",
+            "lastName": "S",
+            "gender": "Female",
+            "dateOfBirth": "01/28/1996",
+            "zipcode": "10260"
+        }
+    ]
+
+8) GET /clients/1:
+(get client with clientID = 1 - SUCCESS)
+    Response Body:
+    [
+        {
+            "clientID": "1",
+            "email": "sd1234@columbia.edu",
+            "firstName": "Sarah",
+            "lastName": "D",
+            "gender": "Female",
+            "dateOfBirth": "01/08/2002",
+            "zipcode": "11101"
+        }
+    ]
+
+9) PUT /clients/1:
+(update client with clientID = 1 - SUCCESS)
+    Request Body:
+    {
+        "clientID": "1",
+        "email": "sd1234@Columbia.edu",
+        "firstName": "Sarah",
+        "lastName": "D",
+        "gender": "Female",
+        "dateOfBirth": "01/08/2002",
+        "zipcode": "10260"
+    }
+    Response Body:
+    [
+        {
+            "clientID": "1",
+            "email": "sd1234@Columbia.edu",
+            "firstName": "Sarah",
+            "lastName": "D",
+            "gender": "Female",
+            "dateOfBirth": "01/08/2002",
+            "zipcode": "10260"
+        }
+    ]
+
+10) GET /clients/1:
+(gets the UPDATED client info from part 9 - SUCCESS)
+    Response Body:
+    [
+        {
+            "clientID": "1",
+            "email": "sd1234@Columbia.edu",
+            "firstName": "Sarah",
+            "lastName": "D",
+            "gender": "Female",
+            "dateOfBirth": "01/08/2002",
+            "zipcode": "10260"
+        }
+    ]
+
+11) DELETE /clients/2:
+(deletes client with clientID = 2 - SUCCESS)
+    no response body - returns void - but have
+    Code: 200, Description: OK
+
+12) GET /clients/2:
+(get client with clientID = 2 - will throw an exception because step 11 deletes the client with clientID = 2 - EXCEPTION)
+    Response Body:
+    ERROR: check clientID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+
+
+
+
+
+
+
