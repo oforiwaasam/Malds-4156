@@ -98,11 +98,11 @@ public class ProductControllerTest {
 
 
         Product product2 = new Product();
-        product1.setProductID("123456");
-        product1.setProductName("TestProduct2");
-        product1.setVendorID("54321");
-        product1.setPrice("4.19");
-        product1.setQuantity("2");
+        product2.setProductID("123456");
+        product2.setProductName("TestProduct2");
+        product2.setVendorID("54321");
+        product2.setPrice("7.19");
+        product2.setQuantity("2");
         when(productService.updateProduct(product1)).thenReturn(List.of(product2));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/products/123456").contentType(APPLICATION_JSON_UTF8)
@@ -116,5 +116,35 @@ public class ProductControllerTest {
 
         Mockito.verify(productService).updateProduct(product1);
     }
+
+    @Test
+    public void testUpdateProduct_bad() throws Exception{
+
+        Product product3 = new Product();
+        product3.setProductID("123454");
+        product3.setProductName("TestProduct2");
+        product3.setVendorID("54321");
+        product3.setPrice("7.19");
+        product3.setQuantity("2");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(product3);
+
+        when(productService.updateProduct(product3)).thenThrow(new ResourceNotFoundException("Exception:Product ID not found"));
+
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/products/123454").contentType(APPLICATION_JSON_UTF8)
+        .content(requestJson))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        //.andExpect(MockMvcResultMatchers.jsonPath(“$.productName”).value("TestProduct1"));
+
+        Mockito.verify(productService).updateProduct(product3);
+        Assert.assertTrue(content.contains("Exception"));}
 
 }
