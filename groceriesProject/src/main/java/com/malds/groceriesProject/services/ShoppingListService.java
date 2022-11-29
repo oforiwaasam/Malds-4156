@@ -41,11 +41,17 @@ public class ShoppingListService {
     public List<ShoppingList> updateShoppingList(
             final ShoppingList shoppingList)
             throws ResourceNotFoundException {
-        if ((shoppingListRepository.getShoppingListByID(
-                shoppingList.getShoppingListID()) != null)
-                && (checkValidInput(shoppingList))) {
-            return shoppingListRepository.updateShoppingList(shoppingList);
-        } else {
+        try {
+            checkValidInput(shoppingList);
+            if (shoppingListRepository.getShoppingListByID(
+                    shoppingList.getShoppingListID()) != null) {
+                return shoppingListRepository.updateShoppingList(shoppingList);
+            } else {
+                throw new ResourceNotFoundException("Shopping "
+                        + "List ID not found");
+            }
+
+        } catch (Exception e) {
             throw new ResourceNotFoundException("Shopping List ID not found");
         }
     }
@@ -150,20 +156,21 @@ public class ShoppingListService {
         }
     }
 
+
     /**
      * Checks whether inputted values by users are valid,
      * is not blank, and is of accepted data types.
      * Throws Exception if inputs are invalid.
      * @param shoppingList
-     * @return boolean True if input is valid; false otherwise
+     * @throws Exception if input is invalid
      */
-    public boolean checkValidInput(
-            final ShoppingList shoppingList) { //throws Exception {
+    public void checkValidInput(
+            final ShoppingList shoppingList) throws Exception {
         if (shoppingList.getShoppingListID() == null
                 || shoppingList.getClientID() == null
                 || shoppingList.getProductIDToQuantity() == null) {
-            return false;
-            //throw new Exception("Value cannot be null");
+            //return false;
+            throw new Exception("Value cannot be null");
         }
 
         for (Map.Entry<String, String> entry : shoppingList
@@ -172,14 +179,14 @@ public class ShoppingListService {
             String productID = entry.getKey();
             if ((!(quantity.matches("[0-9]+")))
                     || (!(productID.matches("[0-9]+")))) {
-                return false;
-                /*
+                //return false;
+
                 throw new Exception("The quantity value "
                         + "within the productIDToQuantity"
                         + " is invalid. Make sure it only "
-                        + "contains numbers");*/
+                        + "contains numbers");
             }
         }
-        return true;
+        //return true;
     }
 }
