@@ -1,16 +1,10 @@
 package com.malds.groceriesProject.controllers;
 
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.amazonaws.services.dynamodbv2.xspec.M;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.malds.groceriesProject.models.ShoppingList;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +15,14 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.malds.groceriesProject.GroceriesProjectApplication;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.awt.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -102,6 +94,27 @@ public class ShoppingListControllerTest {
         ShoppingList shoppingList = new ShoppingList();
         shoppingList.setShoppingListID("2");
         shoppingList.setClientID("345");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        MvcResult mvcResult = mockMvc.perform(put("/shopping_list")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(shoppingList))
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andReturn();
+        assertEquals("ERROR: check input values; be sure to include ShoppingListID"
+                , mvcResult.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testUpdateShoppingListWithNullClientID() throws Exception {
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("123456789", "5");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("2");
         shoppingList.setProductIDToQuantity(productIDToQuantity);
 
         ObjectMapper mapper = new ObjectMapper();
