@@ -3,6 +3,7 @@ package com.malds.groceriesProject.services;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.Product;
 import com.malds.groceriesProject.repositories.ProductRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,10 @@ public class ProductService {
      */
 
     @Autowired
+    /*
+    * Product Repository.
+    * Creates, reads from, updates to, deletes from Product table.
+    */
     private ProductRepository productRepository;
 
     /**
@@ -68,12 +73,11 @@ public class ProductService {
      * @throws ResourceNotFoundException
      */
     public List<Product> updateProduct(
-        final Product product) throws ResourceNotFoundException {
-        if (productRepository.existsByID(product.getProductID())) {
-            return productRepository.updateProduct(product);
-        } else {
+        final Product product) throws ResourceNotFoundException, Exception {
+        if (!productRepository.existsByID(product.getProductID())) {
             throw new ResourceNotFoundException("Product ID not found");
         }
+        return productRepository.updateProduct(product);
     }
 
     /**
@@ -88,14 +92,8 @@ public class ProductService {
         if (productRepository.existsByID(product.getProductID())) {
             throw new Exception(
                 "product ID already exists - must use unique productID");
-        } else {
-            try {
-                checkValidInput(product);
-                return productRepository.addProduct(product);
-            } catch (Exception e) {
-                throw new Exception(e);
-            }
         }
+        return productRepository.addProduct(product);
     }
 
     /**
@@ -139,7 +137,11 @@ public class ProductService {
 
             throw new Exception("Value cannot be null");
         }
-
+        /*
+        if (!vendorRepository.existsByID(product.getVendorID())) {
+            throw new Exception("VendorID does not exist");
+        }
+         */
 
         try {
             Float.parseFloat(product.getPrice());

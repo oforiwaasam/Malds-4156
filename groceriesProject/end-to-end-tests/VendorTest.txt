@@ -1,0 +1,150 @@
+assumption: initially empty Vendor table
+
+on Swagger UI:
+1) GET /vendors/1:
+(id = 1, test get vendor when vendorID does not yet exist - EXCEPTION)
+    Response Body:
+    ERROR: check vendorID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+2) PUT /vendors/1:
+(id = 1, test update vendor when vendorID does not yet exist - EXCEPTION)
+    Request Body:
+    {
+        "vendorID": "1",
+        "email": "trader_joes@tj.com",
+        "companyName": "Trader Joe's",
+        "industry": "Grocery",
+        "zipcode": "11101"
+    }
+    Response Body:
+    ERROR: check input values; be sure to include vendorID
+
+3) DELETE /vendors/1:
+(id = 1, test delete vendor when vendorID does not yet exist - EXCEPTION)
+    Response Body:
+    ERROR: check vendorID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+4) POST /vendors:
+(id =1, test add vendor when vendorID does not yet exist - SUCCESS)
+    Request Body:
+    {
+        "vendorID": "1",
+        "email": "trader_joes@tj.com",
+        "companyName": "Trader Joe's",
+        "industry": "Grocery",
+        "zipcode": "11101"
+    }
+    Response Body:
+    [
+        {
+            "vendorID": "1",
+            "email": "trader_joes@tj.com",
+            "companyName": "Trader Joe's",
+            "industry": "Grocery",
+            "zipcode": "11101"
+        }
+    ]
+
+5) POST /vendors:
+(again with the same vendorID - i.e. vendorID now already exists - EXCEPTION)
+    Request Body:
+    {
+       "vendorID": "1",
+        "email": "trader_joes@tj.com",
+        "companyName": "Trader Joe's",
+        "industry": "Grocery",
+        "zipcode": "11101"
+    }
+    Response Body:
+    ERROR: check input values; vendor ID must not already exist in DB
+
+6) POST /vendors:
+(with different vendorID but invalid inputs - i.e. invalid company name - blank - EXCEPTION)
+    Request Body:
+    {
+        "vendorID": "2",
+        "email": "zara@retail.com",
+        "companyName": "",
+        "industry": "Fashion",
+        "zipcode": "10260"
+    }
+    Response Body:
+    ERROR: check input values; vendor ID must not already exist in DB
+
+7) POST/vendors:
+(with different vendorID and valid inputs - SUCCESS)
+    Request Body:
+    {
+        "vendorID": "2",
+        "email": "zara@retail.com",
+        "companyName": "Zara",
+        "industry": "Fashion",
+        "zipcode": "10260"
+    }
+    Response Body:
+    [
+        {
+            "vendorID": "2",
+            "email": "zara@retail.com",
+            "companyName": "Zara",
+            "industry": "Fashion",
+            "zipcode": "10260"
+        }
+    ]
+
+8) GET /vendors/1:
+(get vendor with vendorID = 1 - SUCCESS)
+    Response Body:
+    [
+        {
+            "vendorID": "1",
+            "email": "trader_joes@tj.com",
+            "companyName": "Trader Joe's",
+            "industry": "Grocery",
+            "zipcode": "11101"
+        }
+    ]
+
+9) PUT /vendors/1:
+(update vendor with vendorID = 1 - SUCCESS)
+    Request Body:
+    {
+        "vendorID": "1",
+        "email": "trader_joes@tj.com",
+        "companyName": "Trader Joe's",
+        "industry": "Grocery",
+        "zipcode": "10260"
+    }
+    Response Body:
+    [
+        {
+            "vendorID": "1",
+            "email": "trader_joes@tj.com",
+            "companyName": "Trader Joe's",
+            "industry": "Grocery",
+            "zipcode": "10260"
+        }
+    ]
+
+10) GET /vendors/1:
+(gets the UPDATED vendor info from part 9 - SUCCESS)
+    Response Body:
+    [
+        {
+            "vendorID": "1",
+            "email": "trader_joes@tj.com",
+            "companyName": "Trader Joe's",
+            "industry": "Grocery",
+            "zipcode": "10260"
+        }
+    ]
+
+11) DELETE /vendors/2:
+(deletes vendor with vendorID = 2 - SUCCESS)
+    no response body - returns void - but have
+    Code: 200, Description: OK
+
+12) GET /vendors/2:
+(get vendor with vendorID = 2 - will throw an exception because step 11 deletes the vendor with vendorID = 2 - EXCEPTION)
+    Response Body:
+    ERROR: check vendorID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)

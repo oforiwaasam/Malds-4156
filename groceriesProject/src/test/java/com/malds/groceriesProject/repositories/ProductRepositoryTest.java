@@ -30,6 +30,11 @@ public class ProductRepositoryTest {
     @MockBean
     private ProductRepository productRepo;
 
+    /* 
+    @MockBean
+    private VendorRepository vendorRepo;
+    */
+
     @Test
     public void testAddProduct() throws Exception {
 
@@ -65,6 +70,28 @@ public class ProductRepositoryTest {
                 exception.getMessage());
     }
 
+    /*
+    @Test
+    public void testAddProductIDVendorIDDoesNotExist() throws Exception {
+
+        Product product = new Product();
+        product.setProductID("123456");
+        product.setProductName("TestProduct");
+        product.setVendorID("54321");
+        product.setPrice("4.19");
+        product.setQuantity("1");
+
+        Mockito.when(productRepo.existsByID("123456")).thenReturn(false);
+        Mockito.when(vendorRepo.existsByID("54321")).thenReturn(false);
+        Throwable exception = Assertions.assertThrows(Exception.class, () -> {
+            productService.addNewProduct(product);
+        });
+
+        Assertions.assertEquals("java.lang.Exception: VendorID does not exist",
+                exception.getMessage());
+    }
+    */
+    
     @Test
     public void testUpdateProduct() throws Exception {
 
@@ -229,6 +256,18 @@ public class ProductRepositoryTest {
     // Invalid Input Tests
 
     @Test
+    public void testCorrectInputs() throws Exception {
+        Product product = new Product();
+        product.setProductID("123456");
+        product.setProductName("TestProduct1");
+        product.setVendorID("54321");
+        product.setPrice("2.00");
+        product.setQuantity("1");
+
+        productService.checkValidInput(product);
+    }
+
+    @Test
     public void testInvalidPrice() throws Exception {
         Product product = new Product();
         product.setProductID("123456");
@@ -238,10 +277,10 @@ public class ProductRepositoryTest {
         product.setQuantity("1");
 
         Throwable exception = Assertions.assertThrows(Exception.class, () -> {
-            productService.addNewProduct(product);
+            productService.checkValidInput(product);
         });
 
-        Assertions.assertEquals("java.lang.Exception: Price is invalid", exception.getMessage());
+        Assertions.assertEquals("Price is invalid", exception.getMessage());
     }
 
     @Test
@@ -254,10 +293,10 @@ public class ProductRepositoryTest {
         product.setQuantity("number");
 
         Throwable exception = Assertions.assertThrows(Exception.class, () -> {
-            productService.addNewProduct(product);
+            productService.checkValidInput(product);
         });
 
-        Assertions.assertEquals("java.lang.Exception: Quantity is invalid", exception.getMessage());
+        Assertions.assertEquals("Quantity is invalid", exception.getMessage());
 
     }
 
