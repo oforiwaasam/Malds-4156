@@ -39,12 +39,17 @@ public class ProductController extends BaseController {
     public Product createProduct(
             @RequestBody final Product product) throws Exception {
         try {
+            productService.checkValidInput(product);
             return productService.addNewProduct(product);
         } catch (Exception e) {
+            /*
             throw new Exception(
-                    "ERROR: productId already exists in database.");
-        }
+                    "ERROR: check input values;"
+                    + " product ID must not already exist in DB");
+            */
+            throw new Exception("Error: " + e);
 
+        }
     }
 
     /**
@@ -62,9 +67,12 @@ public class ProductController extends BaseController {
             productService.checkValidInput(product);
             return productService.updateProduct(product);
         } catch (Exception e) {
+            /*
             String message = "ERROR: " + e
                     + "; be sure to include productID that exists";
             throw new Exception(message);
+            */
+            throw new Exception("Error: " + e);
         }
     }
 
@@ -134,7 +142,7 @@ public class ProductController extends BaseController {
             productService.deleteProductById(productId);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException(
-                    "ERROR: check productId value");
+                    "ERROR: " + e);
         }
     }
 }
