@@ -112,27 +112,27 @@
 			<groupId>com.amazonaws</groupId>
 			<artifactId>DynamoDBLocal</artifactId>
 			<version>1.18.0</version>
-		 </dependency>
+		 </dependency>-->
 		 <dependency>
 			<groupId>software.amazon.awssdk</groupId>
 			<artifactId>dynamodb</artifactId>
-			<version>2.18.1</version>
-		</dependency>-->
+			<version>2.18.24</version>
+		</dependency>
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>DynamoDBLocal</artifactId>
-			<version>1.18.0</version>
+			<version>[1.12,2.0)</version>
 		</dependency>
 	</dependencies>
 	
 	<build>
 		<plugins>
-			<plugin>
+			<!--<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>3.9.1.2184</version>
-			</plugin>
-			<!--<plugin>
+			</plugin>-->
+			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.8</version>
@@ -150,7 +150,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>-->			
+			</plugin>		
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -169,25 +169,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.3.0</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.10</version>
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeScope>test</includeScope>
-							<includeTypes>so,dll,dylib</includeTypes>
-							<outputDirectory>${project.basedir}/target/native-libs</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>com.heroku.sdk</groupId>
@@ -220,6 +201,25 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.10</version>
+					<executions>
+						<execution>
+							<id>copy</id>
+							<phase>test-compile</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<includeScope>test</includeScope>
+								<includeTypes>so,dll,dylib</includeTypes>
+								<outputDirectory>${project.basedir}/target/native-libs</outputDirectory>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<configuration>
 						<systemPropertyVariables>
@@ -231,7 +231,7 @@
 		</pluginManagement>
 	
 	</build>
-	<profiles>
+	<!--<profiles>
 		<profile>
 		  <id>coverage</id>
 		  <activation>
@@ -261,7 +261,7 @@
 			</plugins>
 		  </build>
 		</profile>
-	  </profiles>
+	  </profiles>-->
 	<reporting>
 		<plugins>
 			<plugin>
