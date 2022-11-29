@@ -145,6 +145,173 @@ public class ProductControllerTest {
         //.andExpect(MockMvcResultMatchers.jsonPath(“$.productName”).value("TestProduct1"));
 
         Mockito.verify(productService).updateProduct(product3);
-        Assert.assertTrue(content.contains("Exception"));}
+        Assert.assertTrue(content.contains("Exception"));
+    }
 
+    @Test
+    public void testCreateProduct_good() throws Exception{
+        Product product1 = new Product();
+        product1.setProductID("123456");
+        product1.setProductName("TestProduct1");
+        product1.setVendorID("54321");
+        product1.setPrice("4.19");
+        product1.setQuantity("1");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(product1);
+
+        when(productService.addNewProduct(product1)).thenReturn(product1);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/products").contentType(APPLICATION_JSON_UTF8)
+        .content(requestJson))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        //.andExpect(MockMvcResultMatchers.jsonPath(“$.productName”).value("TestProduct1"));
+
+        Mockito.verify(productService).addNewProduct(product1);
+    }
+
+    @Test
+    public void testCreateProduct_bad() throws Exception{
+        Product product1 = new Product();
+        product1.setProductID("123456");
+        product1.setProductName("TestProduct1");
+        product1.setVendorID("54321");
+        product1.setPrice("4.19");
+        product1.setQuantity("1");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(product1);
+
+        when(productService.addNewProduct(product1)).thenThrow(new ResourceNotFoundException("Exception:Product ID already found"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/products").contentType(APPLICATION_JSON_UTF8)
+        .content(requestJson))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        //.andExpect(MockMvcResultMatchers.jsonPath(“$.productName”).value("TestProduct1"));
+
+        Mockito.verify(productService).addNewProduct(product1);
+        Assert.assertTrue(content.contains("Exception"));
+    }
+
+
+    @Test
+    public void testGetByVendorID_good() throws Exception {
+        Product product1 = new Product();
+        product1.setProductID("123456");
+        product1.setProductName("TestProduct1");
+        product1.setVendorID("54321");
+        product1.setPrice("4.19");
+        product1.setQuantity("1");
+
+        Product product2 = new Product();
+        product1.setProductID("5555555");
+        product1.setProductName("TestProduct2");
+        product1.setVendorID("54321");
+        product1.setPrice("8.50");
+        product1.setQuantity("4");
+
+        when(productService.getProductsByVendorID("54321")).thenReturn(List.of(product1,product2));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/products/get_product_by_vendor_id/54321"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        //.andExpect(MockMvcResultMatchers.jsonPath(“$.productName”).value("TestProduct1"));
+
+        Mockito.verify(productService).getProductsByVendorID("54321");
+        Assert.assertTrue(content.contains("TestProduct2")); 
+
+    }
+    @Test
+    public void testGetByVendorID_exception() throws Exception {
+        Product product1 = new Product();
+        product1.setProductID("123456");
+        product1.setProductName("TestProduct1");
+        product1.setVendorID("54321");
+        product1.setPrice("4.19");
+        product1.setQuantity("1");
+
+        when(productService.getProductsByVendorID("54321")).thenReturn(List.of(product1));
+        when(productService.getProductsByVendorID("544444321")).thenThrow(new ResourceNotFoundException("Exception:Vendor ID not found"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/products/get_product_by_vendor_id/544444321"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        //.andExpect(MockMvcResultMatchers.jsonPath(“$.productName”).value("TestProduct1"));
+
+        Mockito.verify(productService).getProductsByVendorID("544444321");
+        Assert.assertTrue(content.contains("Exception"));
+    }
+
+
+    @Test
+    public void testGetByName_good() throws Exception {
+        Product product1 = new Product();
+        product1.setProductID("123456");
+        product1.setProductName("TestProduct1");
+        product1.setVendorID("54321");
+        product1.setPrice("4.19");
+        product1.setQuantity("1");
+
+        Product product2 = new Product();
+        product1.setProductID("5555555");
+        product1.setProductName("TestProduct1");
+        product1.setVendorID("54321");
+        product1.setPrice("8.50");
+        product1.setQuantity("4");
+
+        when(productService.getProductByName("TestProduct1")).thenReturn(List.of(product1,product2));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/products/get_product_by_name/TestProduct1"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        //.andExpect(MockMvcResultMatchers.jsonPath(“$.productName”).value("TestProduct1"));
+
+        Mockito.verify(productService).getProductByName("TestProduct1");
+        Assert.assertTrue(content.contains("8.50")); 
+
+    }
+    @Test
+    public void testGetByName_exception() throws Exception {
+        Product product1 = new Product();
+        product1.setProductID("123456");
+        product1.setProductName("TestProduct1");
+        product1.setVendorID("54321");
+        product1.setPrice("4.19");
+        product1.setQuantity("1");
+
+        when(productService.getProductByName("TestProduct1")).thenReturn(List.of(product1));
+        when(productService.getProductByName("TestProduct2")).thenThrow(new ResourceNotFoundException("Exception:Product with Name: " +"TestProduct2"+ " not found"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/products/get_product_by_name/TestProduct2"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        //.andExpect(MockMvcResultMatchers.jsonPath(“$.productName”).value("TestProduct1"));
+
+        Mockito.verify(productService).getProductByName("TestProduct2");
+        Assert.assertTrue(content.contains("Exception"));
+    }
 }
