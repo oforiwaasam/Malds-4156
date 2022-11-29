@@ -1,0 +1,155 @@
+assumption: initially empty ShoppingList table
+
+on Swagger UI:
+1) GET /shopping_list:
+(id = 1, test get shopping list when shoppingListID does not yet exist - EXCEPTION)
+    Response Body:
+    This shoppingList ID doesn't exists (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+2) PUT /shopping_list/1:
+(id = 1, test update shopping list when shoppingListID does not yet exist - EXCEPTION)
+    Request Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+            "1": "5",
+            "7": "19"
+        }
+    }
+    Response Body:
+    ERROR: check input values; be sure to include ShoppingListID
+
+3) DELETE /shopping_list/1:
+(id = 1, test delete shopping list when shoppingListID does not yet exist - EXCEPTION)
+    Response Body:
+    ERROR: check shoppingListID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+4) POST /shopping_list:
+(id =1, test add shopping list when shoppingListID does not yet exist - SUCCESS)
+    Request Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+            "1": "5",
+            "7": "19"
+        }
+    }
+    Response Body:
+    [
+        {
+            "shoppingListID": "1",
+            "clientID": "1",
+            "productIDToQuantity": {
+            "1": "5",
+            "7": "19"
+            }
+        }
+    ]
+
+5) POST /shopping_list:
+(again with the same shoppingListID - i.e. shoppingListID now already exists - EXCEPTION)
+    Request Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+            "1": "5",
+            "7": "19"
+        }
+    }
+    Response Body:
+    ERROR: check input values
+
+6) POST/shopping_list:
+(with different shoppingListID and valid inputs - SUCCESS)
+    Request Body:
+    {
+        "shoppingListID": "2",
+        "clientID": "2",
+        "productIDToQuantity": {
+            "3": "5",
+            "124": "2"
+        }
+    }
+    Response Body:
+    [
+        {
+            "shoppingListID": "2",
+            "clientID": "2",
+            "productIDToQuantity": {
+            "3": "5",
+            "124": "2"
+            }
+        }
+    ]
+
+7) GET /shopping_list/1:
+(get shopping list with shoppingListID = 1 - SUCCESS)
+    Response Body:
+    [
+        {
+            "shoppingListID": "1",
+            "clientID": "1",
+            "productIDToQuantity": {
+            "1": "5",
+            "7": "19"
+            }
+        }
+    ]
+
+8) PUT /shopping_list/1:
+(update shopping list with shoppingListID = 1 - SUCCESS)
+    Request Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+        "1": "5",
+        "7": "19",
+        "23": "2"
+        }
+    }
+    Response Body:
+    [
+        {
+            "shoppingListID": "1",
+            "clientID": "1",
+            "productIDToQuantity": {
+            "1": "5",
+            "7": "19",
+            "23": "2"
+            }
+        }
+    ]
+
+9) GET /shopping_list/products/1:
+(gets the UPDATED lists of products & quantity in the shopping list info from part 9 - SUCCESS)
+    Response Body:
+    {
+        "1": "5",
+        "7": "19",
+        "23": "2"
+    }
+
+10) GET /shopping_list/client/2:
+    Response Body:
+    {
+        "shoppingListID": "2",
+        "clientID": "2",
+        "productIDToQuantity": {
+            "3": "5",
+            "124": "2"
+        }
+    }
+
+11) DELETE /shopping_list/2:
+(deletes shopping list with shoppingListID = 2 - SUCCESS)
+    no response body - returns void - but have
+    Code: 200, Description: OK
+
+12) GET /shopping_list/2:
+(get shopping list with shoppingListID = 2 - will throw an exception because step 11 deletes the shopping list with shoppingListID = 2 - EXCEPTION)
+    Response Body:
+    This shoppingList ID doesn't exists (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
