@@ -16,3 +16,13 @@ P.S: access & secret key cannot be published to public repo (so cannot access dy
 ## Demo Testing (On Heroku)
 You can also test the API in Heroku using this link: https://groceries-project.herokuapp.com/swagger-ui/index.html
 - To deploy the latest code onto Heroku, run `mvn clean heroku:deploy`
+## Running Sample Client
+- To run the sample client go open up any of these files in /Malds-4156/client/templates/
+- There are 4 html to run:
+    * home.html
+    * products.html
+    * shoppingList.html
+    * login.html
+- A third party can create their client by using any of the API endpoints which can be seen in this link: https://groceries-project.herokuapp.com/swagger-ui/index.html
+- Any API endpoint used needs to have https://groceries-project.herokuapp.com/ before the API endpoint
+- For example, https://groceries-project.herokuapp.com/shopping_list
