@@ -7,7 +7,7 @@ const vendorProductsDiv = document.getElementById("vendor-products")
 const deleteProductWithID = (productID) => {
     $.ajax({
         type: 'DELETE',
-        url: `http://localhost:8080/products/${productID}`,
+        url: `https://groceries-project.herokuapp.com/products/${productID}`,
         contentType: 'application/json; charset=utf-8',
         success: function(result){
             console.log(result);
@@ -25,7 +25,7 @@ const deleteProductWithID = (productID) => {
 const updateProduct = (product, productID) => {
     $.ajax({
         type: 'PUT',
-        url: `http://localhost:8080/products/${productID}`,
+        url: `https://groceries-project.herokuapp.com/products/${productID}`,
         data: JSON.stringify(product),
         dataType: "json",
         contentType: 'application/json; charset=utf-8',
@@ -44,7 +44,7 @@ const updateProduct = (product, productID) => {
 const addProduct = (product) => {
     $.ajax({
         type: 'POST',
-        url: `http://localhost:8080/products`,
+        url: `https://groceries-project.herokuapp.com/products`,
         data: JSON.stringify(product),
         dataType: "json",
         contentType: 'application/json; charset=utf-8',
@@ -196,7 +196,7 @@ const displayProducts = (products) =>{
 
 const getProductsByVendorID = async () =>{
     const vendorID = "2"
-    const response = await fetch(`http://localhost:8080/products/get_product_by_vendor_id/${vendorID}`);
+    const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_vendor_id/${vendorID}`);
     const data = await response.json();
     return data
 }
