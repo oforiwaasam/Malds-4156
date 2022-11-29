@@ -3,6 +3,7 @@ package com.malds.groceriesProject.controllers;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.amazonaws.services.dynamodbv2.xspec.M;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.malds.groceriesProject.models.ShoppingList;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,7 +40,6 @@ import java.util.Map;
 @TestPropertySource(
         locations = "classpath:application.properties")
 public class ShoppingListControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -59,21 +59,82 @@ public class ShoppingListControllerTest {
                 .andExpect(jsonPath("$[0].shoppingListID").value(shoppingList.getShoppingListID()))
                 .andReturn();
     }
-    @Test
-    public void testGetProductsToQuantityByID() throws Exception {
 
+    @Test
+    public void testGetShoppingListByInvalidID() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get("/shopping_list/98"))
+                .andDo(MockMvcResultHandlers.print()).andExpect(status().isOk())
+                .andReturn();
+        assertEquals("This shoppingList ID doesn't exists (Service: " +
+                "null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)"
+                , mvcResult.getResponse().getContentAsString());
+
+    }
+
+    @Test
+    public void testUpdateShoppingList() throws Exception {
         Map<String, String> productIDToQuantity = new HashMap<String, String>();
         productIDToQuantity.put("123456789", "5");
 
         ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setShoppingListID("998");
-        shoppingList.setClientID("12345f");
+        shoppingList.setShoppingListID("123");
+        shoppingList.setClientID("345");
         shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        System.out.println(mapper.writeValueAsString(shoppingList));
+        mockMvc.perform(put("/shopping_list")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(shoppingList))
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].shoppingListID").value(shoppingList.getShoppingListID()))
+                .andExpect(jsonPath("$[0].productIDToQuantity").value(shoppingList.getProductIDToQuantity()))
+                .andReturn();
+    }
+
+    @Test
+    public void testUpdateShoppingListWithInvalidID() throws Exception {
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("123456789", "5");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("2");
+        shoppingList.setClientID("345");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        MvcResult mvcResult = mockMvc.perform(put("/shopping_list")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(shoppingList))
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andReturn();
+        assertEquals("ERROR: check input values; be sure to include ShoppingListID"
+                , mvcResult.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testGetProductsToQuantityByID() throws Exception {
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("123456789", "5");
 
         MvcResult mvcResult = this.mockMvc.perform(get("/shopping_list/products/988"))
                 .andDo(MockMvcResultHandlers.print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$['123456789']").value(productIDToQuantity.get("123456789")))
                 .andReturn();
+    }
+
+    @Test
+    public void testGetProductsToQuantityByInvalidID() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get("/shopping_list/products/9"))
+                .andDo(MockMvcResultHandlers.print()).andExpect(status().isOk())
+                .andReturn();
+        assertEquals("ERROR: check input values (Service: null; Status Code: " +
+                        "0; Error Code: null; Request ID: null; Proxy: null)"
+                , mvcResult.getResponse().getContentAsString());
     }
 
     @Test
@@ -98,41 +159,22 @@ public class ShoppingListControllerTest {
     }
 
     @Test
-    public void testUpdateShoppingList() throws Exception {
-        Map<String, String> productIDToQuantity = new HashMap<String, String>();
-        productIDToQuantity.put("123456789", "10");
-
-        ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setShoppingListID("9");
-        shoppingList.setClientID("123");
-        shoppingList.setProductIDToQuantity(productIDToQuantity);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        mockMvc.perform(put("/shopping_list")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(shoppingList))
-                        .characterEncoding("utf-8"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].shoppingListID").value(shoppingList.getShoppingListID()))
-                .andExpect(jsonPath("$[0].productIDToQuantity").value(shoppingList.getProductIDToQuantity()))
-                .andReturn();
-    }
-
-    @Test
     public void testDeleteShoppingList() throws Exception {
-        Map<String, String> productIDToQuantity = new HashMap<String, String>();
-        productIDToQuantity.put("123456789", "10");
-
-        ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setShoppingListID("9");
-        shoppingList.setClientID("123");
-        shoppingList.setProductIDToQuantity(productIDToQuantity);
-
-
         mockMvc.perform(delete("/shopping_list/9"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andReturn();
+    }
+
+    @Test
+    public void testDeleteShoppingListInvalidID() throws Exception {
+        MvcResult result = mockMvc.perform(delete("/shopping_list/10000"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andReturn();
+        assertEquals("ERROR: check shoppingListID value (Service: null; Status Code: 0;" +
+                        " Error Code: null; Request ID: null; Proxy: null)"
+                , result.getResponse().getContentAsString());
+
     }
 }
