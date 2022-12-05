@@ -233,8 +233,8 @@ public class ShoppingListService {
             throw new Exception("ClientID or Product Map cannot be null");
         }
 
-        if (clientRepository.existsByID(shoppingList.getClientID())) {
-            throw new Exception("ClientID exist");
+        if (!clientRepository.existsByID(shoppingList.getClientID())) {
+            throw new Exception("ClientID doesn't exist");
         }
 
         for (Map.Entry<String, String> entry : shoppingList
