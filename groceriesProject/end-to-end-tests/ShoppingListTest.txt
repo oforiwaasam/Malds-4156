@@ -1,4 +1,5 @@
 assumption: initially empty ShoppingList table
+assumption: clientID = 1 exists, all other clientID does not exist
 
 on Swagger UI:
 1) GET /shopping_list:
@@ -26,7 +27,23 @@ on Swagger UI:
     ERROR: check shoppingListID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
 
 4) POST /shopping_list:
-(id =1, test add shopping list when shoppingListID does not yet exist - SUCCESS)
+(id =1, test add shopping list when shoppingListID does not yet exist,
+invalid quantity - EXCEPTION)
+    Request Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+            "1": "fghjkl",
+            "7": "19"
+        }
+    }
+    Response Body:
+    The quantity value within the productIDToQuantity is invalid. Make sure it only contains numbers
+
+5) POST /shopping_list:
+(id =1, test add shopping list when shoppingListID does not yet exist,
+clientID = 1, exist in DB - SUCCESS)
     Request Body:
     {
         "shoppingListID": "1",
@@ -48,7 +65,7 @@ on Swagger UI:
         }
     ]
 
-5) POST /shopping_list:
+6) POST /shopping_list:
 (again with the same shoppingListID - i.e. shoppingListID now already exists - EXCEPTION)
     Request Body:
     {
@@ -60,10 +77,10 @@ on Swagger UI:
         }
     }
     Response Body:
-    ERROR: check input values
+    ERROR: This shoppingList ID already exists
 
-6) POST/shopping_list:
-(with different shoppingListID and valid inputs - SUCCESS)
+7) POST/shopping_list:
+(with different shoppingListID but clientID = 2 does not exist in DB - EXCEPTION)
     Request Body:
     {
         "shoppingListID": "2",
@@ -74,18 +91,9 @@ on Swagger UI:
         }
     }
     Response Body:
-    [
-        {
-            "shoppingListID": "2",
-            "clientID": "2",
-            "productIDToQuantity": {
-            "3": "5",
-            "124": "2"
-            }
-        }
-    ]
+    ClientID doesn't exist
 
-7) GET /shopping_list/1:
+8) GET /shopping_list/1:
 (get shopping list with shoppingListID = 1 - SUCCESS)
     Response Body:
     [
@@ -99,7 +107,7 @@ on Swagger UI:
         }
     ]
 
-8) PUT /shopping_list/1:
+9) PUT /shopping_list/1:
 (update shopping list with shoppingListID = 1 - SUCCESS)
     Request Body:
     {
@@ -124,7 +132,7 @@ on Swagger UI:
         }
     ]
 
-9) GET /shopping_list/products/1:
+10) GET /shopping_list/products/1:
 (gets the UPDATED lists of products & quantity in the shopping list info from part 9 - SUCCESS)
     Response Body:
     {
@@ -132,24 +140,19 @@ on Swagger UI:
         "7": "19",
         "23": "2"
     }
-
-10) GET /shopping_list/client/2:
+    
+11) GET /shopping_list/client/1:
     Response Body:
     {
-        "shoppingListID": "2",
-        "clientID": "2",
+        "shoppingListID": "1",
+        "clientID": "1",
         "productIDToQuantity": {
-            "3": "5",
-            "124": "2"
+            "1": "5",
+            "7": "19",
+            "23": "2"
         }
     }
 
-11) DELETE /shopping_list/2:
-(deletes shopping list with shoppingListID = 2 - SUCCESS)
-    no response body - returns void - but have
-    Code: 200, Description: OK
-
-12) GET /shopping_list/2:
-(get shopping list with shoppingListID = 2 - will throw an exception because step 11 deletes the shopping list with shoppingListID = 2 - EXCEPTION)
+12) GET /shopping_list/client/2:
     Response Body:
-    This shoppingList ID doesn't exists (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+    Shopping List does not exist for clientID (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
