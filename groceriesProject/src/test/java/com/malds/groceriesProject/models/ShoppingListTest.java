@@ -138,7 +138,7 @@ public class ShoppingListTest {
         Mockito.when(shoppingListRepository.createShoppingList(shoppingList))
                 .thenReturn(shoppingList);
         Mockito.when(clientRepository.existsByID(shoppingList.getClientID()))
-                .thenReturn(false);
+                .thenReturn(true);
         assertEquals(
                 shoppingListService.createShoppingList(shoppingList).get(0).getShoppingListID(),
                 EXPECTED_SHOPPINGLIST_ID);
