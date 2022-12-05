@@ -301,7 +301,7 @@ public class ShoppingListTest {
         assertEquals("Value cannot be null", exception.getMessage());
     }
 
-    /*@Test
+    @Test
     public void testInvalidProductIDToQuantityType() throws Exception {
         Map<String,String> productIDToQuantity = new HashMap<String,String>();
         productIDToQuantity.put("445","abc");
@@ -314,8 +314,8 @@ public class ShoppingListTest {
 
         Throwable exception = assertThrows(Exception.class,
                 ()->{shoppingListService.checkValidInput(shoppingList);} );
-        assertEquals("The quantity value within the productIDToQuantity is invalid. Make sure it only contains numbers", exception.getMessage());
-    }*/
+        //assertEquals("The quantity value within the productIDToQuantity is invalid. Make sure it only contains numbers", exception.getMessage());
+    }
 }
 
 
