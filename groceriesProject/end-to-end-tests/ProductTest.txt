@@ -7,8 +7,8 @@ on Swagger UI:
     Response Body:
     Product ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
 
-2) GET /products/get_product_by_name/apple
-(test get all products with name = apple when there are no apple products)
+2) GET /products/get_product_by_name/Apple
+(test get all products with name = Apple when there are no apple products)
     Response Body:
     []
 
@@ -141,12 +141,69 @@ on Swagger UI:
         }
     ]
 
-11) DELETE /products/2:
+11) POST /product
+(id =3, test add product when productID does not yet exist - SUCCESS)
+    Request Body:
+    {
+        "productID": "3",
+        "productName": "Apple",
+        "vendorID": "1",
+        "price": "3.00",
+        "quantity": "21"
+    }
+    Response Body:
+    {
+        "productID": "3",
+        "productName": "Apple",
+        "vendorID": "1",
+        "price": "3.00",
+        "quantity": "21"
+    }
+
+12) GET /products/get_product_by_vendor_id/1:
+    (get products with vendorID = 1 - should have a list of two products)
+    Response Body:
+    [
+        {
+            "productID": "1",
+            "productName": "Orange",
+            "vendorID": "1",
+            "price": "2.50",
+            "quantity": "3"
+        },
+        {
+            "productID": "3",
+            "productName": "Apple",
+            "vendorID": "1",
+            "price": "3.00",
+            "quantity": "21"
+        }
+    ]
+
+13) GET /products/get_product_by_name/Orange
+    [
+        {
+            "productID": "2",
+            "productName": "Orange",
+            "vendorID": "2",
+            "price": "2.50",
+            "quantity": "3"
+        },
+        {
+            "productID": "1",
+            "productName": "Orange",
+            "vendorID": "1",
+            "price": "2.50",
+            "quantity": "3"
+        }
+    ]
+
+14) DELETE /products/2:
 (deletes product with productID = 2 - SUCCESS)
     no response body - returns void - but have
     Code: 200, Description: OK
 
-12) GET /products/get_product_by_id/2:
+15) GET /products/get_product_by_id/2:
 (get product with productID = 2 - will throw an exception because step 11 deletes the product with productID = 2 - EXCEPTION)
     Response Body:
     Product ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
