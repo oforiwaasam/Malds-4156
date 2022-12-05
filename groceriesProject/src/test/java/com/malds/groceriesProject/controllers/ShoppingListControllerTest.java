@@ -1,43 +1,50 @@
 package com.malds.groceriesProject.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.malds.groceriesProject.models.ShoppingList;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.malds.groceriesProject.GroceriesProjectApplication;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
+import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,
-        classes = GroceriesProjectApplication.class)
-@AutoConfigureMockMvc
-@TestPropertySource(
-        locations = "classpath:application.properties")
-public class ShoppingListControllerTest {
+import com.malds.groceriesProject.models.ShoppingList;
+import com.malds.groceriesProject.services.ShoppingListService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.malds.groceriesProject.models.Product;
+import org.junit.Assert;
+
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(ShoppingListController.class)
+class ShoppingListControllerTest {
+
+    @MockBean
+    ShoppingListService shoppingListService;
+
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
+
+    public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
     @Test
-    public void testGetShoppingListByID() throws Exception {
-
+    void testGetShoppingListByID() throws Exception{
+        final String EXPECTED_RESPONSE = "[{\"shoppingListID\":\"988\",\"clientID\":\"12345f\",\"productIDToQuantity\":{\"123456789\":\"5\"}}]";
         Map<String, String> productIDToQuantity = new HashMap<String, String>();
         productIDToQuantity.put("123456789", "5");
 
@@ -46,156 +53,117 @@ public class ShoppingListControllerTest {
         shoppingList.setClientID("12345f");
         shoppingList.setProductIDToQuantity(productIDToQuantity);
 
-        MvcResult mvcResult = this.mockMvc.perform(get("/shopping_list/988"))
-                .andDo(MockMvcResultHandlers.print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].shoppingListID").value(shoppingList.getShoppingListID()))
+        when(shoppingListService.getShoppingListByID("988")).thenReturn(List.of(shoppingList));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/988"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+
+        Mockito.verify(shoppingListService).getShoppingListByID("988");
+        assertEquals(EXPECTED_RESPONSE, content);
     }
 
     @Test
     public void testGetShoppingListByInvalidID() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/shopping_list/98"))
-                .andDo(MockMvcResultHandlers.print()).andExpect(status().isOk())
-                .andReturn();
-        assertEquals("This shoppingList ID doesn't exists (Service: " +
-                "null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)"
-                , mvcResult.getResponse().getContentAsString());
+        final String EXPECTED_RESPONSE = "This shoppingList ID doesn't exists (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null) (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
+        when(shoppingListService.getShoppingListByID("988")).thenThrow(new ResourceNotFoundException("This shoppingList ID doesn't exists (Service: " +
+                "null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)"));
 
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/988"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+
+        Mockito.verify(shoppingListService).getShoppingListByID("988");
+        assertEquals(EXPECTED_RESPONSE, content);
     }
 
+
     @Test
-    public void testUpdateShoppingList() throws Exception {
+    void testProductsToQuantityByID() throws Exception{
+        final String EXPECTED_RESPONSE = "{\"123456789\":\"5\"}";
         Map<String, String> productIDToQuantity = new HashMap<String, String>();
         productIDToQuantity.put("123456789", "5");
+        when(shoppingListService.getProductsToQuantityByID("988")).thenReturn(productIDToQuantity);
 
-        ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setShoppingListID("123");
-        shoppingList.setClientID("345");
-        shoppingList.setProductIDToQuantity(productIDToQuantity);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        System.out.println(mapper.writeValueAsString(shoppingList));
-        mockMvc.perform(put("/shopping_list")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(shoppingList))
-                        .characterEncoding("utf-8"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].shoppingListID").value(shoppingList.getShoppingListID()))
-                .andExpect(jsonPath("$[0].productIDToQuantity").value(shoppingList.getProductIDToQuantity()))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/products/988"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-    }
 
-    @Test
-    public void testUpdateShoppingListWithInvalidID() throws Exception {
-        Map<String, String> productIDToQuantity = new HashMap<String, String>();
-        productIDToQuantity.put("123456789", "5");
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
 
-        ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setShoppingListID("2");
-        shoppingList.setClientID("345");
-        shoppingList.setProductIDToQuantity(productIDToQuantity);
+        Mockito.verify(shoppingListService).getProductsToQuantityByID("988");
+        assertEquals(EXPECTED_RESPONSE, content);
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        MvcResult mvcResult = mockMvc.perform(put("/shopping_list")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(shoppingList))
-                        .characterEncoding("utf-8"))
-                .andExpect(status().isOk())
-                .andReturn();
-        assertEquals("ERROR: check input values; be sure to include ShoppingListID"
-                , mvcResult.getResponse().getContentAsString());
-    }
-
-    @Test
-    public void testUpdateShoppingListWithNullClientID() throws Exception {
-        Map<String, String> productIDToQuantity = new HashMap<String, String>();
-        productIDToQuantity.put("123456789", "5");
-
-        ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setShoppingListID("2");
-        shoppingList.setProductIDToQuantity(productIDToQuantity);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        MvcResult mvcResult = mockMvc.perform(put("/shopping_list")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(shoppingList))
-                        .characterEncoding("utf-8"))
-                .andExpect(status().isOk())
-                .andReturn();
-        assertEquals("ERROR: check input values; be sure to include ShoppingListID"
-                , mvcResult.getResponse().getContentAsString());
-    }
-
-    @Test
-    public void testUpdateShoppingListWithInvalidProductToQuantityValue() throws Exception {
-        Map<String, String> productIDToQuantity = new HashMap<String, String>();
-        productIDToQuantity.put("123456789", "kjlk");
-
-        ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setShoppingListID("2");
-        shoppingList.setClientID("345");
-        shoppingList.setProductIDToQuantity(productIDToQuantity);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        MvcResult mvcResult = mockMvc.perform(put("/shopping_list")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(shoppingList))
-                        .characterEncoding("utf-8"))
-                .andExpect(status().isOk())
-                .andReturn();
-        assertEquals("ERROR: check input values; be sure to include ShoppingListID"
-                , mvcResult.getResponse().getContentAsString());
-    }
-
-    @Test
-    public void testUpdateShoppingListWithInvalidProductToQuantityKey() throws Exception {
-        Map<String, String> productIDToQuantity = new HashMap<String, String>();
-        productIDToQuantity.put("faklsdf", "5");
-
-        ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setShoppingListID("988");
-        shoppingList.setClientID("344");
-        shoppingList.setProductIDToQuantity(productIDToQuantity);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        MvcResult mvcResult = mockMvc.perform(put("/shopping_list")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(shoppingList))
-                        .characterEncoding("utf-8"))
-                .andExpect(status().isOk())
-                .andReturn();
-        assertEquals("ERROR: check input values; be sure to include ShoppingListID"
-                , mvcResult.getResponse().getContentAsString());
-    }
-
-    @Test
-    public void testGetProductsToQuantityByID() throws Exception {
-        Map<String, String> productIDToQuantity = new HashMap<String, String>();
-        productIDToQuantity.put("123456789", "5");
-
-        MvcResult mvcResult = this.mockMvc.perform(get("/shopping_list/products/988"))
-                .andDo(MockMvcResultHandlers.print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$['123456789']").value(productIDToQuantity.get("123456789")))
-                .andReturn();
     }
 
     @Test
     public void testGetProductsToQuantityByInvalidID() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/shopping_list/products/9"))
-                .andDo(MockMvcResultHandlers.print()).andExpect(status().isOk())
+        final String EXPECTED_RESPONSE = "ERROR: check input values (Service: null; Status Code: " +
+                "0; Error Code: null; Request ID: null; Proxy: null)";
+        when(shoppingListService.getProductsToQuantityByID("988")).thenThrow(new ResourceNotFoundException("ERROR: check input values (Service: null; Status Code: \" +\n" +
+                "                        \"0; Error Code: null; Request ID: null; Proxy: null)"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/products/988"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        assertEquals("ERROR: check input values (Service: null; Status Code: " +
-                        "0; Error Code: null; Request ID: null; Proxy: null)"
-                , mvcResult.getResponse().getContentAsString());
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+
+        Mockito.verify(shoppingListService).getProductsToQuantityByID("988");
+        assertEquals(EXPECTED_RESPONSE, content);
+    }
+
+    @Test
+    void getShoppingListByClientID() throws Exception{
+        final String EXPECTED_RESPONSE = "{\"shoppingListID\":\"988\",\"clientID\":\"12345f\",\"productIDToQuantity\":{\"123456789\":\"5\"}}";
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("123456789", "5");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("988");
+        shoppingList.setClientID("12345f");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        when(shoppingListService.getShoppingListByClientID("12345f")).thenReturn(shoppingList);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/client/12345f"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+
+        Mockito.verify(shoppingListService).getShoppingListByClientID("12345f");
+        assertEquals(EXPECTED_RESPONSE, content);
+    }
+
+    @Test
+    void getShoppingListByNullClientID() throws Exception{
+        final String EXPECTED_RESPONSE = "Shopping List does not exist for clientID (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
+        when(shoppingListService.getShoppingListByClientID("12345f")).thenThrow(new ResourceNotFoundException("Shopping List does not exist for clientID"));
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/client/12345f"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+
+        Mockito.verify(shoppingListService).getShoppingListByClientID("12345f");
+        assertEquals(EXPECTED_RESPONSE, content);
     }
 
     @Test
     public void testCreateShoppingList() throws Exception {
+        final String EXPECTED_RESPONSE = "[{\"shoppingListID\":\"9\",\"clientID\":\"123\",\"productIDToQuantity\":{\"123456789\":\"5\"}}]";
+
         Map<String, String> productIDToQuantity = new HashMap<String, String>();
         productIDToQuantity.put("123456789", "5");
 
@@ -205,33 +173,197 @@ public class ShoppingListControllerTest {
         shoppingList.setProductIDToQuantity(productIDToQuantity);
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(shoppingList);
 
-        mockMvc.perform(post("/shopping_list")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(shoppingList))
-                        .characterEncoding("utf-8"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].shoppingListID").value(shoppingList.getShoppingListID()))
+        when(shoppingListService.createShoppingList(shoppingList)).thenReturn(List.of(shoppingList));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/shopping_list").contentType(APPLICATION_JSON_UTF8)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        Mockito.verify(shoppingListService).createShoppingList(shoppingList);
+        assertEquals(EXPECTED_RESPONSE, content);
+
+
+    }
+
+    @Test
+    public void testUpdateShoppingList() throws Exception {
+        final String EXPECTED_RESPONSE = "[{\"shoppingListID\":\"123\",\"clientID\":\"345\",\"productIDToQuantity\":{\"123456789\":\"5\"}}]";
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("123456789", "5");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("123");
+        shoppingList.setClientID("345");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(shoppingList);
+
+        when(shoppingListService.updateShoppingList(shoppingList)).thenReturn(List.of(shoppingList));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/shopping_list").contentType(APPLICATION_JSON_UTF8)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+
+        Mockito.verify(shoppingListService).updateShoppingList(shoppingList);
+        assertEquals(EXPECTED_RESPONSE, content);
+    }
+
+    @Test
+    public void testUpdateShoppingListWithInvalidID() throws Exception {
+        final String EXPECTED_RESPONSE = "ERROR: check input values; be sure to include ShoppingListID";
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("123456789", "5");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("2");
+        shoppingList.setClientID("345");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(shoppingList);
+
+        when(shoppingListService.updateShoppingList(shoppingList)).thenThrow(new ResourceNotFoundException("ERROR: check input values; be sure to include ShoppingListID"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/shopping_list").contentType(APPLICATION_JSON_UTF8)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        Mockito.verify(shoppingListService).updateShoppingList(shoppingList);
+        assertEquals(EXPECTED_RESPONSE, content);
+    }
+
+    @Test
+    public void testUpdateShoppingListWithNullClientID() throws Exception {
+        final String EXPECTED_RESPONSE = "ERROR: check input values; be sure to include ShoppingListID";
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("123456789", "5");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("2");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(shoppingList);
+
+        when(shoppingListService.updateShoppingList(shoppingList)).thenThrow(new ResourceNotFoundException("ERROR: check input values; be sure to include ShoppingListID"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/shopping_list").contentType(APPLICATION_JSON_UTF8)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        Mockito.verify(shoppingListService).updateShoppingList(shoppingList);
+        assertEquals(EXPECTED_RESPONSE, content);
+    }
+
+    @Test
+    public void testUpdateShoppingListWithInvalidProductToQuantityValue() throws Exception {
+        final String EXPECTED_RESPONSE = "ERROR: check input values; be sure to include ShoppingListID";
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("123456789", "kjlk");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("2");
+        shoppingList.setClientID("345");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(shoppingList);
+
+        when(shoppingListService.updateShoppingList(shoppingList)).thenThrow(new ResourceNotFoundException("ERROR: check input values; be sure to include ShoppingListID"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/shopping_list").contentType(APPLICATION_JSON_UTF8)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        Mockito.verify(shoppingListService).updateShoppingList(shoppingList);
+        assertEquals(EXPECTED_RESPONSE, content);
+    }
+
+    @Test
+    public void testUpdateShoppingListWithInvalidProductToQuantityKey() throws Exception {
+        final String EXPECTED_RESPONSE = "ERROR: check input values; be sure to include ShoppingListID";
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("faklsdf", "5");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("988");
+        shoppingList.setClientID("344");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(shoppingList);
+
+        when(shoppingListService.updateShoppingList(shoppingList)).thenThrow(new ResourceNotFoundException("ERROR: check input values; be sure to include ShoppingListID"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/shopping_list").contentType(APPLICATION_JSON_UTF8)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        Mockito.verify(shoppingListService).updateShoppingList(shoppingList);
+        assertEquals(EXPECTED_RESPONSE, content);
     }
 
     @Test
     public void testDeleteShoppingList() throws Exception {
-        mockMvc.perform(delete("/shopping_list/9"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
+        doNothing().when(shoppingListService).deleteShoppingListByID("9");
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/shopping_list/9"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+
+        Mockito.verify(shoppingListService).deleteShoppingListByID("9");
+        assertEquals("", content);
     }
 
     @Test
     public void testDeleteShoppingListInvalidID() throws Exception {
-        MvcResult result = mockMvc.perform(delete("/shopping_list/10000"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
+        final String EXPECTED_RESPONSE = "ERROR: check shoppingListID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
+        doThrow(new ResourceNotFoundException("This shoppingList ID doesn't exist")).when(shoppingListService).deleteShoppingListByID("1000");
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/shopping_list/1000"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        assertEquals("ERROR: check shoppingListID value (Service: null; Status Code: 0;" +
-                        " Error Code: null; Request ID: null; Proxy: null)"
-                , result.getResponse().getContentAsString());
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+
+        Mockito.verify(shoppingListService).deleteShoppingListByID("1000");
+        assertEquals(EXPECTED_RESPONSE, content);
 
     }
 }
