@@ -195,7 +195,7 @@ public class ShoppingListService {
             throw new Exception("Value cannot be null");
         }
 
-        if (clientRepository.existsByID(shoppingList.getClientID())) {
+        if (!clientRepository.existsByID(shoppingList.getClientID())) {
             throw new Exception("ClientID doesn't exist");
         }
 
