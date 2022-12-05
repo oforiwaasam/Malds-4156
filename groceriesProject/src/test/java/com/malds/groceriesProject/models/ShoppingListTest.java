@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import com.malds.groceriesProject.repositories.ClientRepository;
+import com.malds.groceriesProject.repositories.ProductRepository;
 import com.malds.groceriesProject.repositories.ShoppingListRepository;
 import com.malds.groceriesProject.services.ShoppingListService;
 
@@ -29,6 +30,12 @@ public class ShoppingListTest {
 
     @MockBean
     private ShoppingListRepository shoppingListRepository;
+
+    @MockBean
+    private ProductRepository productRepository ;
+
+    @MockBean
+    private ClientRepository clientRepository;
 
     @Test
     public void testGetShoppingListByID() throws Exception {
@@ -130,6 +137,8 @@ public class ShoppingListTest {
 
         Mockito.when(shoppingListRepository.createShoppingList(shoppingList))
                 .thenReturn(shoppingList);
+        Mockito.when(clientRepository.existsByID(shoppingList.getClientID()))
+                .thenReturn(false);
         assertEquals(
                 shoppingListService.createShoppingList(shoppingList).get(0).getShoppingListID(),
                 EXPECTED_SHOPPINGLIST_ID);
