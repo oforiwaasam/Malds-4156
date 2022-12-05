@@ -102,7 +102,8 @@ public class ShoppingListController extends BaseController {
         try {
             return shoppingListService.createShoppingList(shoppingList);
         } catch (Exception e) {
-            throw new Exception("ERROR: check input values");
+            //throw new Exception("ERROR: check input values");
+            throw new Exception(e.getMessage());
         }
     }
 
