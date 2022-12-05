@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -27,8 +26,6 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.malds.groceriesProject.models.Product;
-import org.junit.Assert;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ShoppingListController.class)
@@ -189,6 +186,37 @@ class ShoppingListControllerTest {
         Mockito.verify(shoppingListService).createShoppingList(shoppingList);
         assertEquals(EXPECTED_RESPONSE, content);
 
+
+    }
+
+    @Test
+    public void testCreateShoppingListException() throws Exception {
+        final String EXPECTED_RESPONSE =  "This shoppingList ID already exists";
+
+        Map<String, String> productIDToQuantity = new HashMap<String, String>();
+        productIDToQuantity.put("123456789", "5");
+
+        ShoppingList shoppingList = new ShoppingList();
+        shoppingList.setShoppingListID("9");
+        shoppingList.setClientID("123");
+        shoppingList.setProductIDToQuantity(productIDToQuantity);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(shoppingList);
+
+        when(shoppingListService.createShoppingList(shoppingList)).thenThrow(new Exception("This shoppingList ID already exists"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/shopping_list").contentType(APPLICATION_JSON_UTF8)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Content: " + content);
+        Mockito.verify(shoppingListService).createShoppingList(shoppingList);
+        assertEquals(EXPECTED_RESPONSE, content);
 
     }
 
