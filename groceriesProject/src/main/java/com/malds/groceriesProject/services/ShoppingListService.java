@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.ShoppingList;
 import com.malds.groceriesProject.repositories.ShoppingListRepository;
+import com.malds.groceriesProject.repositories.ClientRepository;
+import com.malds.groceriesProject.repositories.ProductRepository;
 
 @Service
 public class ShoppingListService {
@@ -20,6 +22,24 @@ public class ShoppingListService {
      */
     @Autowired
     private ShoppingListRepository shoppingListRepository;
+
+    /**
+     * ProductRepository
+     * Carries out the operations and interacts with the persistence layer,
+     * ProductRepository to create, read, update, and
+     * delete from the database.
+     */
+    @Autowired
+    private ProductRepository productRepository;
+
+    /**
+     * ProductRepository
+     * Carries out the operations and interacts with the persistence layer,
+     * ProductRepository to create, read, update, and
+     * delete from the database.
+     */
+    @Autowired
+    private ClientRepository clientRepository;
 
     /**
      * ShoppingListService Constructor.
@@ -109,8 +129,10 @@ public class ShoppingListService {
     public List<ShoppingList> createShoppingList(
             final ShoppingList shoppingList)throws Exception {
         ShoppingList shop;
-        if (shoppingListRepository.retriveList(
+        if (shoppingList.getShoppingListID() == null
+        || shoppingListRepository.retriveList(
                 shoppingList.getShoppingListID()).size() == 0) {
+            checkValidInputForCreate(shoppingList);
             shop = shoppingListRepository.createShoppingList(shoppingList);
         } else {
             throw new Exception("This shoppingList ID already exists");
@@ -173,12 +195,55 @@ public class ShoppingListService {
             throw new Exception("Value cannot be null");
         }
 
+        if (clientRepository.existsByID(shoppingList.getClientID())) {
+            throw new Exception("ClientID doesn't exist");
+        }
+
+
         for (Map.Entry<String, String> entry : shoppingList
                 .getProductIDToQuantity().entrySet()) {
             String quantity = entry.getValue();
             String productID = entry.getKey();
             if ((!(quantity.matches("[0-9]+")))
-                    || (!(productID.matches("[0-9]+")))) {
+                    || (!(productID.matches("[0-9]+")))
+                    || productRepository.existsByID(productID)) {
+                //return false;
+
+                throw new Exception("The quantity value "
+                        + "within the productIDToQuantity"
+                        + " is invalid. Make sure it only "
+                        + "contains numbers");
+            }
+        }
+        //return true;
+    }
+
+        /**
+     * Checks whether inputted values by users are valid,
+     * is not blank, and is of accepted data types.
+     * Throws Exception if inputs are invalid.
+     * @param shoppingList
+     * @throws Exception if input is invalid
+     */
+    public void checkValidInputForCreate(
+            final ShoppingList shoppingList) throws Exception {
+        if (shoppingList.getClientID() == null
+            || shoppingList.getProductIDToQuantity() == null) {
+            //return false;
+            throw new Exception("ClientID or Product Map cannot be null");
+        }
+
+        if (!clientRepository.existsByID(shoppingList.getClientID())) {
+            throw new Exception("ClientID doesn't exist");
+        }
+
+        for (Map.Entry<String, String> entry : shoppingList
+                .getProductIDToQuantity().entrySet()) {
+            String quantity = entry.getValue();
+            String productID = entry.getKey();
+            if ((!(quantity.matches("[0-9]+")))
+                    || (!(productID.matches("[0-9]+")))
+                    || productRepository.existsByID(productID)) {
                 //return false;
 
                 throw new Exception("The quantity value "
