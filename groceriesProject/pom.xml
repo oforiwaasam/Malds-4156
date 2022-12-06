@@ -140,6 +140,12 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>com/malds/groceriesProject/repositories/*</exclude>
+						<exclude>com/malds/groceriesProject/configurations/*</exclude>
+					</excludes>
+				 </configuration>
 				<version>0.8.8</version>
 				<executions>
 					<execution>
@@ -268,16 +274,20 @@
 		  </build>
 		</profile>
 	  </profiles>-->
-	<reporting>
+	  <reporting>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.2.0</version>
-				<configuration>
-					<configLocation>google_checks.xml</configLocation>
-				</configuration>
-			</plugin>
+		  <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-checkstyle-plugin</artifactId>
+			<version>3.2.0</version>
+			<reportSets>
+			  <reportSet>
+				<reports>
+				  <report>checkstyle</report>
+				</reports>
+			  </reportSet>
+			</reportSets>
+		  </plugin>
 		</plugins>
-	</reporting>
+	  </reporting>
 </project>
