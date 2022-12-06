@@ -204,11 +204,10 @@ public class ShoppingListService {
                 .getProductIDToQuantity().entrySet()) {
             String quantity = entry.getValue();
             String productID = entry.getKey();
-            if ((!(quantity.matches("[0-9]+")))
-                    || (!(productID.matches("[0-9]+")))
-                    || productRepository.existsByID(productID)) {
-                //return false;
 
+            if ((!(quantity.matches("[0-9]+")))
+                    || (!productRepository.existsByID(productID))) {
+                //return false;
                 throw new Exception("The quantity value "
                         + "within the productIDToQuantity"
                         + " is invalid. Make sure it only "
@@ -242,8 +241,7 @@ public class ShoppingListService {
             String quantity = entry.getValue();
             String productID = entry.getKey();
             if ((!(quantity.matches("[0-9]+")))
-                    || (!(productID.matches("[0-9]+")))
-                    || productRepository.existsByID(productID)) {
+                    || (!productRepository.existsByID(productID))) {
                 //return false;
 
                 throw new Exception("The quantity value "
