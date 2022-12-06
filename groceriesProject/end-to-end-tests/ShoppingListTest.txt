@@ -1,0 +1,158 @@
+assumption: initially empty ShoppingList table
+assumption: clientID = 1 exists, all other clientID does not exist
+
+on Swagger UI:
+1) GET /shopping_list:
+(id = 1, test get shopping list when shoppingListID does not yet exist - EXCEPTION)
+    Response Body:
+    This shoppingList ID doesn't exists (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+2) PUT /shopping_list/1:
+(id = 1, test update shopping list when shoppingListID does not yet exist - EXCEPTION)
+    Request Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+            "1": "5",
+            "7": "19"
+        }
+    }
+    Response Body:
+    ERROR: check input values; be sure to include ShoppingListID
+
+3) DELETE /shopping_list/1:
+(id = 1, test delete shopping list when shoppingListID does not yet exist - EXCEPTION)
+    Response Body:
+    ERROR: check shoppingListID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)
+
+4) POST /shopping_list:
+(id =1, test add shopping list when shoppingListID does not yet exist,
+invalid quantity - EXCEPTION)
+    Request Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+            "1": "fghjkl",
+            "7": "19"
+        }
+    }
+    Response Body:
+    The quantity value within the productIDToQuantity is invalid. Make sure it only contains numbers
+
+5) POST /shopping_list:
+(id =1, test add shopping list when shoppingListID does not yet exist,
+clientID = 1, exist in DB - SUCCESS)
+    Request Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+            "1": "5",
+            "7": "19"
+        }
+    }
+    Response Body:
+    [
+        {
+            "shoppingListID": "1",
+            "clientID": "1",
+            "productIDToQuantity": {
+            "1": "5",
+            "7": "19"
+            }
+        }
+    ]
+
+6) POST /shopping_list:
+(again with the same shoppingListID - i.e. shoppingListID now already exists - EXCEPTION)
+    Request Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+            "1": "5",
+            "7": "19"
+        }
+    }
+    Response Body:
+    ERROR: This shoppingList ID already exists
+
+7) POST/shopping_list:
+(with different shoppingListID but clientID = 2 does not exist in DB - EXCEPTION)
+    Request Body:
+    {
+        "shoppingListID": "2",
+        "clientID": "2",
+        "productIDToQuantity": {
+            "3": "5",
+            "124": "2"
+        }
+    }
+    Response Body:
+    ClientID doesn't exist
+
+8) GET /shopping_list/1:
+(get shopping list with shoppingListID = 1 - SUCCESS)
+    Response Body:
+    [
+        {
+            "shoppingListID": "1",
+            "clientID": "1",
+            "productIDToQuantity": {
+            "1": "5",
+            "7": "19"
+            }
+        }
+    ]
+
+9) PUT /shopping_list/1:
+(update shopping list with shoppingListID = 1 - SUCCESS)
+    Request Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+        "1": "5",
+        "7": "19",
+        "23": "2"
+        }
+    }
+    Response Body:
+    [
+        {
+            "shoppingListID": "1",
+            "clientID": "1",
+            "productIDToQuantity": {
+            "1": "5",
+            "7": "19",
+            "23": "2"
+            }
+        }
+    ]
+
+10) GET /shopping_list/products/1:
+(gets the UPDATED lists of products & quantity in the shopping list info from part 9 - SUCCESS)
+    Response Body:
+    {
+        "1": "5",
+        "7": "19",
+        "23": "2"
+    }
+    
+11) GET /shopping_list/client/1:
+    Response Body:
+    {
+        "shoppingListID": "1",
+        "clientID": "1",
+        "productIDToQuantity": {
+            "1": "5",
+            "7": "19",
+            "23": "2"
+        }
+    }
+
+12) GET /shopping_list/client/2:
+    Response Body:
+    Shopping List does not exist for clientID (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)

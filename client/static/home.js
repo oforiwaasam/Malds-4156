@@ -8,7 +8,7 @@ localStorage.setItem("clientID", "445")
 
 const getVendorByID = async (vendorID) => {
     try{
-        const response = await fetch(`http://localhost:8080/vendors/${vendorID}`);
+        const response = await fetch(`https://groceries-project.herokuapp.com/vendors/${vendorID}`);
         const data = await response.json();
         return data[0];
     } catch {
@@ -20,7 +20,7 @@ const getVendorByID = async (vendorID) => {
 const updateShoppingList = (shoppingList) => {
     $.ajax({
         type: 'PUT',
-        url: `http://localhost:8080/shopping_list`,
+        url: `https://groceries-project.herokuapp.com/shopping_list`,
         data: JSON.stringify(shoppingList),
         dataType: "json",
         contentType: 'application/json; charset=utf-8',
@@ -37,13 +37,13 @@ const updateShoppingList = (shoppingList) => {
 }
 
 const getShoppingListByClientID = async (clientID) => {
-    const response = await fetch(`http://localhost:8080/shopping_list/client/${clientID}`);
+    const response = await fetch(`https://groceries-project.herokuapp.com/shopping_list/client/${clientID}`);
     const data = await response.json();
     return data;
 }
 
 const get_search_results = async (query) => {
-    const response = await fetch(`http://localhost:8080/products/get_product_by_name/${query}`);
+    const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_name/${query}`);
     const data = await response.json();
     return data;
 }
