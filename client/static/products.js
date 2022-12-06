@@ -68,7 +68,7 @@ const getInputValues = () => {
     const productName = productNameInput.value;
     const productPrice = productPriceInput.value;
     const productQuantity = productQuantityInput.value;
-    const vendorID = "2"
+    const vendorID = "6"
 
     const product = {
         "productName": productName,
@@ -195,7 +195,7 @@ const displayProducts = (products) =>{
 }
 
 const getProductsByVendorID = async () =>{
-    const vendorID = "2"
+    const vendorID = "6"
     const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_vendor_id/${vendorID}`);
     const data = await response.json();
     return data

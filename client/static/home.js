@@ -18,6 +18,7 @@ const getVendorByID = async (vendorID) => {
 }
 
 const updateShoppingList = (shoppingList) => {
+    console.log(JSON.stringify(shoppingList));
     $.ajax({
         type: 'PUT',
         url: `https://groceries-project.herokuapp.com/shopping_list`,
@@ -85,7 +86,7 @@ const display_search_results = async (products) => {
         addBtn.classList.add("btn", "btn-dark");
         addBtn.innerHTML = "Add product"
         addBtn.addEventListener("click",async ()=>{
-            const shoppingList = await getShoppingListByClientID("445");
+            const shoppingList = await getShoppingListByClientID("1");
             const productIDToQuantity = shoppingList['productIDToQuantity']
 
             if (productID in productIDToQuantity){

@@ -1,6 +1,7 @@
 const shoppingListItemsDiv = document.getElementById("shopping-list-items");
 let shoppingListObj;
 const updateShoppingList = (shoppingList) => {
+    console.log(JSON.stringify(shoppingList))
     $.ajax({
         type: 'PUT',
         url: `https://groceries-project.herokuapp.com/shopping_list`,
@@ -9,6 +10,7 @@ const updateShoppingList = (shoppingList) => {
         contentType: 'application/json; charset=utf-8',
         success: function(result){
             console.log(result);
+            location.reload();
         },
         error: function(request, status, error){
             console.log('Error');
@@ -32,6 +34,7 @@ const getProducts = async (productIDToQuantity) => {
         product['quantityInShoppingList'] = quantity;
         products.push(product);
     }
+    console.log(products)
     return products;
 }
 
@@ -72,7 +75,8 @@ const displayShoppingList = (products) => {
         minusBtnDiv.classList.add("col-2");
         minusBtnDiv.append(minusBtn)
 
-        addBtn.addEventListener("click", ()=>{
+        addBtn.addEventListener("click", (e)=>{
+            e.preventDefault()
             const productIDToQuantity = shoppingListObj['productIDToQuantity']
             if (productID in productIDToQuantity){
                 let quantity = productIDToQuantity[productID]
@@ -85,10 +89,12 @@ const displayShoppingList = (products) => {
             updateShoppingList(shoppingListObj);
             /*const products = getProducts(productIDToQuantity);
             displayShoppingList(products)*/
-            location.reload()
+            //location.reload()
         })
-        minusBtn.addEventListener("click", ()=>{
+        minusBtn.addEventListener("click", (e)=>{
+            e.preventDefault()
             const productIDToQuantity = shoppingListObj['productIDToQuantity']
+            console.log(productIDToQuantity);
             if (productID in productIDToQuantity){
                 let quantity = productIDToQuantity[productID]
                 let updatedQuantity = parseInt(quantity) - 1
@@ -101,7 +107,7 @@ const displayShoppingList = (products) => {
             shoppingListObj['productIDToQuantity'] = productIDToQuantity;
             console.log(shoppingListObj)
             updateShoppingList(shoppingListObj);
-            location.reload()
+            //location.reload()
             /*const products = getProducts(productIDToQuantity);
             displayShoppingList(products)*/
 
@@ -116,11 +122,12 @@ const displayShoppingList = (products) => {
 const getShoppingListByClientID = async (clientID) => {
     const response = await fetch(`https://groceries-project.herokuapp.com/shopping_list/client/${clientID}`);
     const data = await response.json();
+    console.log(data)
     return data;
 }
 
 const init = async () => {
-    shoppingListObj = await getShoppingListByClientID('445');
+    shoppingListObj = await getShoppingListByClientID('1');
     const productIDToQuantity = shoppingListObj['productIDToQuantity'];
     const products = await getProducts(productIDToQuantity);
 
