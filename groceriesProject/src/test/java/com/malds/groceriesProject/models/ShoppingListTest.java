@@ -139,6 +139,14 @@ public class ShoppingListTest {
                 .thenReturn(shoppingList);
         Mockito.when(clientRepository.existsByID(shoppingList.getClientID()))
                 .thenReturn(true);
+
+        for (Map.Entry<String, String> entry : shoppingList
+                .getProductIDToQuantity().entrySet()) {
+            String productID = entry.getKey();
+            Mockito.when(productRepository.existsByID(productID))
+                    .thenReturn(true);
+        }
+
         assertEquals(
                 shoppingListService.createShoppingList(shoppingList).get(0).getShoppingListID(),
                 EXPECTED_SHOPPINGLIST_ID);
