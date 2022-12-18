@@ -55,6 +55,12 @@ public class Client {
     private String zipcode;
 
     /**
+     * DynamoDBAttribute: industry. type: String
+     */
+    @DynamoDBAttribute
+    private String industry;
+
+    /**
      * Client default constructor.
      */
     public Client() {
@@ -65,5 +71,6 @@ public class Client {
         this.gender = null;
         this.dateOfBirth = null;
         this.zipcode = null;
+        this.industry = null;
     }
 }
