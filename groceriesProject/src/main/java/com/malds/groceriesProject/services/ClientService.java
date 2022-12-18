@@ -2,8 +2,13 @@ package com.malds.groceriesProject.services;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
@@ -40,6 +45,16 @@ public class ClientService {
      * max length for zipcode.
      */
     public static final int ZIPCODE_UPPER_LENGTH = 10;
+
+    /**
+     * max length for category.
+     */
+    public static final int CATEGORY_UPPER_LENGTH = 30;
+
+    /**
+     * multiply by 100 - stats.
+     */
+    public static final int MULTIPLY_HUNDRED = 100;
 
     /**
      * ClientService Constructor.
@@ -140,7 +155,8 @@ public class ClientService {
     public void checkValidInput(final Client client) throws Exception {
         if (client.getClientID() == null || client.getEmail() == null
                 || client.getFirstName() == null || client.getLastName() == null
-                || client.getGender() == null || client.getZipcode() == null) {
+                || client.getGender() == null || client.getZipcode() == null
+                || client.getCategory() == null) {
             throw new Exception("Value cannot be null");
         }
         if (!isValidEmail(client.getEmail())) {
@@ -165,6 +181,10 @@ public class ClientService {
                 || client.getZipcode().length() > ZIPCODE_UPPER_LENGTH) {
             throw new Exception("Zipcode must not be blank"
             + " or longer than 10 chars");
+        } else if (client.getCategory().isBlank()
+                || client.getCategory().length() > CATEGORY_UPPER_LENGTH) {
+            throw new Exception("Category must not be blank"
+            + "or longer than 30 chars");
         } else {
             Date today = new Date();
             try {
@@ -185,5 +205,179 @@ public class ClientService {
                 + " 'MM/dd/yyyy'");
             }
         }
+    }
+
+    /**
+     * Checks whether inputted values by users are valid,
+     * is not blank, and is of accepted lengths.
+     * Throws Exception if inputs are invalid.
+     * @param client
+     * @throws Exception
+     */
+    public void checkUpdatedInput(final Client client) throws Exception {
+        if (client.getClientID() == null
+                || !clientRepo.existsByID(client.getClientID())) {
+            throw new Exception("Client ID cannot be null "
+            + "and must exist in DB");
+        }
+        String existingClientCategory = clientRepo.getClientByID(
+                client.getClientID()).get(0).getCategory();
+
+        if (client.getEmail() != null && !isValidEmail(client.getEmail())) {
+            throw new Exception("Email is invalid");
+        } else if (client.getFirstName() != null
+                && client.getFirstName().length() > NAME_UPPER_LENGTH) {
+            throw new Exception("First Name must not be longer than 128 chars");
+        } else if (client.getLastName() != null && client.getLastName().length()
+            > NAME_UPPER_LENGTH) {
+            throw new Exception("Last Name must not be longer than 128 chars");
+        } else if (client.getGender() != null && client.getGender().length()
+            > GENDER_UPPER_LENGTH) {
+            throw new Exception("Gender must not be longer than 20 chars");
+        } else if (client.getZipcode() != null && client.getZipcode().length()
+            > ZIPCODE_UPPER_LENGTH) {
+            throw new Exception("Zipcode must not be longer than 10 chars");
+        } else if (client.getCategory() != null
+                && existingClientCategory != client.getCategory()) {
+            throw new Exception("Category must not be different "
+            + "to existing category");
+        } else if (client.getDateOfBirth() != null) {
+            Date today = new Date();
+            try {
+                Date dob = new SimpleDateFormat("MM/dd/yyyy")
+                .parse(client.getDateOfBirth());
+                if (dob.compareTo(today) >= 0) {
+                    throw new Exception(
+                            "Date of Birth cannot be greater than"
+                            + " or equal to today's date");
+                }
+                if (!GenericValidator.isDate(client.getDateOfBirth(),
+                "MM/dd/yyyy", false)) {
+                    throw new Exception("Invalid date of birth format:"
+                    + " 'MM/dd/yyyy'");
+                }
+            } catch (ParseException e) {
+                throw new Exception("Invalid date of birth format:"
+                + " 'MM/dd/yyyy'");
+            }
+        }
+    }
+
+    /**
+     * fill in missing info for client to be updated
+     * with existing info for client.
+     * @param client
+     * @return client with missing info filled in
+     */
+    public Client fillClient(final Client client) {
+        Client existingClient = clientRepo.getClientByID(client.getClientID())
+            .get(0);
+
+        if (client.getEmail() == null) {
+            client.setEmail(existingClient.getEmail());
+        } else if (client.getFirstName() == null) {
+            client.setFirstName(existingClient.getFirstName());
+        } else if (client.getLastName() == null) {
+            client.setLastName(existingClient.getLastName());
+        } else if (client.getGender() == null) {
+            client.setGender(existingClient.getGender());
+        } else if (client.getZipcode() == null) {
+            client.setZipcode(existingClient.getZipcode());
+        } else if (client.getCategory() == null) {
+            client.setCategory(existingClient.getCategory());
+        } else if (client.getDateOfBirth() == null) {
+            client.setDateOfBirth(existingClient.getDateOfBirth());
+        }
+        return client;
+    }
+
+    /**
+     * check if category exists.
+     * @param category
+     * @throws Exception
+     */
+    public void checkCategory(final String category) throws Exception {
+        if (!clientRepo.existsByCategory(category)) {
+            throw new Exception("The requested category does not yet exist");
+        }
+    }
+
+    /**
+     * get statistics of clients based on category.
+     * stats:
+     * gender ratio
+     * zipcode
+     * age
+     * @param category
+     * @return String of statistics
+     * @throws Exception
+     */
+    public Map<String, Map<String, Integer>> getStats(final String category)
+            throws Exception {
+        Map<String, Map<String, Integer>> stats = new HashMap<>();
+        List<Client> clientCategory = clientRepo.getClientsByCategory(category);
+        Map<String, Integer> gender = new HashMap<>();
+        Map<String, Integer> zipcode = new HashMap<>();
+        Map<String, Integer> age = new HashMap<>();
+
+        for (Client client : clientCategory) {
+            Integer currVal;
+            String clientGender = client.getGender();
+            String clientZipcode = client.getZipcode();
+            DateTimeFormatter formatter = DateTimeFormatter
+                    .ofPattern("MM/dd/yyyy");
+                //convert String to LocalDate
+                LocalDate dob = LocalDate.parse(client.getDateOfBirth(),
+                    formatter);
+                LocalDate today = LocalDate.now();
+
+            String clientAge = String.valueOf(Period.between(dob,
+                today).getYears());
+
+            if (!gender.containsKey(clientGender)) {
+                gender.put(clientGender, 1);
+            } else {
+                currVal = gender.get(clientGender);
+                gender.put(clientGender, currVal + 1);
+            }
+
+            if (!age.containsKey(clientAge)) {
+                age.put(clientAge, 1);
+            } else {
+                currVal = age.get(clientAge);
+                age.put(clientAge, currVal + 1);
+            }
+
+            if (!zipcode.containsKey(clientZipcode)) {
+                zipcode.put(clientZipcode, 1);
+            } else {
+                currVal = zipcode.get(clientZipcode);
+                zipcode.put(clientZipcode, currVal + 1);
+            }
+        }
+
+        //add to stats
+        HashMap<String, Integer> genderStats = new HashMap<>();
+        gender.forEach((genderName, total)
+            -> genderStats.put(genderName, (total * MULTIPLY_HUNDRED
+                / clientCategory.size()))
+            );
+        stats.put("Gender", genderStats);
+
+        HashMap<String, Integer> ageStats = new HashMap<>();
+        age.forEach((ageName, total)
+            -> ageStats.put(ageName, (total * MULTIPLY_HUNDRED
+                / clientCategory.size()))
+            );
+        stats.put("Age", ageStats);
+
+        HashMap<String, Integer> zipcodeStats = new HashMap<>();
+        zipcode.forEach((zipcodeName, total)
+            -> zipcodeStats.put(zipcodeName, (total * MULTIPLY_HUNDRED
+                / clientCategory.size()))
+            );
+        stats.put("Zipcode", zipcodeStats);
+
+        return stats;
     }
 }
