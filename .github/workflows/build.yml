@@ -23,12 +23,6 @@ jobs:
       # check out repository
       - name: Checkout
         uses: actions/checkout@v3
-      # checking out a branch for badges
-      - name: Checkout badges branch to a branch directory
-        uses: actions/checkout@v3
-        with:
-          ref: badges
-          path: badges
       # Set up JDK 11
       - name: Set up Java
         uses: actions/setup-java@v3
