@@ -6,6 +6,7 @@ const searchResultsColumns = document.getElementById("column-names");
 
 const client = JSON.parse(sessionStorage.getItem("client"));
 const clientID = client["clientID"];
+const clientIndustry = client["industry"];
 
 const getVendorByID = async (vendorID) => {
     try{
@@ -45,7 +46,7 @@ const getShoppingListByClientID = async (clientID) => {
 }
 
 const get_search_results = async (query) => {
-    const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_name/${query}`);
+    const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_name/${clientIndustry}/${query}`);
     const data = await response.json();
     return data;
 }
