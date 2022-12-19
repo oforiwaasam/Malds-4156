@@ -71,16 +71,24 @@ public class ProductRepository {
      * Searches for Product with productName and returns the Product
      * object in a list.
      *
+     * @param industry
      * @param productName
      * @return A list containing the Product with specified productName
      */
-    public List<Product> findProductByName(final String productName) {
+    public List<Product> findProductByIndustryByName(
+            final String industry, final String productName) {
         Map<String, AttributeValue> productNames = new HashMap<>();
         productNames.put(":productName", new AttributeValue()
                 .withS(productName));
+        productNames.put(":industry", new AttributeValue()
+                .withS(industry));
+
         DynamoDBScanExpression scanExpression =
                 new DynamoDBScanExpression()
-                        .withFilterExpression("productName = :productName")
+                        //.withFilterExpression("productName = :productName")
+                        .withFilterExpression(
+                                "productName = :productName "
+                                        + "AND industry = :industry")
                         .withExpressionAttributeValues(productNames);
         return dynamoDBMapper.scan(Product.class, scanExpression);
     }

@@ -44,6 +44,7 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         when(productService.getProductByID("123456")).thenReturn(List.of(product1));
 
@@ -66,6 +67,7 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         when(productService.getProductByID("123456")).thenReturn(List.of(product1));
         when(productService.getProductByID("123454")).thenThrow(new ResourceNotFoundException("Exception:Product ID not found"));
@@ -90,6 +92,7 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
@@ -103,6 +106,7 @@ public class ProductControllerTest {
         product2.setVendorID("54321");
         product2.setPrice("7.19");
         product2.setQuantity("2");
+        product2.setIndustry("Grocery");
         when(productService.updateProduct(product1)).thenReturn(List.of(product2));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/products/123456").contentType(APPLICATION_JSON_UTF8)
@@ -126,6 +130,7 @@ public class ProductControllerTest {
         product3.setVendorID("54321");
         product3.setPrice("7.19");
         product3.setQuantity("2");
+        product3.setIndustry("Grocery");
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
@@ -156,6 +161,7 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
@@ -184,6 +190,7 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
@@ -214,6 +221,7 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         Product product2 = new Product();
         product1.setProductID("5555555");
@@ -221,6 +229,7 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("8.50");
         product1.setQuantity("4");
+        product1.setIndustry("Grocery");
 
         when(productService.getProductsByVendorID("54321")).thenReturn(List.of(product1,product2));
 
@@ -244,6 +253,7 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         when(productService.getProductsByVendorID("54321")).thenReturn(List.of(product1));
         when(productService.getProductsByVendorID("544444321")).thenThrow(new ResourceNotFoundException("Exception:Vendor ID not found"));
@@ -269,6 +279,7 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         Product product2 = new Product();
         product1.setProductID("5555555");
@@ -276,10 +287,11 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("8.50");
         product1.setQuantity("4");
+        product1.setIndustry("Grocery");
 
-        when(productService.getProductByName("TestProduct1")).thenReturn(List.of(product1,product2));
+        when(productService.getProductByIndustryByName("Grocery","TestProduct1")).thenReturn(List.of(product1,product2));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/products/get_product_by_name/TestProduct1"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/products/get_product_by_name/Grocery/TestProduct1"))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
@@ -287,7 +299,7 @@ public class ProductControllerTest {
         System.out.println("Content: " + content);
         //.andExpect(MockMvcResultMatchers.jsonPath(“$.productName”).value("TestProduct1"));
 
-        Mockito.verify(productService).getProductByName("TestProduct1");
+        Mockito.verify(productService).getProductByIndustryByName("Grocery","TestProduct1");
         Assert.assertTrue(content.contains("8.50")); 
 
     }
@@ -299,11 +311,12 @@ public class ProductControllerTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        //product1.setIndustry("Grocery");
 
-        when(productService.getProductByName("TestProduct1")).thenReturn(List.of(product1));
-        when(productService.getProductByName("TestProduct2")).thenThrow(new ResourceNotFoundException("Exception:Product with Name: " +"TestProduct2"+ " not found"));
+        when(productService.getProductByIndustryByName("Grocery","TestProduct1")).thenReturn(List.of(product1));
+        when(productService.getProductByIndustryByName("Grocery","TestProduct2")).thenThrow(new ResourceNotFoundException("Exception:Product with Name: " +"TestProduct2"+ " not found"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/products/get_product_by_name/TestProduct2"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/products/get_product_by_name/Grocery/TestProduct2"))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
@@ -311,7 +324,7 @@ public class ProductControllerTest {
         System.out.println("Content: " + content);
         //.andExpect(MockMvcResultMatchers.jsonPath(“$.productName”).value("TestProduct1"));
 
-        Mockito.verify(productService).getProductByName("TestProduct2");
+        Mockito.verify(productService).getProductByIndustryByName("Grocery","TestProduct2");
         Assert.assertTrue(content.contains("Exception"));
     }
 }
