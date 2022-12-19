@@ -1,6 +1,7 @@
 const searchBtn = document.getElementById('search-btn');
 const searchResultsDiv = document.getElementById("search-results")
 const zeroResultsDiv = document.getElementById("zero-results");
+const searchResultsColumns = document.getElementById("column-names");
 
 const clientStats = async (category) => {
     console.log(JSON.stringify(category));
@@ -22,23 +23,29 @@ const clientStats = async (category) => {
 }
 
 const display_stats = async (stats) => {
-    console.log(stats);
-    return
-    // if (stats.size == 0) {
-    //     zeroResultsDiv.classList.remove("d-none");
-    //     searchResultsDiv.append(zeroResultsDiv)
-    //     return
-    // }
-    // zeroResultsDiv.classList.add("d-none");
-    // searchResultsDiv.append(searchResultsColumns)
-    // for (let i in stats){
-    //     const statDiv = document.createElement("div");
+    if (Object.keys(stats).length > 0) {
+        zeroResultsDiv.classList.add("d-none");
+        // searchResultsDiv.append(searchResultsColumns)
+        for(i in stats){
+            const rowDiv = document.createElement("div");
+            const statDiv = document.createElement("div");
+            const titleDiv = document.createElement("div");
+            const stat = JSON.stringify(stats[i], null, 4);
+            const title = i;
+            titleDiv.innerHTML = title;
+            statDiv.innerHTML = stat;
 
-    //     const stat = stats[i]
-    //     statDiv.innerHTML = stat;
-    //     // rowDiv.classList.add("row", "py-2", "mx-auto", "w-50");
-    //     searchResultsDiv.append(statDiv);
-    // }
+            rowDiv.classList.add("row", "py-2", "mx-auto", "w-50");
+            rowDiv.append(titleDiv, statDiv);
+            searchResultsDiv.append(rowDiv);
+        }
+               
+    }else{
+        zeroResultsDiv.classList.remove("d-none");
+        searchResultsDiv.append(zeroResultsDiv)
+        return
+    }  
+    
 }
 
 searchBtn.addEventListener('click',async ()=> {
