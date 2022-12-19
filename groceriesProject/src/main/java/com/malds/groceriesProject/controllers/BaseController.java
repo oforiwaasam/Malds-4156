@@ -1,8 +1,10 @@
 package com.malds.groceriesProject.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
 /**
@@ -13,6 +15,7 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
  *
  */
 @RestController
+@RestControllerAdvice
 public class BaseController {
     /**
      * Handles all Exceptions not addressed by more specific
@@ -21,8 +24,10 @@ public class BaseController {
      * @param ex An Exception instance.
      * @return The detailed error message.
      */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ResourceNotFoundException.class, Exception.class})
     public String handleException(final Exception ex) {
+        System.out.println(ex.getMessage());
         return ex.getMessage();
     }
 }

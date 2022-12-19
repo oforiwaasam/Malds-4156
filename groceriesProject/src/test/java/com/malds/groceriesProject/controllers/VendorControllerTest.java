@@ -35,6 +35,7 @@ public class VendorControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    public static String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjBOU3BHZjBETVFBcjgtQnd1eVJ0cyJ9.eyJpc3MiOiJodHRwczovL2Rldi16c3l4d3hxeWRheDFzamR3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJrQVRvRm5JTjNSNjl0TVo1bG1iTmN6ZXhxOU9vVWJhc0BjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9ncm9jZXJpZXNBUEkuZXhhbXBsZS5jb20iLCJpYXQiOjE2NzE0MDY4MDIsImV4cCI6MTY3MTQ5MzIwMiwiYXpwIjoia0FUb0ZuSU4zUjY5dE1aNWxtYk5jemV4cTlPb1ViYXMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.suMppPq-BqZeTXZGSLtKDdwuWjuGRaL0-vRkBY0wjhTsdy53U6B9dBuYi2fqqNY2MpuyADf6a9XsS3qdC2TmceCd_Q7JE3kiOu6_tV_NalFqsJhsDPbZzCR2suauew7grgCGFyNqBuPdJryr94i7Okp5sE1jgR_IkzShoboaR9ePcDqvCmUvhfJc8C9PvnA1nYdEI36xE-O8bQWX7mnb8REH5P-x3QxsLyDhXLIdhmho8hkwNeil9LdwtUqAZfycaipqKe3TtxEDRaOnesI6DGSlivlnUjXReNDdsCPOZgIhnjxoAINSrNdSx4WoIqga8qHBj3eyhknlixlTg7VXCw";
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
     @Test
@@ -51,7 +52,7 @@ public class VendorControllerTest {
 
         when(vendorService.getVendorByID("1")).thenReturn(List.of(vendor));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/vendors/1"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/vendors/1").header("authorization", "Bearer " + token))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
@@ -69,8 +70,8 @@ public class VendorControllerTest {
 
         when(vendorService.getVendorByID("1")).thenThrow(new ResourceNotFoundException("Vendor ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/vendors/1"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/vendors/1").header("authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -101,7 +102,7 @@ public class VendorControllerTest {
         when(vendorService.saveVendor(vendor)).thenReturn(List.of(vendor));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/vendors").contentType(APPLICATION_JSON_UTF8)
-        .content(requestJson))
+        .content(requestJson).header("authorization", "Bearer " + token))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
@@ -133,8 +134,8 @@ public class VendorControllerTest {
             + " - must use unique vendorID"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/vendors").contentType(APPLICATION_JSON_UTF8)
-        .content(requestJson))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        .content(requestJson).header("authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -165,7 +166,7 @@ public class VendorControllerTest {
         when(vendorService.updateVendor(updatedVendor)).thenReturn(List.of(updatedVendor));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/vendors/1").contentType(APPLICATION_JSON_UTF8)
-        .content(requestJson))
+        .content(requestJson).header("authorization", "Bearer " + token))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
@@ -197,8 +198,8 @@ public class VendorControllerTest {
         when(vendorService.updateVendor(updatedVendor)).thenThrow(new ResourceNotFoundException("Vendor ID not found"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/vendors/1").contentType(APPLICATION_JSON_UTF8)
-        .content(requestJson))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        .content(requestJson).header("authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -219,7 +220,7 @@ public class VendorControllerTest {
          updatedVendor.setZipcode("10260");
 
         doNothing().when(vendorService).deleteVendorByID("1");
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/vendors/1"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/vendors/1").header("authorization", "Bearer " + token))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
@@ -243,8 +244,8 @@ public class VendorControllerTest {
          updatedVendor.setZipcode("10260");
 
         doThrow(new ResourceNotFoundException("Vendor ID not found")).when(vendorService).deleteVendorByID("1");
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/vendors/1"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/vendors/1").header("authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andReturn();
 
         String content = result.getResponse().getContentAsString();

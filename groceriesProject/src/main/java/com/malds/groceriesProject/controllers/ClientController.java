@@ -15,6 +15,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.malds.groceriesProject.services.ClientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.Client;
 
@@ -39,6 +41,7 @@ public class ClientController extends BaseController {
      * @throws Exception
      */
     @PostMapping("/clients")
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public List<Client> saveClient(@RequestBody final Client client)
     throws Exception {
         try {
@@ -60,6 +63,7 @@ public class ClientController extends BaseController {
      * @throws ResourceNotFoundException
      */
     @GetMapping("/clients/{id}")
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public List<Client> getClientByID(@PathVariable("id") final String clientID)
             throws ResourceNotFoundException {
         try {
@@ -77,6 +81,7 @@ public class ClientController extends BaseController {
      * @throws ResourceNotFoundException
      */
     @DeleteMapping("/clients/{id}")
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public void deleteClientByID(@PathVariable("id") final String clientID)
             throws ResourceNotFoundException {
         try {
@@ -95,6 +100,7 @@ public class ClientController extends BaseController {
      * @throws Exception
      */
     @PutMapping("/clients/{id}")
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public List<Client> updateClient(@RequestBody final Client client)
     throws Exception {
         try {
