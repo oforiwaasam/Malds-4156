@@ -24,7 +24,7 @@ public class ProductIntegTest {
     public void createProductsInteg() throws Exception  {
         Product newProduct = new Product();
         for(int i = 0; i < 10; ++i){
-            if(productService.getProductByName("newTestProduct_" +i).size() != 0){
+            if(productService.getProductByIndustryByName("Random","newTestProduct_" +i).size() != 0){
                 productService.deleteProductById("product_integ_"+i);
             }
             newProduct.setProductID("product_integ_"+i);
@@ -32,6 +32,7 @@ public class ProductIntegTest {
             newProduct.setVendorID("5");
             newProduct.setPrice(String.valueOf(Math.ceil(Math.random()*10)));
             newProduct.setQuantity(String.valueOf(Math.ceil(Math.random()*100)));
+            newProduct.setIndustry("Random");
             productService.addNewProduct(newProduct);
         }
 
@@ -45,7 +46,7 @@ public class ProductIntegTest {
     //@Test
     public void deleteProductInteg() throws Exception  {
         Product newProduct = new Product();
-        if(productService.getProductByName("newTestProduct_7").size() != 0){
+        if(productService.getProductByIndustryByName("Random","newTestProduct_7").size() != 0){
             productService.deleteProductById("product_integ_7");
         }
         newProduct.setProductID("product_integ_7");
@@ -53,6 +54,7 @@ public class ProductIntegTest {
         newProduct.setVendorID("5");
         newProduct.setPrice(String.valueOf(Math.ceil(Math.random()*10)));
         newProduct.setQuantity(String.valueOf(Math.ceil(Math.random()*100)));
+        newProduct.setIndustry("Random");
         productService.addNewProduct(newProduct);
         productService.deleteProductById("product_integ_7");
         //Test that the shopping list exists
