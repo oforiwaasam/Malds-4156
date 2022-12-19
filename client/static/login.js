@@ -3,7 +3,12 @@ const signInBtn = document.getElementById("sign-in-btn");
 
 const getClientByID = async (clientID) => {
     try{
-        const response = await fetch(`https://groceries-project.herokuapp.com/clients/${clientID}`);
+        const response = await fetch(`https://groceries-project.herokuapp.com/clients/${clientID}`, {
+            method: 'GET',
+            headers: {
+                //TODO add token
+            },
+        });
         const data = await response.json();
         return data[0];
     } catch {
@@ -13,7 +18,12 @@ const getClientByID = async (clientID) => {
 
 const getVendorByID = async (vendorID) => {
     try{
-        const response = await fetch(`https://groceries-project.herokuapp.com/vendors/${vendorID}`);
+        const response = await fetch(`https://groceries-project.herokuapp.com/vendors/${vendorID}`, {
+            method: 'GET',
+            headers: {
+                //TODO add token
+            },
+        });
         const data = await response.json();
         return data[0];
     } catch {

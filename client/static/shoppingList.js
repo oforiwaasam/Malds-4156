@@ -6,6 +6,18 @@ const client = JSON.parse(sessionStorage.getItem("client"));
 const clientID = client["clientID"];
 console.log(clientID)
 
+const getShoppingListByClientID = async (clientID) => {
+    const response = await fetch(`https://groceries-project.herokuapp.com/shopping_list/client/${clientID}`, {
+        method: 'GET',
+        headers: {
+            //TODO add token
+        },
+    });
+    const data = await response.json();
+    console.log(data)
+    return data;
+}
+
 const updateShoppingList = (shoppingList) => {
     console.log(JSON.stringify(shoppingList))
     $.ajax({
@@ -14,6 +26,8 @@ const updateShoppingList = (shoppingList) => {
         data: JSON.stringify(shoppingList),
         dataType: "json",
         contentType: 'application/json; charset=utf-8',
+        //TODO add token
+        headers: {},
         success: function(result){
             console.log(result);
             location.reload();
@@ -28,7 +42,12 @@ const updateShoppingList = (shoppingList) => {
 }
 
 const getProductByID = async (productID) => {
-    const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_id/${productID}`);
+    const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_id/${productID}`, {
+        method: 'GET',
+        headers: {
+            //TODO add token
+        },
+    });
     const data = await response.json();
     return data[0];
 }
@@ -125,15 +144,8 @@ const displayShoppingList = (products) => {
     }
 }
 
-const getShoppingListByClientID = async (clientID) => {
-    const response = await fetch(`https://groceries-project.herokuapp.com/shopping_list/client/${clientID}`);
-    const data = await response.json();
-    console.log(data)
-    return data;
-}
 
 const init = async () => {
-    //TODO: change hardcoded value
     shoppingListObj = await getShoppingListByClientID(clientID);
     const productIDToQuantity = shoppingListObj['productIDToQuantity'];
     const products = await getProducts(productIDToQuantity);
