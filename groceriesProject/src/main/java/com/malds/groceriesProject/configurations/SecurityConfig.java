@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -50,10 +51,22 @@ public class SecurityConfig {
         setup our app to serve as
         an OAuth2 Resource Server, using JWT validation.
         */
+        http.exceptionHandling().authenticationEntryPoint(
+            (request, response, authException) -> {
+            /*response.addHeader(
+                HttpHeaders.WWW_AUTHENTICATE,
+                "Basic realm=\"Restricted Content\"");*/
+            response.sendError(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        });
+
         http.authorizeRequests()
                 .mvcMatchers("/shopping_list/**").authenticated()
                 .mvcMatchers(HttpMethod.GET, "/products/**").permitAll()
                 .mvcMatchers("/products/**").authenticated()
+                .mvcMatchers(HttpMethod.GET, "/clients/{category}/stats")
+                .permitAll()
                 .mvcMatchers("/clients/**").authenticated()
                 .mvcMatchers("/vendors/**").authenticated()
                 //.mvcMatchers("/api/private").authenticated()
