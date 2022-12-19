@@ -127,6 +127,7 @@ const getShoppingListByClientID = async (clientID) => {
 }
 
 const init = async () => {
+    //TODO: change hardcoded value
     shoppingListObj = await getShoppingListByClientID('1');
     const productIDToQuantity = shoppingListObj['productIDToQuantity'];
     const products = await getProducts(productIDToQuantity);

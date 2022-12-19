@@ -3,7 +3,7 @@ const searchInput = document.getElementById('search-input');
 const searchResultsDiv = document.getElementById("search-results")
 const zeroResultsDiv = document.getElementById("zero-results");
 const searchResultsColumns = document.getElementById("column-names");
-
+//TODO: change hardcoded value
 localStorage.setItem("clientID", "445")
 
 const getVendorByID = async (vendorID) => {
@@ -86,6 +86,7 @@ const display_search_results = async (products) => {
         addBtn.classList.add("btn", "btn-dark");
         addBtn.innerHTML = "Add product"
         addBtn.addEventListener("click",async ()=>{
+            //TODO: change hardcoded value
             const shoppingList = await getShoppingListByClientID("1");
             const productIDToQuantity = shoppingList['productIDToQuantity']
 
