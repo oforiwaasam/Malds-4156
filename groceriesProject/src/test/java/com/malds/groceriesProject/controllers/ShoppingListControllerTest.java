@@ -37,6 +37,7 @@ class ShoppingListControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    public static String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjBOU3BHZjBETVFBcjgtQnd1eVJ0cyJ9.eyJpc3MiOiJodHRwczovL2Rldi16c3l4d3hxeWRheDFzamR3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJrQVRvRm5JTjNSNjl0TVo1bG1iTmN6ZXhxOU9vVWJhc0BjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9ncm9jZXJpZXNBUEkuZXhhbXBsZS5jb20iLCJpYXQiOjE2NzE0MDY4MDIsImV4cCI6MTY3MTQ5MzIwMiwiYXpwIjoia0FUb0ZuSU4zUjY5dE1aNWxtYk5jemV4cTlPb1ViYXMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.suMppPq-BqZeTXZGSLtKDdwuWjuGRaL0-vRkBY0wjhTsdy53U6B9dBuYi2fqqNY2MpuyADf6a9XsS3qdC2TmceCd_Q7JE3kiOu6_tV_NalFqsJhsDPbZzCR2suauew7grgCGFyNqBuPdJryr94i7Okp5sE1jgR_IkzShoboaR9ePcDqvCmUvhfJc8C9PvnA1nYdEI36xE-O8bQWX7mnb8REH5P-x3QxsLyDhXLIdhmho8hkwNeil9LdwtUqAZfycaipqKe3TtxEDRaOnesI6DGSlivlnUjXReNDdsCPOZgIhnjxoAINSrNdSx4WoIqga8qHBj3eyhknlixlTg7VXCw";
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
     @Test
@@ -52,7 +53,7 @@ class ShoppingListControllerTest {
 
         when(shoppingListService.getShoppingListByID("988")).thenReturn(List.of(shoppingList));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/988"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/988").header("authorization", "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
@@ -65,12 +66,12 @@ class ShoppingListControllerTest {
 
     @Test
     public void testGetShoppingListByInvalidID() throws Exception {
-        final String EXPECTED_RESPONSE = "This shoppingList ID doesn't exists (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null) (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
+        final String EXPECTED_RESPONSE = "This shoppingList ID doesn't exists (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
         when(shoppingListService.getShoppingListByID("988")).thenThrow(new ResourceNotFoundException("This shoppingList ID doesn't exists (Service: " +
                 "null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/988"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/988").header("authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -88,7 +89,7 @@ class ShoppingListControllerTest {
         productIDToQuantity.put("123456789", "5");
         when(shoppingListService.getProductsToQuantityByID("988")).thenReturn(productIDToQuantity);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/products/988"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/products/988").header("authorization", "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
@@ -107,8 +108,8 @@ class ShoppingListControllerTest {
         when(shoppingListService.getProductsToQuantityByID("988")).thenThrow(new ResourceNotFoundException("ERROR: check input values (Service: null; Status Code: \" +\n" +
                 "                        \"0; Error Code: null; Request ID: null; Proxy: null)"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/products/988"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/products/988").header("authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -131,7 +132,7 @@ class ShoppingListControllerTest {
 
         when(shoppingListService.getShoppingListByClientID("12345f")).thenReturn(shoppingList);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/client/12345f"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/client/12345f").header("authorization", "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
@@ -146,8 +147,8 @@ class ShoppingListControllerTest {
     void getShoppingListByNullClientID() throws Exception{
         final String EXPECTED_RESPONSE = "Shopping List does not exist for clientID (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
         when(shoppingListService.getShoppingListByClientID("12345f")).thenThrow(new ResourceNotFoundException("Shopping List does not exist for clientID"));
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/client/12345f"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/shopping_list/client/12345f").header("authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -177,7 +178,7 @@ class ShoppingListControllerTest {
         when(shoppingListService.createShoppingList(shoppingList)).thenReturn(List.of(shoppingList));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/shopping_list").contentType(APPLICATION_JSON_UTF8)
-                        .content(requestJson))
+                        .content(requestJson).header("authorization", "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
@@ -209,8 +210,8 @@ class ShoppingListControllerTest {
         when(shoppingListService.createShoppingList(shoppingList)).thenThrow(new Exception("This shoppingList ID already exists"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/shopping_list").contentType(APPLICATION_JSON_UTF8)
-                        .content(requestJson))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                        .content(requestJson).header("authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -239,7 +240,7 @@ class ShoppingListControllerTest {
         when(shoppingListService.updateShoppingList(shoppingList)).thenReturn(List.of(shoppingList));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/shopping_list").contentType(APPLICATION_JSON_UTF8)
-                        .content(requestJson))
+                        .content(requestJson).header("authorization", "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
@@ -269,8 +270,8 @@ class ShoppingListControllerTest {
         when(shoppingListService.updateShoppingList(shoppingList)).thenThrow(new ResourceNotFoundException("ERROR: check input values; be sure to include ShoppingListID"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/shopping_list").contentType(APPLICATION_JSON_UTF8)
-                        .content(requestJson))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                        .content(requestJson).header("authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -297,8 +298,8 @@ class ShoppingListControllerTest {
         when(shoppingListService.updateShoppingList(shoppingList)).thenThrow(new ResourceNotFoundException("ERROR: check input values; be sure to include ShoppingListID"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/shopping_list").contentType(APPLICATION_JSON_UTF8)
-                        .content(requestJson))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                        .content(requestJson).header("authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -326,8 +327,8 @@ class ShoppingListControllerTest {
         when(shoppingListService.updateShoppingList(shoppingList)).thenThrow(new ResourceNotFoundException("ERROR: check input values; be sure to include ShoppingListID"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/shopping_list").contentType(APPLICATION_JSON_UTF8)
-                        .content(requestJson))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                        .content(requestJson).header("authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -355,8 +356,8 @@ class ShoppingListControllerTest {
         when(shoppingListService.updateShoppingList(shoppingList)).thenThrow(new ResourceNotFoundException("ERROR: check input values; be sure to include ShoppingListID"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/shopping_list").contentType(APPLICATION_JSON_UTF8)
-                        .content(requestJson))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                        .content(requestJson).header("authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -368,7 +369,7 @@ class ShoppingListControllerTest {
     @Test
     public void testDeleteShoppingList() throws Exception {
         doNothing().when(shoppingListService).deleteShoppingListByID("9");
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/shopping_list/9"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/shopping_list/9").header("authorization", "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
@@ -383,8 +384,8 @@ class ShoppingListControllerTest {
     public void testDeleteShoppingListInvalidID() throws Exception {
         final String EXPECTED_RESPONSE = "ERROR: check shoppingListID value (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)";
         doThrow(new ResourceNotFoundException("This shoppingList ID doesn't exist")).when(shoppingListService).deleteShoppingListByID("1000");
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/shopping_list/1000"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/shopping_list/1000").header("authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();

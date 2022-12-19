@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.Vendor;
 import com.malds.groceriesProject.services.VendorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @CrossOrigin
 @RestController
@@ -36,6 +38,7 @@ public class VendorController extends BaseController {
      * @throws Exception
      */
     @PostMapping("/vendors")
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public List<Vendor> saveVendor(@RequestBody final Vendor vendor)
     throws Exception {
         try {
@@ -57,6 +60,7 @@ public class VendorController extends BaseController {
      * @throws ResourceNotFoundException
      */
     @GetMapping("/vendors/{id}")
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public List<Vendor> getVendorByID(@PathVariable("id") final String vendorID)
             throws ResourceNotFoundException {
         try {
@@ -74,6 +78,7 @@ public class VendorController extends BaseController {
      * @throws ResourceNotFoundException
      */
     @DeleteMapping("/vendors/{id}")
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public void deleteVendorByID(@PathVariable("id") final String vendorID)
             throws ResourceNotFoundException {
         try {
@@ -91,6 +96,7 @@ public class VendorController extends BaseController {
      * @throws Exception
      */
     @PutMapping("/vendors/{id}")
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public List<Vendor> updateVendor(@RequestBody final Vendor vendor)
     throws Exception {
         try {

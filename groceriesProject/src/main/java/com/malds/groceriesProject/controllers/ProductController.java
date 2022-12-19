@@ -3,7 +3,8 @@ package com.malds.groceriesProject.controllers;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.Product;
 import com.malds.groceriesProject.services.ProductService;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,6 +37,7 @@ public class ProductController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(method = RequestMethod.POST)
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public Product createProduct(
             @RequestBody final Product product) throws Exception {
         try {
@@ -61,6 +63,7 @@ public class ProductController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public List<Product> updateProduct(
             @RequestBody final Product product) throws Exception {
         try {
@@ -136,6 +139,7 @@ public class ProductController extends BaseController {
      */
     @RequestMapping(path = "/{id}",
             method = RequestMethod.DELETE)
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public void deleteProductByID(@PathVariable("id") final String productId)
             throws ResourceNotFoundException {
         try {

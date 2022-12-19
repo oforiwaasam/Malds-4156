@@ -3,6 +3,8 @@ package com.malds.groceriesProject.controllers;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.malds.groceriesProject.models.ShoppingList;
 import com.malds.groceriesProject.services.ShoppingListService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import io.swagger.v3.oas.annotations.Operation;
 
 @CrossOrigin
 @RestController
@@ -38,12 +42,36 @@ public class ShoppingListController extends BaseController {
      * @throws ResourceNotFoundException
      */
     @GetMapping("/{id}")
-    public List<ShoppingList> getShoppingList(
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
+    /*public List<ShoppingList> getShoppingList(
             @PathVariable("id") final String shoppingListID)
-            throws ResourceNotFoundException {
-        return shoppingListService.getShoppingListByID(shoppingListID);
-    }
+            throws ResourceNotFoundException, Exception {
+        try {
+            return shoppingListService.getShoppingListByID(shoppingListID);
+        } catch (ResourceNotFoundException re) {
+            System.out.println(re.getMessage());
+            throw new ResourceNotFoundException("ERROR: check input values");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw new Exception("aut");
+        }
 
+    }*/
+    public ResponseEntity<Object> getShoppingList(
+        @PathVariable("id") final String shoppingListID) {
+        try {
+            return new ResponseEntity<>(shoppingListService.
+            getShoppingListByID(shoppingListID), HttpStatus.OK);
+        } catch (ResourceNotFoundException re) {
+            System.out.println(re.getMessage());
+            return new ResponseEntity<>(
+                re.getErrorMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return new ResponseEntity<>(
+                ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
     /**
      * given shoppingListID input, searches the ShoppingList
      * table in dynamoDB and returns a hashmap containing
@@ -55,14 +83,19 @@ public class ShoppingListController extends BaseController {
      * @throws ResourceNotFoundException
      */
     @GetMapping("/products/{id}")
+    @Operation(summary = "My endpoint",
+        security = @SecurityRequirement(name = "bearerAuth"))
     public Map<String, String> getProductsToQuantityByID(
             @PathVariable("id") final String shoppingListID)
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, Exception {
         try {
             return shoppingListService
                     .getProductsToQuantityByID(shoppingListID);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("ERROR: check input values");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw new Exception("aut");
         }
     }
 
@@ -76,6 +109,8 @@ public class ShoppingListController extends BaseController {
      * @throws ResourceNotFoundException
      */
     @GetMapping("/client/{id}")
+    @Operation(summary = "My endpoint",
+        security = @SecurityRequirement(name = "bearerAuth"))
     public ShoppingList getShoppingListByClientID(
             @PathVariable("id") final String clientID)
             throws ResourceNotFoundException {
@@ -96,6 +131,8 @@ public class ShoppingListController extends BaseController {
      * @throws Exception
      */
     @PostMapping()
+    @Operation(summary = "My endpoint",
+        security = @SecurityRequirement(name = "bearerAuth"))
     public List<ShoppingList> createShoppingList(
             @RequestBody final ShoppingList shoppingList)
             throws Exception {
@@ -115,6 +152,8 @@ public class ShoppingListController extends BaseController {
      * @throws Exception
      */
     @PutMapping()
+    @Operation(summary = "My endpoint",
+        security = @SecurityRequirement(name = "bearerAuth"))
     public List<ShoppingList> updateShoppingList(
             @RequestBody final ShoppingList shoppingList)
             throws Exception {
@@ -135,6 +174,8 @@ public class ShoppingListController extends BaseController {
      * @param shoppingListID
      */
     @DeleteMapping("/{id}")
+    @Operation(summary = "My endpoint",
+        security = @SecurityRequirement(name = "bearerAuth"))
     public void deleteShoppingListByID(
             @PathVariable("id") final String shoppingListID) {
         try {

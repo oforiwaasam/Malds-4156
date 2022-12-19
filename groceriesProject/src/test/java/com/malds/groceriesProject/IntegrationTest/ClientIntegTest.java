@@ -1,4 +1,4 @@
-package com.malds.groceriesProject.IntegrationTestsAssessment;
+package com.malds.groceriesProject.IntegrationTest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,13 +14,13 @@ import com.malds.groceriesProject.models.Client;
 import com.malds.groceriesProject.services.ClientService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+//@SpringBootTest
 public class ClientIntegTest {
 
     @Autowired
     private ClientService clientService;
 
-    @Test
+    //@Test
     public void createClientInteg() throws Exception  {
 
         Client deleteClient = new Client();
@@ -38,7 +38,7 @@ public class ClientIntegTest {
 
     }
 
-    @Test
+    //@Test
     public void deleteClientInteg() throws Exception  {
 
         Client deleteClient = new Client();

@@ -36,7 +36,8 @@ public class ClientControllerTest {
     MockMvc mockMvc;
 
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
-
+    public static String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjBOU3BHZjBETVFBcjgtQnd1eVJ0cyJ9.eyJpc3MiOiJodHRwczovL2Rldi16c3l4d3hxeWRheDFzamR3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJrQVRvRm5JTjNSNjl0TVo1bG1iTmN6ZXhxOU9vVWJhc0BjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9ncm9jZXJpZXNBUEkuZXhhbXBsZS5jb20iLCJpYXQiOjE2NzE0MDY4MDIsImV4cCI6MTY3MTQ5MzIwMiwiYXpwIjoia0FUb0ZuSU4zUjY5dE1aNWxtYk5jemV4cTlPb1ViYXMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.suMppPq-BqZeTXZGSLtKDdwuWjuGRaL0-vRkBY0wjhTsdy53U6B9dBuYi2fqqNY2MpuyADf6a9XsS3qdC2TmceCd_Q7JE3kiOu6_tV_NalFqsJhsDPbZzCR2suauew7grgCGFyNqBuPdJryr94i7Okp5sE1jgR_IkzShoboaR9ePcDqvCmUvhfJc8C9PvnA1nYdEI36xE-O8bQWX7mnb8REH5P-x3QxsLyDhXLIdhmho8hkwNeil9LdwtUqAZfycaipqKe3TtxEDRaOnesI6DGSlivlnUjXReNDdsCPOZgIhnjxoAINSrNdSx4WoIqga8qHBj3eyhknlixlTg7VXCw";
+    
     @Test
     public void testGetClientByID() throws Exception {
         final String EXPECTED_RESPONSE = "[{\"clientID\":\"1\",\"email\":\"sd2818@columbia.edu\",\"firstName\":\"Sarah\","
@@ -53,7 +54,7 @@ public class ClientControllerTest {
 
         when(clientService.getClientByID("1")).thenReturn(List.of(client));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/clients/1"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/clients/1").header("authorization", "Bearer " + token))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
@@ -81,8 +82,8 @@ public class ClientControllerTest {
 
         when(clientService.getClientByID("1")).thenThrow(new ResourceNotFoundException("Client ID not found (Service: null; Status Code: 0; Error Code: null; Request ID: null; Proxy: null)"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/clients/1"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/clients/1").header("authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -115,7 +116,7 @@ public class ClientControllerTest {
         when(clientService.saveClient(client)).thenReturn(List.of(client));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/clients").contentType(APPLICATION_JSON_UTF8)
-        .content(requestJson))
+        .content(requestJson).header("authorization", "Bearer " + token))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
@@ -149,8 +150,8 @@ public class ClientControllerTest {
             + " - must use unique clientID"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/clients").contentType(APPLICATION_JSON_UTF8)
-        .content(requestJson))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        .content(requestJson).header("authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -183,7 +184,7 @@ public class ClientControllerTest {
         when(clientService.updateClient(updatedClient)).thenReturn(List.of(updatedClient));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/clients/1").contentType(APPLICATION_JSON_UTF8)
-        .content(requestJson))
+        .content(requestJson).header("authorization", "Bearer " + token))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
@@ -217,8 +218,8 @@ public class ClientControllerTest {
         when(clientService.updateClient(updatedClient)).thenThrow(new ResourceNotFoundException("Client ID not found"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/clients/1").contentType(APPLICATION_JSON_UTF8)
-        .content(requestJson))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        .content(requestJson).header("authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -241,7 +242,7 @@ public class ClientControllerTest {
         client.setZipcode("11101");
 
         doNothing().when(clientService).deleteClientByID("1");
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/clients/1"))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/clients/1").header("authorization", "Bearer " + token))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
@@ -267,8 +268,8 @@ public class ClientControllerTest {
         client.setZipcode("11101");
 
         doThrow(new ResourceNotFoundException("Client ID not found")).when(clientService).deleteClientByID("1");
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/clients/1"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/clients/1").header("authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andReturn();
 
         String content = result.getResponse().getContentAsString();
