@@ -100,17 +100,20 @@ public class ProductController extends BaseController {
     /**
      * searches the Product table in DynamoDB and returns the product with
      * given productName.
-     *
+     * @param industryName
      * @param productName
      * @return List containing the product with specified productName
+     * @throws ResourceNotFoundException
      */
-    @RequestMapping(path = "get_product_by_name/{name}",
+    @RequestMapping(path = "get_product_by_name/{industry}/{name}",
             method = RequestMethod.GET)
-    public List<Product> getProductByName(
+    public List<Product> getProductByIndustryByName(
+            @PathVariable("industry") final String industryName,
             @PathVariable("name") final String productName)
             throws ResourceNotFoundException {
         List<Product> foundProducts =
-                productService.getProductByName(productName);
+                productService.getProductByIndustryByName(
+                        industryName, productName);
         return foundProducts;
     }
 

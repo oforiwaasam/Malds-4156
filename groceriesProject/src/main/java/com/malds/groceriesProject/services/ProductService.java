@@ -44,11 +44,14 @@ public class ProductService {
     /**
      * Returns Product by productName as a list of size 1.
      *
+     * @param industryName
      * @param productName
      * @return List containing the products containing productName.
      */
-    public List<Product> getProductByName(final String productName) {
-        return productRepository.findProductByName(productName);
+    public List<Product> getProductByIndustryByName(
+            final String industryName, final String productName) {
+        return productRepository.findProductByIndustryByName(
+                industryName, productName);
     }
 
     /**
