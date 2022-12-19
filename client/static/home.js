@@ -4,11 +4,19 @@ const searchResultsDiv = document.getElementById("search-results")
 const zeroResultsDiv = document.getElementById("zero-results");
 const searchResultsColumns = document.getElementById("column-names");
 
-localStorage.setItem("clientID", "445")
+const client = JSON.parse(sessionStorage.getItem("client"));
+const clientID = client["clientID"];
+const clientIndustry = client["category"];
+console.log(client);
 
 const getVendorByID = async (vendorID) => {
     try{
-        const response = await fetch(`https://groceries-project.herokuapp.com/vendors/${vendorID}`);
+        const response = await fetch(`https://groceries-project.herokuapp.com/vendors/${vendorID}`, {
+                method: 'GET',
+                headers: {
+                   //TODO add token
+                },
+            });
         const data = await response.json();
         return data[0];
     } catch {
@@ -25,6 +33,8 @@ const updateShoppingList = (shoppingList) => {
         data: JSON.stringify(shoppingList),
         dataType: "json",
         contentType: 'application/json; charset=utf-8',
+        //TODO add token
+        headers: {},
         success: function(result){
             console.log(result);
         },
@@ -38,13 +48,23 @@ const updateShoppingList = (shoppingList) => {
 }
 
 const getShoppingListByClientID = async (clientID) => {
-    const response = await fetch(`https://groceries-project.herokuapp.com/shopping_list/client/${clientID}`);
+    const response = await fetch(`https://groceries-project.herokuapp.com/shopping_list/client/${clientID}`, {
+        method: 'GET',
+        headers: {
+            //TODO add token
+        },
+    });
     const data = await response.json();
     return data;
 }
 
 const get_search_results = async (query) => {
-    const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_name/${query}`);
+    const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_name/${clientIndustry}/${query}`, {
+        method: 'GET',
+        headers: {
+            //TODO add token
+        },
+    });
     const data = await response.json();
     return data;
 }
@@ -86,7 +106,7 @@ const display_search_results = async (products) => {
         addBtn.classList.add("btn", "btn-dark");
         addBtn.innerHTML = "Add product"
         addBtn.addEventListener("click",async ()=>{
-            const shoppingList = await getShoppingListByClientID("1");
+            const shoppingList = await getShoppingListByClientID(clientID);
             const productIDToQuantity = shoppingList['productIDToQuantity']
 
             if (productID in productIDToQuantity){

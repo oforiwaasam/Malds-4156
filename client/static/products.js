@@ -4,11 +4,27 @@ const productPriceInput = document.getElementById("product-price");
 const productQuantityInput = document.getElementById("product-quantity");
 const vendorProductsDiv = document.getElementById("vendor-products")
 
+const vendor = JSON.parse(sessionStorage.getItem("vendor"));
+const vendorID = vendor["vendorID"];
+
+const getProductsByVendorID = async () =>{
+    const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_vendor_id/${vendorID}`, {
+        method: 'GET',
+        headers: {
+            //TODO add token
+        },
+    });
+    const data = await response.json();
+    return data
+}
+
 const deleteProductWithID = (productID) => {
     $.ajax({
         type: 'DELETE',
         url: `https://groceries-project.herokuapp.com/products/${productID}`,
         contentType: 'application/json; charset=utf-8',
+        //TODO add token
+        headers: {},
         success: function(result){
             console.log(result);
             location.reload()
@@ -29,6 +45,8 @@ const updateProduct = (product, productID) => {
         data: JSON.stringify(product),
         dataType: "json",
         contentType: 'application/json; charset=utf-8',
+        //TODO add token
+        headers: {},
         success: function(result){
             console.log(result);
         },
@@ -48,6 +66,8 @@ const addProduct = (product) => {
         data: JSON.stringify(product),
         dataType: "json",
         contentType: 'application/json; charset=utf-8',
+        //TODO add token
+        headers: {},
         success: function(result){
             console.log(result);
             productNameInput.value = ""
@@ -68,13 +88,13 @@ const getInputValues = () => {
     const productName = productNameInput.value;
     const productPrice = productPriceInput.value;
     const productQuantity = productQuantityInput.value;
-    const vendorID = "6"
 
     const product = {
         "productName": productName,
         "vendorID": vendorID,
         "price": productPrice,
-        "quantity": productQuantity
+        "quantity": productQuantity,
+        "industry": "Grocery",
     }
     return product;
 }
@@ -192,13 +212,6 @@ const displayProducts = (products) =>{
         rowDiv.append(productNameDiv, priceDiv, quantityDiv , editBtnDiv, saveBtnDiv, deleteBtnDiv);
         vendorProductsDiv.append(rowDiv);
     }
-}
-
-const getProductsByVendorID = async () =>{
-    const vendorID = "6"
-    const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_vendor_id/${vendorID}`);
-    const data = await response.json();
-    return data
 }
 
 const init = async () =>{

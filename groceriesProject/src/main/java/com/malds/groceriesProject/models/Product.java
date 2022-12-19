@@ -45,6 +45,12 @@ public class Product {
     private String quantity;
 
     /**
+     * DynamoDBAttribute: industry. type: String
+     */
+    @DynamoDBAttribute
+    private String industry;
+
+    /**
      * Product default constructor.
      */
     public Product() {
@@ -53,6 +59,7 @@ public class Product {
         this.vendorID = null;
         this.price = null;
         this.quantity = null;
+        this.industry = null;
     }
 
 }
