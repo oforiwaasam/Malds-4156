@@ -1,4 +1,5 @@
 const signInBtn = document.getElementById("sign-in-btn");
+const vendorSignInBtn = document.getElementById("vendor-sign-in-btn");
 
 
 const getClientByID = async (clientID) => {
@@ -51,12 +52,22 @@ signInBtn.addEventListener("click", async () =>{
         window.location.href = "home.html";
         return;
     }
-    user = await getVendorByID(username);
+    else{
+        window.location.href = "signup.html"
+    }
+})
+
+vendorSignInBtn.addEventListener("click", async () =>{
+    const usernameInput = document.getElementById("vendor-username-input");
+    const username = usernameInput.value;
+    let user = await getVendorByID(username);
     if (await isUserFound(user)){
         sessionStorage.setItem("vendor", JSON.stringify(user));
         console.log(JSON.parse(sessionStorage.getItem("vendor")))
         window.location.href = "products.html";
         return;
     }
-
+    else{
+        window.location.href = "signup.html"
+    }
 })

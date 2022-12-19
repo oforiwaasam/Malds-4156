@@ -6,6 +6,7 @@ const vendorProductsDiv = document.getElementById("vendor-products")
 
 const vendor = JSON.parse(sessionStorage.getItem("vendor"));
 const vendorID = vendor["vendorID"];
+console.log(vendor);
 
 const getProductsByVendorID = async () =>{
     const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_vendor_id/${vendorID}`, {

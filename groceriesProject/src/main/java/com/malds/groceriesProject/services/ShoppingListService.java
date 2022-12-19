@@ -1,5 +1,6 @@
 package com.malds.groceriesProject.services;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -251,5 +252,37 @@ public class ShoppingListService {
             }
         }
         //return true;
+    }
+
+    /**
+     * Searches for ShoppingList with clientID
+     * and returns the ShoppingList object.
+     * Throws ResourceNotFoundException if clientID
+     * does not match any shoppingList
+     * @param clientID
+     * @return the Shopping List with specified clientID
+     * @throws ResourceNotFoundException
+     */
+    public Map<String, String> sumShoppingList(final String clientID)
+            throws ResourceNotFoundException {
+        ShoppingList shoppingList = shoppingListRepository
+                .getShoppingListByClientID(clientID);
+        Map<String, String> newMap = new HashMap<String, String>();
+        if (shoppingList != null) {
+            int quantity = 0;
+            double prices = 0.0;
+            for (Map.Entry<String, String> entry
+            :shoppingList.getProductIDToQuantity().entrySet()) {
+                quantity += Double.parseDouble(entry.getValue());
+                prices += Double.parseDouble(productRepository
+                    .findProductById(entry.getKey()).get(0).getPrice());
+            }
+            newMap.put("Quantity", String.valueOf(quantity));
+            newMap.put("Total Price", String.valueOf(prices));
+            return newMap;
+        } else {
+            throw new ResourceNotFoundException("Shopping List does "
+                    + "not exist for clientID");
+        }
     }
 }

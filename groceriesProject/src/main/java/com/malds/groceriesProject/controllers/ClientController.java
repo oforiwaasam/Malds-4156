@@ -119,7 +119,8 @@ public class ClientController extends BaseController {
      * @throws Exception
      */
     @GetMapping("/clients/{category}/stats")
-    public Map<String, Map<String, Integer>> clientStats(final String category)
+    public Map<String, Map<String, Integer>> clientStats(
+        @PathVariable("category") final String category)
             throws Exception {
         try {
             clientService.checkCategory(category);

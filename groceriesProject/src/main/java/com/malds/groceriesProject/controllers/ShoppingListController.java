@@ -185,4 +185,27 @@ public class ShoppingListController extends BaseController {
                     "ERROR: check shoppingListID value");
         }
     }
+
+    /**
+     * Sums up user information
+     * and returns the ShoppingList object.
+     * Throws ResourceNotFoundException if clientID
+     * does not match any shoppingList
+     * @param clientID
+     * @return the Shopping List with specified clientID
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/client/total/{id}")
+    @Operation(summary = "My endpoint",
+        security = @SecurityRequirement(name = "bearerAuth"))
+    public Map<String, String> getPriceandQuantityTotalClient(
+            @PathVariable("id") final String clientID)
+            throws ResourceNotFoundException {
+        try {
+            return shoppingListService.sumShoppingList(clientID);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("Shopping List does "
+                    + "not exist for clientID");
+        }
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -106,6 +107,17 @@ public class ProductService {
      */
     public List<Product> getAllProducts() {
         return productRepository.findAllProducts();
+    }
+
+    /**
+     * Returns all products.
+     * @param industry
+     * @return list of product
+     */
+    public List<Product> getAllProductsByIndustry(final String industry) {
+        return  productRepository.findAllProducts().stream()
+        .filter(c -> c.getIndustry().equals(industry))
+        .collect(Collectors.toList());
     }
 
     /**
