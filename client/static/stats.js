@@ -31,7 +31,7 @@ const display_stats = async (stats) => {
             const statDiv = document.createElement("div");
             const titleDiv = document.createElement("div");
             const stat = JSON.stringify(stats[i], null, 4);
-            const title = i;
+            const title = "Stats for " + i + " by Percent";
             titleDiv.innerHTML = title;
             statDiv.innerHTML = stat;
 
@@ -40,7 +40,7 @@ const display_stats = async (stats) => {
             searchResultsDiv.append(rowDiv);
         }
                
-    }else{
+    } else{
         zeroResultsDiv.classList.remove("d-none");
         searchResultsDiv.append(zeroResultsDiv)
         return
@@ -52,7 +52,6 @@ searchBtn.addEventListener('click',async ()=> {
     const searchInput = document.getElementById('search-input');
     const category = searchInput.value;
     const stats = await clientStats(category);
-    // console.log(stats);
     searchResultsDiv.innerHTML = ""
     display_stats(stats)
     searchInput.value = ""
