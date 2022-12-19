@@ -12,36 +12,52 @@
 </head>
 <body>
   <div class="container-fluid">
-    <h1 class="text-center mt-2">Register</h1>
-    <form>
+    <h1 class="text-center mt-2">Client Register</h1>
+    <form class="pb-4 w-50 mx-auto">
       <!-- Vendor ID input -->
       <div class="form-outline mb-4">
-        <input type="number" id="form2Example1" class="form-control" />
-        <label class="form-label" for="form2Example2">Vendor ID</label>
+        <input type="text" id="client-id-input" class="form-control" />
+        <label class="form-label">Client ID</label>
       </div>
 
       <!-- Email input -->
       <div class="form-outline mb-4">
-        <input type="email" id="form2Example2" class="form-control" />
-        <label class="form-label" for="form2Example1">Email address</label>
+        <input type="email" id="client-email-input" class="form-control" />
+        <label class="form-label">Email address</label>
       </div>
 
       <!-- Company name input -->
       <div class="form-outline mb-4">
-        <input type="text" id="form2Example3" class="form-control" />
-        <label class="form-label" for="form2Example2">Company Name</label>
+        <input type="text" id="client-dob-input" class="form-control" />
+        <label class="form-label">Date of Birth</label>
       </div>
 
       <!-- Industry input -->
       <div class="form-outline mb-4">
-        <input type="text" id="form2Example4" class="form-control" />
-        <label class="form-label" for="form2Example2">Industry</label>
+        <input type="text" id="client-first-name-input" class="form-control" />
+        <label class="form-label" >First Name</label>
+      </div>
+
+      <div class="form-outline mb-4">
+        <input type="text" id="client-last-name-input" class="form-control" />
+        <label class="form-label">Last Name</label>
       </div>
 
       <!-- Zip code input -->
       <div class="form-outline mb-4">
-        <input type="number" id="form2Example5" class="form-control" />
-        <label class="form-label" for="form2Example2">Zip Code</label>
+        <input type="number" id="client-zip-code" class="form-control" />
+        <label class="form-label">Zip Code</label>
+      </div>
+
+      <!-- Zip code input -->
+      <div class="form-outline mb-4">
+        <input type="text" id="client-gender-input" class="form-control" />
+        <label class="form-label">Gender</label>
+      </div>
+
+      <div class="form-outline mb-4">
+        <input type="text" id="client-category-input" class="form-control" />
+        <label class="form-label">Category</label>
       </div>
 
       <!-- 2 column grid layout for inline styling -->
@@ -56,7 +72,60 @@
       </div>
 
       <!-- Submit button -->
-      <button type="button" class="btn btn-primary btn-block mb-4">Sign up</button>
+      <button type="button" class="btn btn-primary btn-block mb-4" id="client-sign-up-btn">Sign up</button>
+
+      <!-- Register buttons -->
+      <div class="text-center">
+        <p>Already a member? <a href="login.html">Log In</a></p>
+      </div>
+    </form>
+
+    <br>
+    <h1 class="text-center mt-2">Vendor Register</h1>
+    <form class="pb-4 w-50 mx-auto">
+      <!-- Vendor ID input -->
+      <div class="form-outline mb-4">
+        <input type="number" id="vendor-id-input" class="form-control" />
+        <label class="form-label">Vendor ID</label>
+      </div>
+
+      <!-- Email input -->
+      <div class="form-outline mb-4">
+        <input type="email" id="vendor-email-input" class="form-control" />
+        <label class="form-label">Email address</label>
+      </div>
+
+      <!-- Company name input -->
+      <div class="form-outline mb-4">
+        <input type="text" id="vendor-company-name-input" class="form-control" />
+        <label class="form-label">Company Name</label>
+      </div>
+
+      <!-- Industry input -->
+      <div class="form-outline mb-4">
+        <input type="text" id="vendor-industry-input" class="form-control" />
+        <label class="form-label">Industry</label>
+      </div>
+
+      <!-- Zip code input -->
+      <div class="form-outline mb-4">
+        <input type="number" id="vendor-zipcode-input" class="form-control" />
+        <label class="form-label">Zip Code</label>
+      </div>
+
+      <!-- 2 column grid layout for inline styling -->
+      <div class="row mb-4">
+        <div class="col d-flex justify-content-center">
+          <!-- Checkbox -->
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+            <label class="form-check-label" for="form2Example31"> Remember me </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit button -->
+      <button type="button" class="btn btn-primary btn-block mb-4" id="vendor-sign-up-btn">Sign up</button>
 
       <!-- Register buttons -->
       <div class="text-center">
@@ -65,7 +134,7 @@
     </form>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
-    <script src="../static/login.js"></script>
+    <script src="../static/signup.js"></script>
   </div>
 </body>
 </html>
