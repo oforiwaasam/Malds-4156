@@ -152,4 +152,22 @@ public class ProductController extends BaseController {
                     "ERROR: " + e);
         }
     }
+
+    /**
+     * Gets all products for industry
+     * Throws ResourceNotFoundException if industry does not exist.
+     *
+     * @param industryName
+     * @return list
+     * @throws ResourceNotFoundException
+     */
+    @RequestMapping(path = "get_products_by_industry/{industry}",
+    method = RequestMethod.GET)
+    public List<Product> getAllProductByIndustry(
+        @PathVariable("industry") final String industryName)
+        throws ResourceNotFoundException {
+    List<Product> foundProducts =
+            productService.getAllProductsByIndustry(industryName);
+    return foundProducts;
+    }
 }
