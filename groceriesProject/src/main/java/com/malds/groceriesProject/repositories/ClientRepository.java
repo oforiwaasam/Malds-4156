@@ -67,11 +67,14 @@ public class ClientRepository {
      * @return True if client under category exists, otherwise False
      */
     public boolean existsByCategory(final String category) {
-        Client client = dynamoDBMapper.load(Client.class, category);
-        if (client == null) {
-            return false;
-        }
-        return true;
+        Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+        eav.put(":category", new AttributeValue().withS(category));
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+            .withFilterExpression("category = :category")
+                .withExpressionAttributeValues(eav);
+
+        return dynamoDBMapper.scan(Client.class, scanExpression).size() > 0;
     }
 
     /**

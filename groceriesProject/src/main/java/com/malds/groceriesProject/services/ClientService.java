@@ -238,9 +238,10 @@ public class ClientService {
             > ZIPCODE_UPPER_LENGTH) {
             throw new Exception("Zipcode must not be longer than 10 chars");
         } else if (client.getCategory() != null
-                && existingClientCategory != client.getCategory()) {
+                && !client.getCategory().equals(existingClientCategory)) {
             throw new Exception("Category must not be different "
-            + "to existing category");
+            + "to existing category: " + existingClientCategory
+            + ", " + client.getCategory());
         } else if (client.getDateOfBirth() != null) {
             Date today = new Date();
             try {
@@ -275,17 +276,23 @@ public class ClientService {
 
         if (client.getEmail() == null) {
             client.setEmail(existingClient.getEmail());
-        } else if (client.getFirstName() == null) {
+        }
+        if (client.getFirstName() == null) {
             client.setFirstName(existingClient.getFirstName());
-        } else if (client.getLastName() == null) {
+        }
+        if (client.getLastName() == null) {
             client.setLastName(existingClient.getLastName());
-        } else if (client.getGender() == null) {
+        }
+        if (client.getGender() == null) {
             client.setGender(existingClient.getGender());
-        } else if (client.getZipcode() == null) {
+        }
+        if (client.getZipcode() == null) {
             client.setZipcode(existingClient.getZipcode());
-        } else if (client.getCategory() == null) {
+        }
+        if (client.getCategory() == null) {
             client.setCategory(existingClient.getCategory());
-        } else if (client.getDateOfBirth() == null) {
+        }
+        if (client.getDateOfBirth() == null) {
             client.setDateOfBirth(existingClient.getDateOfBirth());
         }
         return client;

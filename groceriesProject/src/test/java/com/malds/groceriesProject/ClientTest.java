@@ -234,7 +234,7 @@ public class ClientTest {
             clientService.checkUpdatedInput(updatedClient);
         });
         assertEquals(
-            "Category must not be different to existing category",
+            "Category must not be different to existing category: Grocery, Fashion",
                 exception.getMessage());
     }
 
@@ -286,6 +286,37 @@ public class ClientTest {
                 EXPECTED_ZIPCODE);
         assertEquals(clientService.fillClient(updatedClient).getCategory(),
                 EXPECTED_CATEGORY);
+    }
+
+    @Test
+    public void testCheckUpdatedDifferentCategory() {
+
+        // existing client
+        Client existingClient = new Client();
+        existingClient.setClientID("1");
+        existingClient.setEmail("sd2818@columbia.edu");
+        existingClient.setFirstName("Sarah");
+        existingClient.setLastName("Delgado");
+        existingClient.setGender("Female");
+        existingClient.setDateOfBirth("01/08/2002");
+        existingClient.setZipcode("11101");
+        existingClient.setCategory("Grocery");
+
+        // initialize client to be updated
+        Client updatedClient = new Client();
+        updatedClient.setClientID("1");
+        updatedClient.setEmail("sarah.delgado@columbia.edu");
+        updatedClient.setDateOfBirth("08/01/2002");
+        updatedClient.setZipcode("10260");
+        updatedClient.setCategory("s");
+
+        Mockito.when(clientRepo.existsByID("1")).thenReturn(true);
+        Mockito.when(clientRepo.getClientByID("1")).thenReturn(List.of(existingClient));
+
+        Throwable exception = assertThrows(Exception.class, () -> {
+            clientService.checkUpdatedInput(updatedClient);
+        });
+        assertEquals("Category must not be different to existing category: Grocery, s", exception.getMessage());
     }
 
     @Test

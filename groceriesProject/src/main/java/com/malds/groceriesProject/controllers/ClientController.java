@@ -102,8 +102,7 @@ public class ClientController extends BaseController {
             Client filledInClient = clientService.fillClient(client);
             return clientService.updateClient(filledInClient);
         } catch (Exception e) {
-            throw new Exception("ERROR: check input values;"
-            + " be sure to include clientID");
+            throw new Exception(e);
         }
     }
 
