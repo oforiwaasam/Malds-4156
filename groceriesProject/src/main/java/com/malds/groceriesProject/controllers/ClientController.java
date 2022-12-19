@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -103,11 +104,28 @@ public class ClientController extends BaseController {
     public List<Client> updateClient(@RequestBody final Client client)
     throws Exception {
         try {
-            clientService.checkValidInput(client);
-            return clientService.updateClient(client);
+            clientService.checkUpdatedInput(client);
+            Client filledInClient = clientService.fillClient(client);
+            return clientService.updateClient(filledInClient);
         } catch (Exception e) {
-            throw new Exception("ERROR: check input values;"
-            + " be sure to include clientID");
+            throw new Exception(e);
+        }
+    }
+
+    /**
+     * Get clients statistics based on category e.g. groceries, fashion, etc.
+     * @param category
+     * @return statistics of clients with given category
+     * @throws Exception
+     */
+    @GetMapping("/clients/{category}/stats")
+    public Map<String, Map<String, Integer>> clientStats(final String category)
+            throws Exception {
+        try {
+            clientService.checkCategory(category);
+            return clientService.getStats(category);
+        } catch (Exception e) {
+            throw new Exception("ERROR: " + e);
         }
     }
 }
