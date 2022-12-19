@@ -3,8 +3,9 @@ const searchInput = document.getElementById('search-input');
 const searchResultsDiv = document.getElementById("search-results")
 const zeroResultsDiv = document.getElementById("zero-results");
 const searchResultsColumns = document.getElementById("column-names");
-//TODO: change hardcoded value
-localStorage.setItem("clientID", "445")
+
+const client = JSON.parse(sessionStorage.getItem("client"));
+const clientID = client["clientID"];
 
 const getVendorByID = async (vendorID) => {
     try{
@@ -87,7 +88,7 @@ const display_search_results = async (products) => {
         addBtn.innerHTML = "Add product"
         addBtn.addEventListener("click",async ()=>{
             //TODO: change hardcoded value
-            const shoppingList = await getShoppingListByClientID("1");
+            const shoppingList = await getShoppingListByClientID(clientID);
             const productIDToQuantity = shoppingList['productIDToQuantity']
 
             if (productID in productIDToQuantity){

@@ -1,5 +1,11 @@
 const shoppingListItemsDiv = document.getElementById("shopping-list-items");
 let shoppingListObj;
+
+
+const client = JSON.parse(sessionStorage.getItem("client"));
+const clientID = client["clientID"];
+console.log(clientID)
+
 const updateShoppingList = (shoppingList) => {
     console.log(JSON.stringify(shoppingList))
     $.ajax({
@@ -128,7 +134,7 @@ const getShoppingListByClientID = async (clientID) => {
 
 const init = async () => {
     //TODO: change hardcoded value
-    shoppingListObj = await getShoppingListByClientID('1');
+    shoppingListObj = await getShoppingListByClientID(clientID);
     const productIDToQuantity = shoppingListObj['productIDToQuantity'];
     const products = await getProducts(productIDToQuantity);
 

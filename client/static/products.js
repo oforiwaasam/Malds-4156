@@ -4,6 +4,9 @@ const productPriceInput = document.getElementById("product-price");
 const productQuantityInput = document.getElementById("product-quantity");
 const vendorProductsDiv = document.getElementById("vendor-products")
 
+const vendor = JSON.parse(sessionStorage.getItem("vendor"));
+const vendorID = vendor["vendorID"];
+
 const deleteProductWithID = (productID) => {
     $.ajax({
         type: 'DELETE',
@@ -68,8 +71,6 @@ const getInputValues = () => {
     const productName = productNameInput.value;
     const productPrice = productPriceInput.value;
     const productQuantity = productQuantityInput.value;
-    //TODO: change hardcoded value
-    const vendorID = "6"
 
     const product = {
         "productName": productName,
@@ -197,8 +198,6 @@ const displayProducts = (products) =>{
 }
 
 const getProductsByVendorID = async () =>{
-    //TODO: change hardcoded value
-    const vendorID = "6"
     const response = await fetch(`https://groceries-project.herokuapp.com/products/get_product_by_vendor_id/${vendorID}`);
     const data = await response.json();
     return data
