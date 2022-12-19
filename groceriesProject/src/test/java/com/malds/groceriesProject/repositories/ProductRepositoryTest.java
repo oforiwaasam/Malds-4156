@@ -44,6 +44,7 @@ public class ProductRepositoryTest {
         product.setVendorID("54321");
         product.setPrice("4.19");
         product.setQuantity("1");
+        product.setIndustry("Grocery");
 
         Mockito.when(productRepo.addProduct(product)).thenReturn(product);
 
@@ -60,6 +61,7 @@ public class ProductRepositoryTest {
         product.setVendorID("54321");
         product.setPrice("4.19");
         product.setQuantity("1");
+        product.setIndustry("Grocery");
 
         Mockito.when(productRepo.existsByID("123456")).thenReturn(true);
         Throwable exception = Assertions.assertThrows(Exception.class, () -> {
@@ -101,6 +103,7 @@ public class ProductRepositoryTest {
         newProduct.setVendorID("54321");
         newProduct.setPrice("6.90");
         newProduct.setQuantity("1");
+        newProduct.setIndustry("Grocery");
 
         Mockito.when(productRepo.existsByID("123456")).thenReturn(true);
         Mockito.when(productRepo.updateProduct(newProduct)).thenReturn(List.of(newProduct));
@@ -125,6 +128,7 @@ public class ProductRepositoryTest {
         newProduct.setVendorID("54321");
         newProduct.setPrice("6.90");
         newProduct.setQuantity("1");
+        newProduct.setIndustry("Grocery");
 
         Throwable exception = Assertions.assertThrows(Exception.class, () -> {
             productService.updateProduct(newProduct);
@@ -144,6 +148,7 @@ public class ProductRepositoryTest {
         returnProduct.setVendorID("54321");
         returnProduct.setPrice("4.19");
         returnProduct.setQuantity("1");
+        returnProduct.setIndustry("Grocery");
 
         Mockito.when(productRepo.existsByID("123456")).thenReturn(true);
         Mockito.when(productRepo.findProductById("123456")).thenReturn(List.of(returnProduct));
@@ -173,6 +178,7 @@ public class ProductRepositoryTest {
         returnProduct.setVendorID("54321");
         returnProduct.setPrice("4.19");
         returnProduct.setQuantity("1");
+        returnProduct.setIndustry("Grocery");
 
         Product returnProduct1 = new Product();
         returnProduct1.setProductID("3432");
@@ -180,12 +186,14 @@ public class ProductRepositoryTest {
         returnProduct1.setVendorID("54321");
         returnProduct1.setPrice("4.59");
         returnProduct1.setQuantity("1");
+        returnProduct1.setIndustry("Grocery");
+
 
         Mockito.when(productRepo.existsByName("TestProduct")).thenReturn(true);
-        Mockito.when(productRepo.findProductByName("TestProduct"))
+        Mockito.when(productRepo.findProductByIndustryByName("Grocery","TestProduct"))
                 .thenReturn(List.of(returnProduct, returnProduct1));
 
-        Assertions.assertEquals(productService.getProductByName("TestProduct"),
+        Assertions.assertEquals(productService.getProductByIndustryByName("Grocery","TestProduct"),
                 List.of(returnProduct, returnProduct1));
     }
 
@@ -193,10 +201,10 @@ public class ProductRepositoryTest {
     public void testFindProductByNameNotExist() throws Exception {
 
         Mockito.when(productRepo.existsByName("TestProduct")).thenReturn(false);
-        Mockito.when(productRepo.findProductByName("TestProduct"))
+        Mockito.when(productRepo.findProductByIndustryByName("Grocery","TestProduct"))
                 .thenReturn(new ArrayList<Product>());
 
-        Assertions.assertEquals(productService.getProductByName("TestProduct"), new ArrayList<Product>());
+        Assertions.assertEquals(productService.getProductByIndustryByName("Grocery","TestProduct"), new ArrayList<Product>());
     }
 
     @Test
@@ -207,6 +215,8 @@ public class ProductRepositoryTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
+
 
         Product product2 = new Product();
         product2.setProductID("56789");
@@ -214,6 +224,7 @@ public class ProductRepositoryTest {
         product2.setVendorID("98765");
         product2.setPrice("2.29");
         product2.setQuantity("1");
+        product2.setIndustry("Grocery");
 
         Mockito.when(productRepo.existsByID("123456")).thenReturn(true);
         productService.deleteProductById("123456");
@@ -241,6 +252,7 @@ public class ProductRepositoryTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         Product product2 = new Product();
         product2.setProductID("56789");
@@ -248,6 +260,7 @@ public class ProductRepositoryTest {
         product2.setVendorID("98765");
         product2.setPrice("2.29");
         product2.setQuantity("1");
+        product2.setIndustry("Grocery");
 
         Mockito.when(productRepo.findAllProducts()).thenReturn(List.of(product1, product2));
         Assertions.assertEquals(productService.getAllProducts().size(), 2);
@@ -263,6 +276,7 @@ public class ProductRepositoryTest {
         product.setVendorID("54321");
         product.setPrice("2.00");
         product.setQuantity("1");
+        product.setIndustry("Grocery");
 
         productService.checkValidInput(product);
     }
@@ -275,6 +289,7 @@ public class ProductRepositoryTest {
         product.setVendorID("54321");
         product.setPrice("price");
         product.setQuantity("1");
+        product.setIndustry("Grocery");
 
         Throwable exception = Assertions.assertThrows(Exception.class, () -> {
             productService.checkValidInput(product);
@@ -291,6 +306,7 @@ public class ProductRepositoryTest {
         product.setVendorID("54321");
         product.setPrice("4.23");
         product.setQuantity("number");
+        product.setIndustry("Grocery");
 
         Throwable exception = Assertions.assertThrows(Exception.class, () -> {
             productService.checkValidInput(product);
@@ -308,6 +324,7 @@ public class ProductRepositoryTest {
         product.setVendorID("54321");
         product.setPrice("4.23");
         product.setQuantity("2");
+        product.setIndustry("Grocery");
 
         Throwable exception = assertThrows(Exception.class, () -> {
             productService.checkValidInput(product);
@@ -323,6 +340,7 @@ public class ProductRepositoryTest {
         product.setVendorID(null);
         product.setPrice("4.23");
         product.setQuantity("2");
+        product.setIndustry("Grocery");
 
         Throwable exception = assertThrows(Exception.class, () -> {
             productService.checkValidInput(product);
@@ -338,6 +356,7 @@ public class ProductRepositoryTest {
         product.setVendorID("12345");
         product.setPrice(null);
         product.setQuantity("2");
+        product.setIndustry("Grocery");
 
         Throwable exception = assertThrows(Exception.class, () -> {
             productService.checkValidInput(product);
@@ -353,6 +372,7 @@ public class ProductRepositoryTest {
         product.setVendorID("12345");
         product.setPrice("2");
         product.setQuantity(null);
+        product.setIndustry("Grocery");
 
         Throwable exception = assertThrows(Exception.class, () -> {
             productService.checkValidInput(product);
@@ -368,6 +388,7 @@ public class ProductRepositoryTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         Product product2 = new Product();
         product2.setProductID("56789");
@@ -375,6 +396,7 @@ public class ProductRepositoryTest {
         product2.setVendorID("98765");
         product2.setPrice("2.29");
         product2.setQuantity("1");
+        product2.setIndustry("Grocery");
 
         Mockito.when(productRepo.findAllProducts()).thenReturn(List.of(product1, product2));
         Mockito.when(productRepo.getProductsByVendorID("98765")).thenReturn(List.of(product2));
@@ -389,6 +411,7 @@ public class ProductRepositoryTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         Product product2 = new Product();
         product2.setProductID("56789");
@@ -396,6 +419,7 @@ public class ProductRepositoryTest {
         product2.setVendorID("54321");
         product2.setPrice("2.29");
         product2.setQuantity("1");
+        product2.setIndustry("Grocery");
 
         Product product3 = new Product();
         product3.setProductID("24680");
@@ -403,6 +427,7 @@ public class ProductRepositoryTest {
         product3.setVendorID("54321");
         product3.setPrice("4.33");
         product3.setQuantity("3");
+        product3.setIndustry("Grocery");
 
         Mockito.when(productRepo.findAllProducts()).thenReturn(List.of(product1, product2, product3));
         Mockito.when(productRepo.getProductsByVendorID("54321")).thenReturn(List.of(product1, product2, product3));
@@ -418,6 +443,7 @@ public class ProductRepositoryTest {
         product1.setVendorID("54321");
         product1.setPrice("4.19");
         product1.setQuantity("1");
+        product1.setIndustry("Grocery");
 
         Product product2 = new Product();
         product2.setProductID("56789");
@@ -425,6 +451,7 @@ public class ProductRepositoryTest {
         product2.setVendorID("98765");
         product2.setPrice("2.29");
         product2.setQuantity("1");
+        product2.setIndustry("Grocery");
 
         Mockito.when(productRepo.findAllProducts()).thenReturn(List.of(product1, product2));
         Mockito.when(productRepo.getProductsByVendorID("98")).thenReturn(new ArrayList<Product>());
