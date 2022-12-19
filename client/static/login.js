@@ -52,6 +52,9 @@ signInBtn.addEventListener("click", async () =>{
         window.location.href = "home.html";
         return;
     }
+    else{
+        window.location.href = "signup.html"
+    }
 })
 
 vendorSignInBtn.addEventListener("click", async () =>{
@@ -63,5 +66,8 @@ vendorSignInBtn.addEventListener("click", async () =>{
         console.log(JSON.parse(sessionStorage.getItem("vendor")))
         window.location.href = "products.html";
         return;
+    }
+    else{
+        window.location.href = "signup.html"
     }
 })
